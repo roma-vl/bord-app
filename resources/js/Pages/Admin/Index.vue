@@ -39,9 +39,7 @@ const breadcrumbData = [
                 <Breadcrumb :breadcrumbs="breadcrumbData" />
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg p-3">
 
-                    <FlashMessage v-if="flash.success" type="success" :message="flash.success" />
-                    <FlashMessage v-if="flash.error" type="error" :message="flash.error" />
-
+                    <FlashMessage  :flash="flash" />
                     Content
                 </div>
             </div>

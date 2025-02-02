@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\User\UserResource;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
@@ -57,13 +58,33 @@ class UsersController extends Controller
 
     public function edit(User $user)
     {
-        //
+        return response()->json($user);
     }
 
-    public function update(Request $request, User $user)
+    public function update(Request $request, User $user): RedirectResponse
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => "required|email|unique:users,email,{$user->id}",
+            'password' => 'nullable|string|min:6',
+            'active' => 'required|boolean',
+            'locale' => 'required|in:' . implode(',', User::LOCALES),
+        ]);
+
+        $user->name = $validated['name'];
+        $user->email = $validated['email'];
+        if (!empty($validated['password'])) {
+            $user->password = Hash::make($validated['password']);
+        }
+        $user->locale = $validated['locale'];
+        $user->email_verified_at = $validated['active'] ? now() : null;
+
+        $user->save();
+
+        return redirect()->route('admin.users.index')
+            ->with('success', 'User updated successfully.');
     }
+
 
     public function destroy(User $user)
     {

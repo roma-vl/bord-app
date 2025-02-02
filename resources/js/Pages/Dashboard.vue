@@ -40,7 +40,6 @@ const closeDialog = () => {
     isDialogVisible.value = false;
 };
 
-const  mes = 'textd sad a ';
 </script>
 
 <template>

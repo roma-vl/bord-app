@@ -1,15 +1,16 @@
 <script setup>
-import {Head, Link, router, usePage} from "@inertiajs/vue3";
+import {Head, router, usePage} from "@inertiajs/vue3";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import Grid from "@/Components/Grid.vue";
 import TrashIcon from "@/Components/Icon/TrashIcon.vue";
 import PencilIcon from "@/Components/Icon/PencilIcon.vue";
 import FlashMessage from "@/Components/FlashMessage.vue";
 import AvatarIcon from "@/Components/Icon/AvatarIcon.vue";
-import { computed, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import RefreshIcon from "@/Components/Icon/RefreshIcon.vue";
 import Modal from "@/Components/Modal.vue";
 import Create from "@/Pages/Admin/Users/Create.vue";
+import Edit from "@/Pages/Admin/Users/Edit.vue";
 
 const flash = usePage().props.flash;
 const users = usePage().props.users.data;
@@ -24,7 +25,7 @@ const headings = [
     { key: "role", value: "Role" },
     { key: "tags", value: "Tags" },
     { key: "created_at", value: "Created" },
-    // { key: "updated_at", value: "Updated" },
+    { key: "updated_at", value: "Updated" },
     { key: "actions", value: "Actions", disabled: true },
 ];
 
@@ -32,6 +33,32 @@ const routes = [
     { key: "index", value: "admin.users.index" },
     { key: "search", value: "admin.users.search" },
 ];
+
+const isCreateModalOpen = ref(false);
+const isEditModalOpen = ref(false);
+const selectedUser = ref(null);
+
+const openCreateModal = () => {
+    isCreateModalOpen.value = true;
+};
+
+const openEditModal = async (id) => {
+    try {
+        const response = await axios.get(route("admin.users.edit", id));
+        selectedUser.value = response.data;
+        isEditModalOpen.value = true;
+    } catch (error) {
+        console.error("Помилка при завантаженні користувача", error);
+    }
+};
+
+const refreshUsers = () => {
+    router.get(route("admin.users.index"), {
+        preserveScroll: true,
+        onSuccess: () => router.replace(route("admin.users.index")),
+    });
+};
+
 
 const deleteUser = (id) => {
     if (confirm("Ви впевнені, що хочете видалити цього користувача?")) {
@@ -48,27 +75,6 @@ const restoreUser = (id) => {
         onSuccess: () => router.replace(route("admin.users.index")),
     });
 };
-// Управління відкриттям модалки
-const isModalOpen = ref(false);
-
-const openModal = () => {
-    isModalOpen.value = true;
-};
-
-const closeModal = () => {
-    isModalOpen.value = false;
-};
-
-const refreshUsers = () => {
-    router.get(route("admin.users.index"), {
-        preserveScroll: true,
-        onSuccess: (page) => {
-            users.value = page.props.users.data;
-            closeModal();
-        },
-    });
-};
-
 </script>
 
 <template>
@@ -79,7 +85,7 @@ const refreshUsers = () => {
                 <FlashMessage v-if="flash" :flash="flash" />
 
                 <div class="mb-2 flex justify-end">
-                    <button @click="openModal" class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-500">
+                    <button @click="openCreateModal" class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-500">
                         + New User
                     </button>
                 </div>
@@ -157,20 +163,21 @@ const refreshUsers = () => {
                                     <RefreshIcon />
                                 </a>
                                 <a v-if="!row.deleted_at" href="#">
-                                    <PencilIcon />
+                                    <a @click.prevent="openEditModal(row.id)" class="text-blue-600 hover:text-blue-900 cursor-pointer">
+                                        <PencilIcon />
+                                    </a>
                                 </a>
                             </div>
                         </div>
                     </template>
                 </Grid>
 
-                <Modal
-                    maxWidth="2xl"
-                    @close="closeModal"
-                    :show="isModalOpen" >
-                    <template #default>
-                        <Create @userCreated="refreshUsers" />
-                    </template>
+                <Modal :show="isCreateModalOpen" maxWidth="2xl" @close="isCreateModalOpen = false">
+                    <Create @userCreated="refreshUsers" />
+                </Modal>
+
+                <Modal :show="isEditModalOpen" @close="isEditModalOpen = false">
+                    <Edit v-if="selectedUser" :user="selectedUser" @userUpdated="refreshUsers" />
                 </Modal>
             </div>
         </div>
