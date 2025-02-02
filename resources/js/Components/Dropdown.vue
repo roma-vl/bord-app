@@ -27,6 +27,7 @@ onUnmounted(() => document.removeEventListener('keydown', closeOnEscape));
 
 const widthClass = computed(() => {
     return {
+        24: 'w-24',
         48: 'w-48',
         60: 'w-60',
         72: 'w-72',

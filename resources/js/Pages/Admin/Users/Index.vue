@@ -1,220 +1,148 @@
 <script setup>
-
-import Breadcrumb from "@/Components/Breadcrumb.vue";
-import {Head, usePage} from "@inertiajs/vue3";
-import FlashMessage from "@/Components/FlashMessage.vue";
+import {Head, Link, router, usePage} from "@inertiajs/vue3";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
-import {computed, ref} from "vue";
+import Grid from "@/Components/Grid.vue";
+import TrashIcon from "@/Components/Icon/TrashIcon.vue";
+import PencilIcon from "@/Components/Icon/PencilIcon.vue";
+import FlashMessage from "@/Components/FlashMessage.vue";
+import AvatarIcon from "@/Components/Icon/AvatarIcon.vue";
+import { computed, ref, watch } from "vue";
+import RefreshIcon from "@/Components/Icon/RefreshIcon.vue";
 
 const flash = usePage().props.flash;
-const users = usePage().props.users;
-const breadcrumbData = [
-    {
-        url: route("admin.index"),
-        icon: "svg",
-    },
-    {
-        title: "Users",
-        current: true,
-    },
-];
-const isDropdownOpen = ref(false);
-const searchQuery = ref("");
+const users = usePage().props.users.data;
+const pagination = computed(() => usePage().props.users.meta);
 
-const headings = ref([
-    { key: "id", value: "User ID" },
-    { key: "name", value: "Name" },
-    { key: "email", value: "Email" },
+
+const headings = [
+    { key: "id", value: "ID", sortable: true, disabled: true},
+    { key: "name", value: "Name", sortable: true, highlight: true },
+    { key: "email", value: "Email", sortable: true, highlight: true },
     { key: "status", value: "Status" },
     { key: "role", value: "Role" },
     { key: "tags", value: "Tags" },
-    { key: "created_at", value: "Created at" },
-    { key: "updated_at", value: "Updated at" },
-    { key: "deleted_at", value: "Deleted at" },
-]);
+    { key: "created_at", value: "Created" },
+    // { key: "updated_at", value: "Updated" },
+    { key: "actions", value: "Actions", disabled: true },
+];
 
-const visibleColumns = ref(headings.value.map(h => h.key));
+const routes = [
+    { key: "index", value: "admin.users.index" },
+    { key: "search", value: "admin.users.search" },
+];
 
-const toggleDropdown = () => {
-    isDropdownOpen.value = !isDropdownOpen.value;
+const deleteUser = (id) => {
+    if (confirm("Ви впевнені, що хочете видалити цього користувача?")) {
+        router.delete(route("admin.users.destroy", id), {
+            preserveScroll: true,
+            onSuccess: () => router.replace(route("admin.users.index")),
+        });
+    }
 };
 
-const filteredHeadings = computed(() => {
-    return headings.value.filter(h => visibleColumns.value.includes(h.key));
-});
+const restoreUser = (id) => {
+    router.put(route("admin.users.restore", id), {}, {
+        preserveScroll: true,
+        onSuccess: () => router.replace(route("admin.users.index")),
+    });
+};
 
-const filteredUsers = computed(() => {
-    console.log(users, 'users2.value');
-    if (!searchQuery.value) return users;
-    return users.filter(user =>
-        Object.values(user).some(val =>
-            String(val).toLowerCase().includes(searchQuery.value.toLowerCase())
-        )
-    );
-});
 
 </script>
 
 <template>
-    <Head title="Dashboard"/>
-
+    <Head title="Users" />
     <AdminLayout>
         <div class="py-2">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <Breadcrumb :breadcrumbs="breadcrumbData"/>
-                    <FlashMessage v-if="flash.success" type="success" :message="flash.success"/>
-                    <FlashMessage v-if="flash.error" type="error" :message="flash.error"/>
+                <FlashMessage v-if="flash" :flash="flash" />
 
-                    <div class="overflow-hidden rounded-lg border border-gray-200 shadow-md bg-white p-2" style="height: 405px;">
-                        <div class="mb-4 flex justify-between items-center">
-                            <div class="flex-1 pr-2">
-                                <input v-model="searchQuery" type="search"
-                                       class="w-full pl-10 pr-4 py-2 rounded-lg shadow focus:outline-none text-gray-600 font-medium border-0"
-                                       placeholder="Search...">
-                            </div>
-                            <div class="relative pr-2">
-                                <button class="rounded-lg bg-blue-600 px-4 py-2 flex items-center border border-gray-300 hover:bg-blue-500">
-                                    <span class="text-white"> + New User </span>
-                                </button>
-                            </div>
-                            <div class="relative">
-                                <button @click="toggleDropdown"
-                                        class="rounded-lg bg-white px-4 py-2 flex items-center border border-gray-300 hover:bg-gray-100">
-                                    Display
-                                    <svg class="w-5 h-5 ml-1" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                                         stroke-linecap="round" stroke-linejoin="round">
-                                        <polyline points="6 9 12 15 18 9"/>
-                                    </svg>
-                                </button>
+                <div class="mb-2 flex justify-end">
+                    <Link :href="route('admin.users.create')" class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-500">
+                        + New User
+                    </Link>
+                </div>
 
-                                <div v-if="isDropdownOpen"
-                                     class="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
-                                    <label v-for="heading in headings" :key="heading.key" class="flex items-center px-4 py-2 hover:bg-gray-100">
-                                        <input type="checkbox" class=" mr-3 text-gray-800 rounded-sm" v-model="visibleColumns" :value="heading.key">
-                                        <span>{{ heading.value }}</span>
-                                    </label>
+                <Grid
+                    :items="users"
+                    :pagination="pagination"
+                    :headings="headings"
+                    :routes="routes"
+                >
+                    <template #column-name="{ row }">
+                        <div class="flex gap-2 font-normal">
+                            <div class="relative h-10 w-10">
+                                <div v-if="row.avatar_url">
+                                    <img :src="row.avatar_url" :alt="row.name" />
+                                </div>
+                                <div v-else>
+                                    <AvatarIcon />
+                                </div>
+                                <div v-if="row.status">
+                                    <span class="absolute right-0 bottom-0 h-2 w-2 rounded-full bg-green-400 ring ring-white"></span>
+                                </div>
+                                <div v-else>
+                                    <span class="absolute right-0 bottom-0 h-2 w-2 rounded-full bg-red-400 ring ring-white"></span>
                                 </div>
                             </div>
+                            <div class="text-sm flex justify-center items-center">
+                                <div class="font-medium text-gray-700" v-html="row.name"></div>
+                            </div>
                         </div>
-                        <table class="w-full border-collapse bg-white text-left text-sm text-gray-500" >
-                            <thead class="bg-gray-50">
-                            <tr>
-                                <th v-for="heading in filteredHeadings" :key="heading.key"
-                                     class=" border-b px-3 py-3 text-gray-900 font-bold uppercase text-xs">
-                                    {{ heading.value }}
-                                </th>
-                                <th
-                                    class=" border-b px-3 py-3 text-gray-900 font-bold uppercase text-xs">
-                                </th>
-
-                            </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-100 border-t border-gray-100">
-                            <tr v-for="user in filteredUsers" :key="user.id" class="hover:bg-gray-50">
-
-                                <td v-if="filteredHeadings.some(h => h.key === 'id')" class="px-6 py-4">
-                                    <div class="text-gray-900">#{{user.id}}</div>
-                                </td>
-                                <td v-if="filteredHeadings.some(h => h.key === 'name')" class="flex gap-3 px-6 py-4 font-normal text-gray-900">
-                                    <div class="relative h-10 w-10">
-                                        <div v-if="user.avatar_url">
-                                            <img :src="user.avatar_url" :alt="user.name">
-                                        </div>
-                                        <div v-else>
-                                            <svg
-                                                class="h-full w-full rounded-full object-cover object-center"
-                                                height="40px" width="40px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 333.549 333.549" xml:space="preserve">
-                                                <path style="fill:#F3D8B6;" d="M249.963,237.405c-18.667-6.681-51.458-11.736-51.458-81.376h-29.23h-5.002 h-29.23c0,69.64-32.791,74.695-51.458,81.376c0,47.368,68.832,48.824,80.688,53.239v1.537c0,0,0.922-0.188,2.501-0.68 c1.579,0.492,2.501,0.68,2.501,0.68v-1.537C181.13,286.23,249.963,284.773,249.963,237.405z"/>
-                                                <path style="fill:#EEC8A2;" d="M198.505,156.03h-29.23h-2.167v135.573c1.37,0.414,2.167,0.579,2.167,0.579 v-1.537c11.856-4.414,80.688-5.871,80.688-53.239C231.296,230.725,198.505,225.669,198.505,156.03z"/>
-                                                <path style="fill:#F3DBC4;" d="M166.776,178.782c-27.454,0-48.409-23.119-57.799-40.456 s-15.888-69.445,4.34-96.897c19.808-26.883,53.459-23.838,53.459-23.838s33.649-3.045,53.458,23.838 c20.226,27.452,13.726,79.56,4.335,96.897C215.177,155.663,194.224,178.782,166.776,178.782z"/>
-                                                <path style="fill:#EDCEAE;" d="M220.234,41.429c-18.683-25.354-49.661-24.088-53.127-23.862v161.206 c27.285-0.186,48.108-23.181,57.462-40.447C233.96,120.989,240.46,68.882,220.234,41.429z"/>
-                                                <path style="fill:#DFE0F2;" d="M286.756,292.867v40.681H46.792v-40.681c0-30.431,17.377-56.963,40.605-70.913 c6.043-3.641,19.69-6.43,26.844-8.196c5.953-1.488,52.866,21.691,52.866,21.691s49.246-23.179,55.199-21.691 c7.154,1.766,17.802,4.554,23.844,8.196C269.379,235.904,286.756,262.436,286.756,292.867z"/>
-                                                <path style="fill:#C6C8D7;" d="M246.151,221.954c-6.043-3.641-16.69-6.429-23.844-8.195 c-5.678-1.42-51.05,19.746-55.199,21.691v98.099h119.648v-40.681C286.756,262.436,269.379,235.904,246.151,221.954z"/>
-                                                <path style="fill:#FFFFFF;" d="M122.774,235.314c-4.437,1.603-18.333-21.333-6.833-26.833l50.167,26.505 C166.107,234.985,133.736,231.354,122.774,235.314z"/>
-                                                <path style="fill:#DEDDE0;" d="M211.441,235.314c4.437,1.603,18.333-21.333,6.833-26.833l-50.167,26.505 C168.107,234.985,200.478,231.354,211.441,235.314z"/>
-                                                <path style="fill:#367992;" d="M246.604,221.624c-2.201-1.327-5.416-2.538-8.954-3.63  c-3.631-1.308-7.562-2.436-11.147-3.38c-2.841,30.494-28.492,54.367-59.728,54.367c-31.096,0-56.665-23.657-59.697-53.955  c-7.077,1.69-15.672,3.91-20.133,6.599c-23.228,13.951-40.605,40.482-40.605,70.914v40.681h120.887h119.076h0.906v-40.681  C287.208,262.107,269.831,235.575,246.604,221.624z"/>
-                                                <path style="fill:#2F697E;" d="M246.604,221.625c-2.201-1.327-5.416-2.538-8.954-3.63 c-3.631-1.308-7.562-2.436-11.147-3.38c-2.831,30.385-28.31,54.188-59.395,54.359v64.246h0.12h119.076h0.906v-40.681  C287.208,262.107,269.831,235.575,246.604,221.625z"/>
-                                                <path style="fill:#2C2B2B;" d="M191.052,135.913c-13.237,0-19.616-9.66-24.254-16.87  c-0.231,0.383-0.464,0.772-0.701,1.168c-4.188,6.995-9.399,15.702-23.601,15.702c-15.926,0-27.486-11.392-27.486-27.088v-0.414 l0.078-0.408c0.424-2.204,2.991-13.202,11.937-13.202h26.208c1.872,0,3.755,0.408,5.446,1.179l0.64,0.292l7.456,6.321 l7.455-6.321l0.64-0.292c1.691-0.771,3.574-1.179,5.446-1.179h26.209c8.945,0,11.512,10.997,11.936,13.202l0.078,0.408v0.414 C218.538,124.52,206.978,135.913,191.052,135.913z M172.71,110.16l1.168,1.778c0.439,0.668,0.877,1.349,1.32,2.037 c5.048,7.851,8.634,12.617,15.854,12.617c10.151,0,17.284-7.103,17.481-17.33c-0.485-2.106-1.558-4.465-2.338-5.141h-25.88 c-0.188,0-0.375,0.021-0.557,0.063L172.71,110.16z M125.014,109.254c0.194,10.232,7.328,17.338,17.482,17.338 c7.943,0,10.692-3.946,14.868-10.922c0.733-1.225,1.491-2.491,2.306-3.733l1.168-1.779l-7.048-5.975 c-0.182-0.042-0.368-0.063-0.557-0.063h-25.88C126.572,104.799,125.485,107.185,125.014,109.254z"/>
-                                                <path style="fill:#272525;" d="M218.46,108.003c-0.424-2.205-2.991-13.202-11.936-13.202h-26.209  c-1.872,0-3.755,0.408-5.446,1.179l-0.64,0.292l-7.122,6.039v17.211c4.614,7.151,10.995,16.391,23.945,16.391 c15.926,0,27.486-11.393,27.486-27.088v-0.414L218.46,108.003z M191.052,126.593c-7.221,0-10.807-4.767-15.854-12.618 c-0.442-0.688-0.881-1.369-1.32-2.037l-1.168-1.778l7.048-5.976c0.182-0.042,0.368-0.063,0.557-0.063h25.88 c0.781,0.676,1.853,3.036,2.338,5.142C208.336,119.49,201.203,126.593,191.052,126.593z"/>
-                                                <path style="fill:#682234;" d="M202.113,25.918c0,0-24.427-32.813-39.707-24.598 c-39.045,20.991-44.219,18.365-52.979,21.408c-21.241,7.378-21.798-2.595-19.122,13.776c8.879,54.319-0.557,79.337,15.961,59.147 s22.025-15.423,64.073-20.012s15.256-23.363,37.28-8.18s24.919,42.732,28.589,42.732c3.671,0,11.84-52.59,6.283-68.911 C230.629,6.439,202.113,25.918,202.113,25.918z"/>
-                                                <path style="fill:#581A2B;" d="M242.491,41.281c-11.862-34.842-40.378-15.362-40.378-15.362 s-19.894-26.72-35.005-25.896V75.98c1.057-0.108,2.124-0.219,3.231-0.34c42.047-4.588,15.256-23.363,37.28-8.18 c22.025,15.184,24.919,42.732,28.589,42.732S248.048,57.603,242.491,41.281z"/>
-                                                <ellipse transform="matrix(0.3543 0.9351 -0.9351 0.3543 171.4079 -26.089)" style="fill:#F3DBC4;" cx="104.596" cy="111.077" rx="17.187" ry="10.048"/>
-                                                <ellipse transform="matrix(0.3543 -0.9351 0.9351 0.3543 43.9645 285.8114)" style="fill:#EDCEAE;" cx="228.947" cy="111.07" rx="17.187" ry="10.048"/>
-                                        </svg>
-                                        </div>
-
-                                        <div v-if="user.status">
-                                            <span class="absolute right-0 bottom-0 h-2 w-2 rounded-full bg-green-400 ring ring-white"></span>
-                                        </div>
-                                        <div v-else>
-                                            <span class="absolute right-0 bottom-0 h-2 w-2 rounded-full bg-red-400 ring ring-white"></span>
-                                        </div>
-
-                                    </div>
-                                    <div class="text-sm flex justify-center items-center">
-                                        <div class="font-medium text-gray-700">{{ user.name}}</div>
-                                        <div class="font-medium text-gray-400">{{ user.deleted_at}}</div>
-                                    </div>
-                                </td>
-                                <td v-if="filteredHeadings.some(h => h.key === 'email')" class="px-6 py-4">
-                                    <div class="text-gray-400">{{ user.email}}</div>
-                                </td>
-                                <td v-if="filteredHeadings.some(h => h.key === 'status')" class="px-6 py-4">
-                                    <div v-if="user.status">
-                                         <span class="inline-flex items-center gap-1 rounded-full bg-green-50 px-2 py-1 text-xs font-semibold text-green-600">
-                                            <span class="h-1.5 w-1.5 rounded-full bg-green-600"></span> Active </span>
-                                    </div>
-                                    <div v-else>
-                                        <span class="inline-flex items-center gap-1 rounded-full bg-red-50 px-2 py-1 text-xs font-semibold text-red-600">
-                                            <span class="h-1.5 w-1.5 rounded-full bg-red-600"></span> Inactive </span>
-                                    </div>
-                                </td>
-                                <td v-if="filteredHeadings.some(h => h.key === 'role')" class="px-6 py-4">
-                                    Product Designer
-                                </td>
-                                <td v-if="filteredHeadings.some(h => h.key === 'tags')" class="px-6 py-4">
-                                    <div class="flex gap-2">
-                                        <span class="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-1 text-xs font-semibold text-blue-600">
-                                          Design
-                                        </span>
-                                        <span class="inline-flex items-center gap-1 rounded-full bg-indigo-50 px-2 py-1 text-xs font-semibold text-indigo-600">
-                                          Product
-                                        </span>
-                                        <span class="inline-flex items-center gap-1 rounded-full bg-violet-50 px-2 py-1 text-xs font-semibold text-violet-600">
-                                          Develop
-                                        </span>
-                                    </div>
-                                </td>
-                                <td v-if="filteredHeadings.some(h => h.key === 'created_at')" class="px-6 py-4">
-                                    {{user.created_at}}
-                                </td>
-                                <td v-if="filteredHeadings.some(h => h.key === 'updated_at')" class="px-6 py-4">
-                                    {{ user.updated_at}}
-                                </td>
-                                <td v-if="filteredHeadings.some(h => h.key === 'deleted_at')" class="px-6 py-4">
-                                    {{ user.deleted_at}}
-                                </td>
-                                <td class="px-6 py-4">
-                                    <div class="flex justify-end gap-4">
-                                        <a href="#">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-6 w-6">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/>
-                                            </svg>
-                                        </a>
-                                        <a href="#">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-6 w-6" >
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"/>
-                                            </svg>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                    </template>
+                    <template #column-email="{ row }">
+                        <div class="text-sm text-gray-600" v-html="row.email"></div>
+                    </template>
+                    <template #column-status="{ row }">
+                        <div v-if="row.deleted_at">
+                            <span class="inline-flex items-center gap-1 rounded-full bg-red-50 px-2 py-1 text-xs font-semibold text-red-600">
+                              <span class="h-1.5 w-1.5 rounded-full bg-red-600"></span> Deleted
+                            </span>
+                        </div>
+                        <div v-else-if="row.status">
+                            <span class="inline-flex items-center gap-1 rounded-full bg-green-50 px-2 py-1 text-xs font-semibold text-green-600">
+                              <span class="h-1.5 w-1.5 rounded-full bg-green-600"></span> Active
+                            </span>
+                        </div>
+                        <div v-else>
+                            <span class="inline-flex items-center gap-1 rounded-full bg-yellow-50 px-2 py-1 text-xs font-semibold text-yellow-600">
+                              <span class="h-1.5 w-1.5 rounded-full bg-yellow-600"></span> Inactive
+                            </span>
+                        </div>
+                    </template>
+                    <template #column-role="{ row }">
+                        Product Designer
+                    </template>
+                    <template #column-tags="{ row }">
+                        <div class="flex gap-2">
+                            <span class="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-1 text-xs font-semibold text-blue-600">
+                              Design
+                            </span>
+                            <span class="inline-flex items-center gap-1 rounded-full bg-indigo-50 px-2 py-1 text-xs font-semibold text-indigo-600">
+                              Product
+                            </span>
+                            <span class="inline-flex items-center gap-1 rounded-full bg-violet-50 px-2 py-1 text-xs font-semibold text-violet-600">
+                              Develop
+                            </span>
+                        </div>
+                    </template>
+                    <template #column-actions="{ row }">
+                        <div class="flex gap-2">
+                            <div class="flex justify-end gap-4">
+                                <a v-if="!row.deleted_at" @click.prevent="deleteUser(row.id)" class="text-red-600 hover:text-red-900 cursor-pointer">
+                                    <TrashIcon />
+                                </a>
+                                <a v-else @click.prevent="restoreUser(row.id)" class="text-green-600 hover:text-green-900 cursor-pointer">
+                                    <RefreshIcon />
+                                </a>
+                                <a v-if="!row.deleted_at" href="#">
+                                    <PencilIcon />
+                                </a>
+                            </div>
+                        </div>
+                    </template>
+                </Grid>
             </div>
+        </div>
     </AdminLayout>
 </template>
-
-<style scoped></style>

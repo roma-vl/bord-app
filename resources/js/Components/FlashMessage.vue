@@ -2,18 +2,20 @@
 import { computed } from 'vue';
 
 const props = defineProps({
-    type: {
-        type: String,
-        default: 'info', // 'success', 'error', 'info', etc.
-    },
-    message: {
-        type: String,
-        required: true,
-    },
+    flash: {
+        type: Object,
+        required: true
+    }
 });
 
-const classes = computed(() => {
-    switch (props.type) {
+const messages = computed(() => {
+    return Object.entries(props.flash)
+        .map(([type, message]) => ({ type, message }))
+        .filter(msg => msg.message); // Фільтруємо, щоб не було null або undefined
+});
+
+const getClasses = (type) => {
+    switch (type) {
         case 'success':
             return 'bg-green-200 text-green-800 border-green-400';
         case 'error':
@@ -22,11 +24,13 @@ const classes = computed(() => {
         default:
             return 'bg-blue-200 text-blue-800 border-blue-400';
     }
-});
+};
 </script>
 
 <template>
-    <div v-if="message" :class="`mb-4 p-2 rounded border ${classes}`">
-        {{ message }}
+    <div v-if="messages.length">
+        <div v-for="msg in messages" :key="msg.type" :class="`mb-4 p-2 rounded border ${getClasses(msg.type)}`">
+            {{ msg.message }}
+        </div>
     </div>
 </template>

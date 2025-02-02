@@ -8,8 +8,16 @@ import { Link } from '@inertiajs/vue3';
 import Locale from "@/Layouts/Partials/Locale.vue";
 import Notifications from "@/Layouts/Partials/Notifications.vue";
 import AdminResponsiveNavigationMenu from "@/Layouts/Partials/AdminResponsiveNavigationMenu.vue";
+import SideMenu from "@/Layouts/Partials/SideMenu.vue";
 
 const showingNavigationDropdown = ref(false);
+const toggleFullscreen = () => {
+    if (document.fullscreenElement) {
+        document.exitFullscreen();
+    } else {
+        document.documentElement.requestFullscreen();
+    }
+};
 </script>
 
 <template>
@@ -29,14 +37,25 @@ const showingNavigationDropdown = ref(false);
                                 <NavLink :href="route('main')">
                                     Public
                                 </NavLink>
-                                <NavLink :href="route('users.index')">
+                                <NavLink :href="route('admin.users.index')">
                                     Users
+                                </NavLink>
+                                <NavLink :href="route('admin.test')">
+                                    Test
                                 </NavLink>
                             </div>
                         </div>
 
                         <div class="hidden sm:ms-6 sm:flex sm:items-center">
 
+
+                            <div class="relative ms-3">
+                                <button @click="toggleFullscreen">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+                                        <path d="M5 5h5V3H3v7h2zm5 14H5v-5H3v7h7zm11-5h-2v5h-5v2h7zm-2-4h2V3h-7v2h5z"></path>
+                                    </svg>
+                                </button>
+                            </div>
                             <div class="relative ms-3">
                                 <Locale/>
                             </div>
@@ -119,6 +138,7 @@ const showingNavigationDropdown = ref(false);
                 </div>
             </header>
 
+            <SideMenu />
             <!-- Page Content -->
             <main>
                 <slot />
