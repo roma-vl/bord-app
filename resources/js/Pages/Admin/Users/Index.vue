@@ -11,6 +11,7 @@ import RefreshIcon from "@/Components/Icon/RefreshIcon.vue";
 import Modal from "@/Components/Modal.vue";
 import Create from "@/Pages/Admin/Users/Create.vue";
 import Edit from "@/Pages/Admin/Users/Edit.vue";
+import Show from "@/Pages/Admin/Users/Show.vue";
 
 const flash = usePage().props.flash;
 const users = usePage().props.users.data;
@@ -36,6 +37,7 @@ const routes = [
 
 const isCreateModalOpen = ref(false);
 const isEditModalOpen = ref(false);
+const isShowModalOpen = ref(false);
 const selectedUser = ref(null);
 
 const openCreateModal = () => {
@@ -47,6 +49,16 @@ const openEditModal = async (id) => {
         const response = await axios.get(route("admin.users.edit", id));
         selectedUser.value = response.data;
         isEditModalOpen.value = true;
+    } catch (error) {
+        console.error("Помилка при завантаженні користувача", error);
+    }
+};
+
+const openShowModal = async (id) => {
+    try {
+        const response = await axios.get(route("admin.users.show", id));
+        selectedUser.value = response.data;
+        isShowModalOpen.value = true;
     } catch (error) {
         console.error("Помилка при завантаженні користувача", error);
     }
@@ -105,20 +117,19 @@ const restoreUser = (id) => {
                                 <div v-else>
                                     <AvatarIcon />
                                 </div>
-                                <div v-if="row.status">
-                                    <span class="absolute right-0 bottom-0 h-2 w-2 rounded-full bg-green-400 ring ring-white"></span>
-                                </div>
-                                <div v-else>
-                                    <span class="absolute right-0 bottom-0 h-2 w-2 rounded-full bg-red-400 ring ring-white"></span>
-                                </div>
                             </div>
                             <div class="text-sm flex justify-center items-center">
-                                <div class="font-medium text-gray-700" v-html="row.name"></div>
+                                <a @click.prevent="openShowModal(row.id)" class="font-medium hover:underline cursor-pointer">
+                                    {{ row.name }}
+                                </a>
                             </div>
                         </div>
                     </template>
+
                     <template #column-email="{ row }">
-                        <div class="text-sm text-gray-600" v-html="row.email"></div>
+                        <a @click.prevent="openShowModal(row.id)" class="text-sm hover:underline cursor-pointer">
+                            {{ row.email }}
+                        </a>
                     </template>
                     <template #column-status="{ row }">
                         <div v-if="row.deleted_at">
@@ -179,7 +190,12 @@ const restoreUser = (id) => {
                 <Modal :show="isEditModalOpen" @close="isEditModalOpen = false">
                     <Edit v-if="selectedUser" :user="selectedUser" @userUpdated="refreshUsers" />
                 </Modal>
-            </div>
+
+                <Modal :show="isShowModalOpen" @close="isShowModalOpen = false" maxWidth="2xl">
+                    <Show v-if="selectedUser" :user="selectedUser" />
+                </Modal>
+
+            </div>2
         </div>
     </AdminLayout>
 </template>
