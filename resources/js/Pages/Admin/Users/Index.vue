@@ -8,6 +8,8 @@ import FlashMessage from "@/Components/FlashMessage.vue";
 import AvatarIcon from "@/Components/Icon/AvatarIcon.vue";
 import { computed, ref, watch } from "vue";
 import RefreshIcon from "@/Components/Icon/RefreshIcon.vue";
+import Modal from "@/Components/Modal.vue";
+import Create from "@/Pages/Admin/Users/Create.vue";
 
 const flash = usePage().props.flash;
 const users = usePage().props.users.data;
@@ -46,7 +48,26 @@ const restoreUser = (id) => {
         onSuccess: () => router.replace(route("admin.users.index")),
     });
 };
+// Управління відкриттям модалки
+const isModalOpen = ref(false);
 
+const openModal = () => {
+    isModalOpen.value = true;
+};
+
+const closeModal = () => {
+    isModalOpen.value = false;
+};
+
+const refreshUsers = () => {
+    router.get(route("admin.users.index"), {
+        preserveScroll: true,
+        onSuccess: (page) => {
+            users.value = page.props.users.data;
+            closeModal();
+        },
+    });
+};
 
 </script>
 
@@ -58,9 +79,9 @@ const restoreUser = (id) => {
                 <FlashMessage v-if="flash" :flash="flash" />
 
                 <div class="mb-2 flex justify-end">
-                    <Link :href="route('admin.users.create')" class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-500">
+                    <button @click="openModal" class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-500">
                         + New User
-                    </Link>
+                    </button>
                 </div>
 
                 <Grid
@@ -142,6 +163,15 @@ const restoreUser = (id) => {
                         </div>
                     </template>
                 </Grid>
+
+                <Modal
+                    maxWidth="2xl"
+                    @close="closeModal"
+                    :show="isModalOpen" >
+                    <template #default>
+                        <Create @userCreated="refreshUsers" />
+                    </template>
+                </Modal>
             </div>
         </div>
     </AdminLayout>

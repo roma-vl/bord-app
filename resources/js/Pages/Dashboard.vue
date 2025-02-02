@@ -61,8 +61,7 @@ const  mes = 'textd sad a ';
                         You're logged in!
                     </div>
 
-                    <FlashMessage v-if="flash.success" type="success" :message="flash.success" />
-                    <FlashMessage v-if="flash.error" type="error" :message="flash.error" />
+                    <FlashMessage v-if="flash" :flash="flash" />
 
 
                     <div>

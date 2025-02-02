@@ -19,12 +19,15 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'password',
         'locale',
+        'email_verified_at'
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
     ];
+
+    public const array LOCALES = ['en', 'uk'];
 
     /**
      * Get the attributes that should be cast.

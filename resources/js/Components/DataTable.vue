@@ -12,8 +12,6 @@ const props = defineProps({
 
 const emit = defineEmits(["sort"]);
 const sortField = JSON.parse(localStorage.getItem("sortField"));
-
-console.log(props.searchQuery)
 const highlightText = (text, query) => {
     if (!query || !text) return text;
     const regex = new RegExp(`(${query})`, "gi");
