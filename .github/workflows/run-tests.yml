@@ -30,14 +30,11 @@ jobs:
         run: |
           mkdir -p database
           touch database/database.sqlite
-          echo "DB_CONNECTION=sqlite" > .env.testing
-          php artisan config:clear
-
       - name: Use test environment
         run: cp .env.testing .env
 
-      - name: Run migrations
-        run: php artisan migrate --force
-
       - name: Run tests
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
         run: php artisan test
