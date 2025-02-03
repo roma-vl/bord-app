@@ -3,7 +3,8 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "precommit": "php artisan test"
     },
     "devDependencies": {
         "@inertiajs/vue3": "^2.0.0",
