@@ -30,23 +30,13 @@ jobs:
         run: |
           touch database/database.sqlite
           echo "DB_CONNECTION=sqlite" > .env.testing
-          echo "DB_DATABASE=database/database.sqlite" >> .env.testing
           php artisan config:clear
 
-
-      - name: Prepare environment
-        run: cp .env.example .env && php artisan key:generate
+      - name: Use test environment
+        run: cp .env.testing .env
 
       - name: Run migrations
         run: php artisan migrate --force
 
       - name: Run tests
         run: php artisan test
-
-      - name: Cache Composer dependencies
-        uses: actions/cache@v3
-        with:
-          path: vendor
-          key: composer-${{ hashFiles('composer.lock') }}
-          restore-keys: |
-            composer-
