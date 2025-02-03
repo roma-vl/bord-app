@@ -28,6 +28,7 @@ jobs:
 
       - name: Set up testing environment
         run: |
+          mkdir -p database
           touch database/database.sqlite
           echo "DB_CONNECTION=sqlite" > .env.testing
           php artisan config:clear
