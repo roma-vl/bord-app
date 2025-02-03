@@ -26,6 +26,14 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-suggest
 
+      - name: Set up testing environment
+        run: |
+          touch database/database.sqlite
+          echo "DB_CONNECTION=sqlite" > .env.testing
+          echo "DB_DATABASE=database/database.sqlite" >> .env.testing
+          php artisan config:clear
+
+
       - name: Prepare environment
         run: cp .env.example .env && php artisan key:generate
 
