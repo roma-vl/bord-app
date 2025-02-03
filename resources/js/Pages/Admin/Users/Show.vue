@@ -34,10 +34,10 @@ defineProps({
                         </ul>
                     </div>
                 </div>
-                <div class="flex justify-center mb-6  " v-if="user.avatar_url">
-                    <img :src="user.avatar_url" alt="Profile" class="rounded-full border-2 border-green-500 p-1 max-w-[300px]">
+                <div class="flex justify-center mb-6" v-if="user.avatar_url">
+                    <img :src="user.avatar_url" alt="Profile" class="rounded-lg border-2 border-green-500 p-1 max-w-[300px]">
                 </div>
-                <div class="flex justify-center mb-6 "  v-else>
+                <div class="flex justify-center mb-6" v-else>
                     <AvatarIcon  class="max-w-[300px]"/>
                 </div>
 

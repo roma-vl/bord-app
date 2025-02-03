@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreUserRequest;
+use App\Http\Requests\Admin\UpdateUserRequest;
 use App\Http\Resources\Admin\User\UserResource;
 use App\Http\Repositories\UserRepository;
 use App\Http\Services\SearchSortService;
@@ -15,14 +17,14 @@ use Inertia\Response;
 
 class UsersController extends Controller
 {
-    const int PER_PAGE = 2;
+    const int PER_PAGE = 5;
     const string SORT_BY_DEFAULT = 'id';
     const string SORT_ORDER_DEFAULT = 'asc';
 
     public function __construct(
-        private UserService $userService,
-        private UserRepository $userRepository,
-        private SearchSortService $searchSortService
+        private readonly UserService    $userService,
+        private readonly UserRepository $userRepository,
+        private readonly SearchSortService $searchSortService
     ) {}
 
     public function index(Request $request): Response
@@ -37,15 +39,9 @@ class UsersController extends Controller
         return Inertia::render('Admin/Users/Index', compact('users', 'sortBy', 'sortOrder'));
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(StoreUserRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8'],
-        ]);
-
-        $this->userService->createUser($validated);
+        $this->userService->createUser($request->validated());
 
         return back()->with('success', 'User created successfully!');
     }
@@ -60,17 +56,9 @@ class UsersController extends Controller
         return response()->json($user);
     }
 
-    public function update(Request $request, User $user): RedirectResponse
+    public function update(UpdateUserRequest $request, User $user): RedirectResponse
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => "required|email|unique:users,email,{$user->id}",
-            'password' => 'nullable|string|min:6',
-            'active' => 'required|boolean',
-            'locale' => 'required|in:' . implode(',', User::LOCALES),
-        ]);
-
-        $this->userService->updateUser($user, $validated);
+        $this->userService->updateUser($user, $request->validated());
 
         return redirect()->route('admin.users.index')
             ->with('success', 'User updated successfully.');

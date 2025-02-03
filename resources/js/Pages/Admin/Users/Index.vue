@@ -110,9 +110,9 @@ const restoreUser = (id) => {
                 >
                     <template #column-name="{ row }">
                         <div class="flex gap-2 font-normal">
-                            <div class="relative min-h-10 min-w-10 h-10 w-10">
+                            <div class="relative h-10 w-10">
                                 <div v-if="row.avatar_url">
-                                    <img :src="row.avatar_url" :alt="row.name" />
+                                    <img :src="row.avatar_url" :alt="row.name" class="rounded" />
                                 </div>
                                 <div v-else>
                                     <AvatarIcon />
@@ -173,10 +173,8 @@ const restoreUser = (id) => {
                                 <a v-else @click.prevent="restoreUser(row.id)" class="text-green-600 hover:text-green-900 cursor-pointer">
                                     <RefreshIcon />
                                 </a>
-                                <a v-if="!row.deleted_at" href="#">
-                                    <a @click.prevent="openEditModal(row.id)" class="text-blue-600 hover:text-blue-900 cursor-pointer">
-                                        <PencilIcon />
-                                    </a>
+                                <a v-if="!row.deleted_at" @click.prevent="openEditModal(row.id)" class="text-blue-600 hover:text-blue-900 cursor-pointer">
+                                    <PencilIcon />
                                 </a>
                             </div>
                         </div>
@@ -194,8 +192,7 @@ const restoreUser = (id) => {
                 <Modal :show="isShowModalOpen" @close="isShowModalOpen = false" maxWidth="2xl">
                     <Show v-if="selectedUser" :user="selectedUser" />
                 </Modal>
-
-            </div>2
+            </div>
         </div>
     </AdminLayout>
 </template>

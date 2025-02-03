@@ -15,8 +15,8 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'status' => $this->email_verified_at,
             'avatar_url' => $this->avatar_url,
-            'created_at' => $this->created_at->diffForHumans(),
-            'updated_at' => $this->updated_at->diffForHumans(),
+            'created_at' =>  $this->created_at ? $this->created_at->diffForHumans() : null,
+            'updated_at' => $this->updated_at ? $this->updated_at->diffForHumans() : null,
             'deleted_at' => $this->deleted_at ? $this->deleted_at->diffForHumans() : null,
         ];
     }
