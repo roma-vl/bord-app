@@ -37,4 +37,5 @@ jobs:
         env:
           DB_CONNECTION: sqlite
           DB_DATABASE: database/database.sqlite
+          APP_KEY: base64:Ei2cgbFFUg0+5DdzAKTfdMRUsSmUh4tAufP6/MKVwVA=
         run: php artisan test
