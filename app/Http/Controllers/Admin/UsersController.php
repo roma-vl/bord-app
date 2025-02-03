@@ -50,6 +50,16 @@ class UsersController extends Controller
         return back()->with('success', 'User created successfully!');
     }
 
+    public function show(User $user)
+    {
+        return response()->json($user);
+    }
+
+    public function edit(User $user)
+    {
+        return response()->json($user);
+    }
+
     public function update(Request $request, User $user): RedirectResponse
     {
         $validated = $request->validate([

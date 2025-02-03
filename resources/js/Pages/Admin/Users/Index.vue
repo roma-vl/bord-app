@@ -110,7 +110,7 @@ const restoreUser = (id) => {
                 >
                     <template #column-name="{ row }">
                         <div class="flex gap-2 font-normal">
-                            <div class="relative h-10 w-10">
+                            <div class="relative min-h-10 min-w-10 h-10 w-10">
                                 <div v-if="row.avatar_url">
                                     <img :src="row.avatar_url" :alt="row.name" />
                                 </div>
