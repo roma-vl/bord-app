@@ -59,11 +59,26 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function hasPermission($object, $operation)
     {
+        $permissions = cache()->remember("user_permissions:{$this->id}", now()->addMinutes(10), function () {
+            return $this->roles()
+                ->with('permissions')
+                ->get()
+                ->flatMap(fn($role) => $role->permissions->map(fn($p) => "{$p->object}.{$p->operation}"))
+                ->unique()
+                ->toArray();
+        });
+
+        return in_array("$object.$operation", $permissions);
+    }
+
+    public function getPermissions(): array
+    {
         return $this->roles()
-            ->whereHas('permissions', function ($query) use ($object, $operation) {
-                $query->where('object', $object)
-                    ->where('operation', $operation);
-            })->exists();
+            ->with('permissions')
+            ->get()
+            ->flatMap(fn($role) => $role->permissions->map(fn($p) => "{$p->object}.{$p->operation}"))
+            ->unique()
+            ->toArray();
     }
 
 }

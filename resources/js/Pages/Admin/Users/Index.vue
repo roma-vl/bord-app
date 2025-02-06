@@ -18,6 +18,10 @@ const flash = usePage().props.flash;
 const users = usePage().props.users.data;
 const pagination = computed(() => usePage().props.users.meta);
 
+const permissions = usePage().props.auth.permissions;
+
+console.log(permissions, "permissions");
+
 
 const headings = [
     { key: "id", value: "ID", sortable: true, disabled: true},

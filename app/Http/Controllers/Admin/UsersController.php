@@ -60,15 +60,15 @@ class UsersController extends Controller
             abort(403);
         }
 
-
-//        if (Gate::allows('edit-user')) {
-//            return response()->json($user);
-//        }
-//        return response()->json($user);
+        return response()->json($user);
     }
 
     public function update(UpdateUserRequest $request, User $user): RedirectResponse
     {
+        if (Gate::denies('edit-user')) {
+            abort(403);
+        }
+
         $this->userService->updateUser($user, $request->validated());
         Mail::to($user->email)->send(new \App\Mail\TestEmail($user));
 

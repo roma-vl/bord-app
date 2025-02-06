@@ -31,5 +31,9 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('delete-user', function (User $user) {
             return $user->hasPermission('user', 'delete');
         });
+
+        Gate::define('show-user', function (User $user) {
+            return $user->hasPermission('user', 'show');
+        });
     }
 }
