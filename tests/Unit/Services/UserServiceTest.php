@@ -2,6 +2,8 @@
 
 namespace Tests\Unit\Services;
 
+use App\Models\Role;
+use App\Models\RolePermission;
 use App\Models\User;
 use App\Http\Services\UserService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -77,4 +79,32 @@ class UserServiceTest extends TestCase
             'deleted_at' => null,
         ]);
     }
+
+    public function testUserHasCorrectPermissions(): void
+    {
+        $user = User::factory()->create();
+        $role = Role::factory()->create(['name' => 'Admin']);
+
+        $permission1 = RolePermission::factory()->create([
+            'role_id' => $role->id,
+            'object' => 'user',
+            'operation' => 'edit',
+        ]);
+
+        $permission2 = RolePermission::factory()->create([
+            'role_id' => $role->id,
+            'object' => 'user',
+            'operation' => 'delete',
+        ]);
+
+        $user->roles()->attach($role->id);
+
+        $permissions = (new UserService())->getUserPermissions($user);
+
+        $this->assertContains('user.edit', $permissions);
+        $this->assertContains('user.delete', $permissions);
+    }
+
+
+
 }

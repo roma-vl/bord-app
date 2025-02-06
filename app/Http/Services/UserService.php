@@ -3,6 +3,7 @@
 namespace App\Http\Services;
 
 use App\Models\User;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 
 class UserService
@@ -42,5 +43,13 @@ class UserService
         $user = User::withTrashed()->findOrFail($id);
         $user->restore();
         return $user;
+    }
+
+    public function getUserPermissions(User $user): Collection
+    {
+        return $user->roles()->with('permissions')->get()
+            ->flatMap(fn($role) => $role->permissions)
+            ->map(fn($permission) => "{$permission->object}.{$permission->operation}")
+            ->unique();
     }
 }

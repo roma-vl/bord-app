@@ -2,17 +2,15 @@
 
 namespace Database\Seeders;
 
+use App\Models\Role;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class RoleSeeder extends Seeder
 {
     public function run()
     {
-        DB::table('roles')->insert([
-            ['name' => 'Admin', 'is_enabled' => true],
-            ['name' => 'Editor', 'is_enabled' => true],
-            ['name' => 'User', 'is_enabled' => true],
-        ]);
+        Role::factory()->create(['name' => 'Admin']);
+        Role::factory()->create(['name' => 'Editor']);
+        Role::factory()->create(['name' => 'User']);
     }
 }
