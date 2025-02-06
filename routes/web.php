@@ -3,6 +3,7 @@
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\Admin\IndexController as AdminIndexController;
 use App\Http\Controllers\Admin\UsersController as AdminUsersController;
+use App\Http\Controllers\Admin\RolesController as AdminRolesController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -34,6 +35,7 @@ Route::middleware(['auth', 'verified'])->group(function () { //, PasswordConfirm
         Route::put('/users/{user}/restore', [AdminUsersController::class, 'restore'])->name('users.restore');
 
         Route::resource('/users', AdminUsersController::class);
+        Route::resource('roles', AdminRolesController::class)->except(['show']);
 
     });
 });

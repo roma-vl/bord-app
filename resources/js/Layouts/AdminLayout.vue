@@ -40,8 +40,8 @@ const toggleFullscreen = () => {
                                 <NavLink :href="route('admin.users.index')">
                                     Users
                                 </NavLink>
-                                <NavLink :href="route('admin.test')">
-                                    Test
+                                <NavLink :href="route('admin.roles.index')">
+                                    Roles
                                 </NavLink>
                             </div>
                         </div>
