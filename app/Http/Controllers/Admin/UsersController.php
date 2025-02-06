@@ -12,6 +12,8 @@ use App\Http\Services\UserService;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -54,7 +56,15 @@ class UsersController extends Controller
 
     public function edit(User $user)
     {
-        return response()->json($user);
+        if (Gate::denies('edit-user')) {
+            abort(403);
+        }
+
+
+//        if (Gate::allows('edit-user')) {
+//            return response()->json($user);
+//        }
+//        return response()->json($user);
     }
 
     public function update(UpdateUserRequest $request, User $user): RedirectResponse

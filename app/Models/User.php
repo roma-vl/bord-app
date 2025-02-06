@@ -51,4 +51,19 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         $this->notify(new CustomVerifyEmail());
     }
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'user_roles');
+    }
+
+    public function hasPermission($object, $operation)
+    {
+        return $this->roles()
+            ->whereHas('permissions', function ($query) use ($object, $operation) {
+                $query->where('object', $object)
+                    ->where('operation', $operation);
+            })->exists();
+    }
+
 }

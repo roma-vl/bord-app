@@ -12,6 +12,7 @@ import Modal from "@/Components/Modal.vue";
 import Create from "@/Pages/Admin/Users/Create.vue";
 import Edit from "@/Pages/Admin/Users/Edit.vue";
 import Show from "@/Pages/Admin/Users/Show.vue";
+import Forbidden from "@/Components/Forbidden.vue";
 
 const flash = usePage().props.flash;
 const users = usePage().props.users.data;
@@ -37,6 +38,8 @@ const routes = [
 
 const isCreateModalOpen = ref(false);
 const isEditModalOpen = ref(false);
+const showForbidden = ref(false);
+const errorForbidden = ref(false);
 const isShowModalOpen = ref(false);
 const selectedUser = ref(null);
 
@@ -47,10 +50,16 @@ const openCreateModal = () => {
 const openEditModal = async (id) => {
     try {
         const response = await axios.get(route("admin.users.edit", id));
-        selectedUser.value = response.data;
-        isEditModalOpen.value = true;
+        if (response.status === 200) {
+            selectedUser.value = response.data;
+            isEditModalOpen.value = true;
+        }
+
     } catch (error) {
-        console.error("Помилка при завантаженні користувача", error);
+        // console.error("Помилка при завантаженні користувача", error.response);
+        showForbidden.value = true;
+        errorForbidden.value = error.response;
+        console.log('dd')
     }
 };
 
@@ -192,6 +201,11 @@ const restoreUser = (id) => {
                 <Modal :show="isShowModalOpen" @close="isShowModalOpen = false" maxWidth="2xl">
                     <Show v-if="selectedUser" :user="selectedUser" />
                 </Modal>
+
+                <Modal :show="showForbidden" @close="showForbidden = false" maxWidth="2xl">
+                    <Forbidden :data="errorForbidden" />
+                </Modal>
+
             </div>
         </div>
     </AdminLayout>
