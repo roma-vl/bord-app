@@ -12,6 +12,7 @@ use App\Http\Services\UserService;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -59,6 +60,8 @@ class UsersController extends Controller
     public function update(UpdateUserRequest $request, User $user): RedirectResponse
     {
         $this->userService->updateUser($user, $request->validated());
+        Mail::to($user->email)->send(new \App\Mail\TestEmail($user));
+
 
         return redirect()->route('admin.users.index')
             ->with('success', 'User updated successfully.');
