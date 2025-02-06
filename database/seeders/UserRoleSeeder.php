@@ -2,19 +2,29 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
+use App\Models\Role;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class UserRoleSeeder extends Seeder
 {
     public function run()
     {
-        DB::table('user_roles')->insert([
-            ['user_id' => 1, 'role_id' => 1],
-            ['user_id' => 1, 'role_id' => 2],
-            ['user_id' => 1, 'role_id' => 3],
-            ['user_id' => 2, 'role_id' => 1],
-            ['user_id' => 2, 'role_id' => 2],
+        $admin = Role::where('name', 'Admin')->first();
+        $editor = Role::where('name', 'Editor')->first();
+        $user = Role::where('name', 'User')->first();
+
+        $user1 = User::firstOrCreate(['email' => 'admin@example.com'], [
+            'name' => 'Admin User',
+            'password' => bcrypt('password'),
         ]);
+
+        $user2 = User::firstOrCreate(['email' => 'editor@example.com'], [
+            'name' => 'Editor User',
+            'password' => bcrypt('password'),
+        ]);
+
+        $user1->roles()->sync([$admin->id, $editor->id]);
+        $user2->roles()->sync([$editor->id, $user->id]);
     }
 }

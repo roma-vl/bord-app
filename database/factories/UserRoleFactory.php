@@ -2,20 +2,17 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use App\Models\Role;
-use App\Models\Permission;
-use App\Models\RolePermission;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class RolePermissionFactory extends Factory
+class UserRoleFactory extends Factory
 {
-    protected $model = RolePermission::class;
-
     public function definition()
     {
         return [
+            'user_id' => User::factory(),
             'role_id' => Role::factory(),
-            'permission_id' => Permission::factory(),
         ];
     }
 }

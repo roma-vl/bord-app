@@ -6,21 +6,48 @@ import Modal from "@/Components/Modal.vue";
 import { ref } from "vue";
 import Create from "@/Pages/Admin/Roles/Create.vue";
 import Edit from "@/Pages/Admin/Roles/Edit.vue";
+import {useAcl} from "@/composables/useAcl.js";
+
+const { can } = useAcl();
 
 const flash = usePage().props.flash;
 const roles = usePage().props.roles;
 
 const isCreateModalOpen = ref(false);
 const isEditModalOpen = ref(false);
-const editingRole = ref(null);
+const selectedRole = ref(null);
 
-const openCreateModal = () => {
-    isCreateModalOpen.value = true;
+const openCreateModal = async () => {
+
+    try {
+        const response = await axios.get(route("admin.roles.create"));
+        if (response.status === 200) {
+            selectedRole.value = response.data;
+            isCreateModalOpen.value = true;
+        }
+
+    } catch (error) {
+        showForbidden.value = true;
+        errorForbidden.value = error.response;
+        console.log('dd')
+    }
 };
 
-const openEditModal = (role) => {
-    editingRole.value = role;
-    isEditModalOpen.value = true;
+
+const openEditModal = async (id) => {
+    console.log(id, 'id')
+    try {
+        const response = await axios.get(route("admin.roles.edit", id));
+        if (response.status === 200) {
+            selectedRole.value = response.data;
+            isEditModalOpen.value = true;
+        }
+
+    } catch (error) {1
+        showForbidden.value = true;
+        errorForbidden.value = error.response;
+        console.log('dd')
+    }
 };
 
 const deleteRole = (id) => {
@@ -38,6 +65,7 @@ const refreshRoles = () => {
         onSuccess: () => router.replace(route("admin.roles.index")),
     });
 };
+//v-if="can('user.edit')"
 
 </script>
 
@@ -49,7 +77,7 @@ const refreshRoles = () => {
                 <FlashMessage v-if="flash" :flash="flash" />
 
                 <div class="mb-2 flex justify-end">
-                    <button @click="openCreateModal" class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-500">
+                    <button  @click="openCreateModal" class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-500">
                         + New Role
                     </button>
                 </div>
@@ -69,7 +97,7 @@ const refreshRoles = () => {
                         <td class="py-2 px-4 border">{{ role.name }}</td>
                         <td class="py-2 px-4 border">{{ role.is_enabled ? '✅' : '❌' }}</td>
                         <td class="py-2 px-4 border flex gap-2">
-                            <button @click="openEditModal(role)" class="bg-yellow-500 px-3 py-1 text-white rounded">Edit</button>
+                            <button  @click="openEditModal(role.id)" class="bg-yellow-500 px-3 py-1 text-white rounded">Edit</button>
                             <button @click="deleteRole(role.id)" class="bg-red-500 px-3 py-1 text-white rounded">Delete</button>
                         </td>
                     </tr>
@@ -77,11 +105,11 @@ const refreshRoles = () => {
                 </table>
 
                 <Modal :show="isCreateModalOpen" maxWidth="2xl" @close="isCreateModalOpen = false">
-                    <Create @roleCreated="refreshRoles" />
+                    <Create :data="selectedRole" @roleCreated="refreshRoles" />
                 </Modal>
 
                 <Modal :show="isEditModalOpen" maxWidth="2xl" @close="isEditModalOpen = false">
-                    <Edit :role="editingRole" @roleUpdated="refreshRoles" />
+                    <Edit :data="selectedRole" @roleUpdated="refreshRoles" />
                 </Modal>
             </div>
         </div>
