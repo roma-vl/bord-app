@@ -11,6 +11,7 @@ use App\Http\Services\SearchSortService;
 use App\Http\Services\UserService;
 use App\Models\Role;
 use App\Models\User;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -46,17 +47,20 @@ class UsersController extends Controller
 
     public function create(): JsonResponse
     {
-        $roles = Role::all(); // Отримуємо всі ролі
+        if (Gate::denies('user.create')) {
+            abort(403);
+        }
 
         return response()->json([
-            'roles' => $roles,
+            'roles' => Role::all(),
         ]);
     }
 
-
-
     public function store(StoreUserRequest $request): RedirectResponse
     {
+        if (Gate::denies('user.create')) {
+            abort(403);
+        }
         $user = $this->userService->createUser($request->validated());
 
         if ($request->has('roles')) {
@@ -74,33 +78,26 @@ class UsersController extends Controller
 
     public function edit(User $user)
     {
-        if (Gate::denies('edit-user')) {
+        if (Gate::denies('user.edit')) {
             abort(403);
         }
 
-        $roles = Role::all();
-        $userRoles = $user->roles->pluck('id');
-
         return response()->json([
             'user' => new UserResource($user),
-            'roles' => $roles,
-            'userRoles' => $userRoles
+            'roles' => Role::all(),
+            'userRoles' => $user->roles->pluck('id')
         ]);
     }
 
 
     public function update(UpdateUserRequest $request, User $user): RedirectResponse
     {
-        if (Gate::denies('edit-user')) {
+        if (Gate::denies('user.edit')) {
             abort(403);
         }
 
-        $data = $request->validated();
+        $this->userService->updateUser($user, $request->validated());
 
-        // Оновлення даних користувача
-        $this->userService->updateUser($user, $data);
-
-        // Оновлення ролей (якщо передані)
         if ($request->has('roles')) {
             $user->roles()->sync($request->input('roles'));
         }
@@ -112,6 +109,10 @@ class UsersController extends Controller
 
     public function destroy(User $user): RedirectResponse
     {
+        if (Gate::denies('user.delete')) {
+            abort(403);
+        }
+
         $this->userService->deleteUser($user);
         return redirect()->route('admin.users.index')
             ->with('info', 'Вжух і щось сталося... 🤡 ');
@@ -119,7 +120,12 @@ class UsersController extends Controller
 
     public function restore(int $id): RedirectResponse
     {
-        $user = $this->userService->restoreUser($id);
+        if (Gate::denies('user.delete')) {
+            abort(403);
+        }
+
+        $this->userService->restoreUser($id);
+
         return redirect()->route('admin.users.index')
             ->with('success', 'Вжух і користувач відновлений! 🤡');
     }
@@ -131,8 +137,10 @@ class UsersController extends Controller
         $sortOrder = $this->getSessionValue($request, 'sort_order', self::SORT_ORDER_DEFAULT);
 
         $search = $request->input('search');
-        $usersQuery = $this->userRepository->getPaginatedUsers($perPage, $sortBy, $sortOrder);
+        $usersQuery = $this->userRepository->getUsersQuery();
         $this->searchSortService->applySearch($usersQuery, $search);
+        $usersQuery = $usersQuery->paginate($perPage);
+
 
         $users = UserResource::collection($usersQuery);
 

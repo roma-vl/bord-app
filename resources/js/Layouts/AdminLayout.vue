@@ -2,7 +2,6 @@
 import { ref } from 'vue';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
-import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import { Link } from '@inertiajs/vue3';
 import Locale from "@/Layouts/Partials/Locale.vue";
@@ -17,8 +16,11 @@ import SettingsIcon from "@/Components/Icon/SettingsIcon.vue";
 import GuideIcon from "@/Components/Icon/GuideIcon.vue";
 import HelperCenterIcon from "@/Components/Icon/HelperCenterIcon.vue";
 import LogoutIcon from "@/Components/Icon/LogoutIcon.vue";
+import {useAcl} from "@/composables/useAcl.js";
+import ArrowLeftIcon from "@/Components/Icon/ArrowLeftIcon.vue";
 
 const showingNavigationDropdown = ref(false);
+const { can } = useAcl();
 const toggleFullscreen = () => {
     if (document.fullscreenElement) {
         document.exitFullscreen();
@@ -43,15 +45,15 @@ const toggleFullscreen = () => {
 
                             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink :href="route('main')">
-                                    Public
+                                   <ArrowLeftIcon /> Повернутися на головну
                                 </NavLink>
-                                <NavLink :href="route('admin.users.index')">
+                                <NavLink v-if="can('user.view')" :href="route('admin.users.index')">
                                     Users
                                 </NavLink>
-                                <NavLink :href="route('admin.roles.index')">
+                                <NavLink v-if="can('role')" :href="route('admin.roles.index')">
                                     Roles
                                 </NavLink>
-                                <NavLink :href="route('admin.permissions.index')">
+                                <NavLink v-if="can('permission')" :href="route('admin.permissions.index')">
                                     Permissions
                                 </NavLink>
                             </div>
