@@ -18,6 +18,7 @@ class UserResource extends JsonResource
             'created_at' =>  $this->created_at ? $this->created_at->diffForHumans() : null,
             'updated_at' => $this->updated_at ? $this->updated_at->diffForHumans() : null,
             'deleted_at' => $this->deleted_at ? $this->deleted_at->diffForHumans() : null,
+            'roles' => $this->roles->pluck('name'),
         ];
     }
 }

@@ -166,14 +166,12 @@ const restoreUser = (id) => {
                     </template>
                     <template #column-tags="{ row }">
                         <div class="flex gap-2">
-                            <span class="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-1 text-xs font-semibold text-blue-600">
-                              Design
-                            </span>
-                            <span class="inline-flex items-center gap-1 rounded-full bg-indigo-50 px-2 py-1 text-xs font-semibold text-indigo-600">
-                              Product
-                            </span>
-                            <span class="inline-flex items-center gap-1 rounded-full bg-violet-50 px-2 py-1 text-xs font-semibold text-violet-600">
-                              Develop
+                            <span
+                                v-for="(role, index) in row.roles"
+                                :key="index"
+                                class="inline-flex items-center gap-1 rounded-full bg-violet-50 px-2 py-1 text-xs font-semibold text-violet-600"
+                            >
+                                {{ role }}
                             </span>
                         </div>
                     </template>

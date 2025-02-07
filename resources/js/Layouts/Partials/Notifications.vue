@@ -1,15 +1,27 @@
 <script setup>
 
 import Dropdown from "@/Components/Dropdown.vue";
+import NotificationIcon from "@/Components/Icon/NotificationIcon.vue";
 </script>
 
 <template>
     <Dropdown align="right" width="72">
         <template #trigger>
-            <div class="flex items-center justify-center rounded-lg p-2 font-sans text-xs cursor-pointer font-bold uppercase text-pink-500 transition-all hover:bg-pink-500/10 active:bg-pink-500/30 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0M3.124 7.5A8.969 8.969 0 0 1 5.292 3m13.416 0a8.969 8.969 0 0 1 2.168 4.5" />
-                </svg>
+            <div class="flex flex-col items-center">
+                <div class="relative flex justify-center">
+                    <div>
+                        <button class="inline-grid place-items-center align-middle select-none font-sans font-medium text-center
+                         transition-all duration-300 ease-in disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none
+                         text-sm min-w-[32px] min-h-[32px] rounded-md hover:shadow-sm
+                         text-stone-800 hover:bg-stone-200">
+                            <NotificationIcon />
+                        </button>
+                    </div>
+                    <span class="absolute -top-2 -right-2 px-1.5 py-0.5 text-xs border leading-none grid place-items-center
+                     rounded-full min-w-[18px] min-h-[18px] bg-red-500 text-stone-50 border-white">
+                      5
+                    </span>
+                </div>
             </div>
         </template>
 

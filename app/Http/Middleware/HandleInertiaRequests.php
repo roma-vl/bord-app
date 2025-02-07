@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -35,7 +34,7 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'auth' => [
                 'user' => $request->user(),
-                'permissions' => $this->getUserPermissions($request->user()),
+//                'permissions' => $this->getUserPermissions($request->user()),
             ],
             'flash' => [
                 'success' => fn() => $request->session()->get('success'),

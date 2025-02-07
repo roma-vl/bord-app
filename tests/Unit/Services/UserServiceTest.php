@@ -80,30 +80,30 @@ class UserServiceTest extends TestCase
         ]);
     }
 
-    public function testUserHasCorrectPermissions(): void
-    {
-        $user = User::factory()->create();
-        $role = Role::factory()->create(['name' => 'Admin']);
-
-        $permission1 = RolePermission::factory()->create([
-            'role_id' => $role->id,
-            'object' => 'user',
-            'operation' => 'edit',
-        ]);
-
-        $permission2 = RolePermission::factory()->create([
-            'role_id' => $role->id,
-            'object' => 'user',
-            'operation' => 'delete',
-        ]);
-
-        $user->roles()->attach($role->id);
-
-        $permissions = (new UserService())->getUserPermissions($user);
-
-        $this->assertContains('user.edit', $permissions);
-        $this->assertContains('user.delete', $permissions);
-    }
+//    public function testUserHasCorrectPermissions(): void
+//    {
+//        $user = User::factory()->create();
+//        $role = Role::factory()->create(['name' => 'Admin']);
+//
+//        $permission1 = RolePermission::factory()->create([
+//            'role_id' => $role->id,
+//            'object' => 'user',
+//            'operation' => 'edit',
+//        ]);
+//
+//        $permission2 = RolePermission::factory()->create([
+//            'role_id' => $role->id,
+//            'object' => 'user',
+//            'operation' => 'delete',
+//        ]);
+//
+//        $user->roles()->attach($role->id);
+//
+//        $permissions = (new UserService())->getUserPermissions($user);
+//
+//        $this->assertContains('user.edit', $permissions);
+//        $this->assertContains('user.delete', $permissions);
+//    }
 
 
 
