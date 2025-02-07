@@ -20,16 +20,12 @@ const pagination = computed(() => usePage().props.users.meta);
 
 const permissions = usePage().props.auth.permissions;
 
-console.log(permissions, "permissions");
-
-
 const headings = [
     { key: "id", value: "ID", sortable: true, disabled: true},
     { key: "name", value: "Name", sortable: true, highlight: true },
     { key: "email", value: "Email", sortable: true, highlight: true },
     { key: "status", value: "Status" },
     { key: "role", value: "Role" },
-    { key: "tags", value: "Tags" },
     { key: "created_at", value: "Created" },
     { key: "updated_at", value: "Updated" },
     { key: "actions", value: "Actions", disabled: true },
@@ -47,8 +43,20 @@ const errorForbidden = ref(false);
 const isShowModalOpen = ref(false);
 const selectedUser = ref(null);
 
-const openCreateModal = () => {
+const openCreateModal = async () => {
     isCreateModalOpen.value = true;
+    try {
+        const response = await axios.get(route("admin.users.create"));
+        if (response.status === 200) {
+            selectedUser.value = response.data;
+            isCreateModalOpen.value = true;
+        }
+
+    } catch (error) {
+        showForbidden.value = true;
+        errorForbidden.value = error.response;
+        console.log('dd')
+    }
 };
 
 const openEditModal = async (id) => {
@@ -60,7 +68,6 @@ const openEditModal = async (id) => {
         }
 
     } catch (error) {
-        // console.error("Помилка при завантаженні користувача", error.response);
         showForbidden.value = true;
         errorForbidden.value = error.response;
         console.log('dd')
@@ -162,9 +169,6 @@ const restoreUser = (id) => {
                         </div>
                     </template>
                     <template #column-role="{ row }">
-                        Product Designer
-                    </template>
-                    <template #column-tags="{ row }">
                         <div class="flex gap-2">
                             <span
                                 v-for="(role, index) in row.roles"
@@ -193,11 +197,15 @@ const restoreUser = (id) => {
                 </Grid>
 
                 <Modal :show="isCreateModalOpen" maxWidth="2xl" @close="isCreateModalOpen = false">
-                    <Create @userCreated="refreshUsers" />
+                    <Create v-if="selectedUser"  @userCreated="refreshUsers" :roles="selectedUser.roles" />
                 </Modal>
 
                 <Modal :show="isEditModalOpen" @close="isEditModalOpen = false">
-                    <Edit v-if="selectedUser" :user="selectedUser" @userUpdated="refreshUsers" />
+                    <Edit v-if="selectedUser"
+                          :user="selectedUser.user"
+                          :roles="selectedUser.roles"
+                          :user-roles="selectedUser.userRoles"
+                          @userUpdated="refreshUsers" />
                 </Modal>
 
                 <Modal :show="isShowModalOpen" @close="isShowModalOpen = false" maxWidth="2xl">

@@ -29,11 +29,6 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public const array LOCALES = ['en', 'uk'];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -59,14 +54,19 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function hasPermission($permissionKey)
     {
-        return $this->roles()->whereHas('permissions', function ($query) use ($permissionKey) {
+        return $this->roles()
+            ->whereHas('permissions', function ($query) use ($permissionKey) {
             $query->where('key', $permissionKey);
         })->exists();
     }
-
     public function getPermissions(): array
     {
-        return $this->role->permissions->pluck('id')->toArray();
+        return $this->roles()
+            ->with('permissions:key,id')
+            ->get()
+            ->flatMap(fn($role) => $role->permissions->pluck('key'))
+            ->unique()
+            ->values()
+            ->toArray();
     }
-
 }

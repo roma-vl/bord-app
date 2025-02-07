@@ -4,11 +4,15 @@ import { defineEmits } from "vue";
 import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import TextInput from "@/Components/TextInput.vue";
-
+const props = defineProps({
+    roles: Array, // Передані ролі з контролера
+});
+console.log(props.roles, 'props.roles')
 const form = useForm({
     name: "",
     email: "",
     password: "",
+    roles: [], // Передаємо передані ролі
 });
 
 const emit = defineEmits(["userCreated"]);
@@ -63,6 +67,15 @@ const submit = () => {
                     placeholder="Enter password"
                 />
                 <InputError class="mt-2" :message="form.errors.password"/>
+            </div>
+
+            <div>
+                <label for="roles">Roles:</label>
+                <select v-model="form.roles" multiple>
+                    <option v-for="role in props.roles" :key="role.id" :value="role.id">
+                        {{ role.name }}
+                    </option>
+                </select>
             </div>
 
             <button type="submit" class="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-200">

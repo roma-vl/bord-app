@@ -9,7 +9,9 @@ use App\Http\Resources\Admin\User\UserResource;
 use App\Http\Repositories\UserRepository;
 use App\Http\Services\SearchSortService;
 use App\Http\Services\UserService;
+use App\Models\Role;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -42,12 +44,28 @@ class UsersController extends Controller
         return Inertia::render('Admin/Users/Index', compact('users', 'sortBy', 'sortOrder'));
     }
 
+    public function create(): JsonResponse
+    {
+        $roles = Role::all(); // Отримуємо всі ролі
+
+        return response()->json([
+            'roles' => $roles,
+        ]);
+    }
+
+
+
     public function store(StoreUserRequest $request): RedirectResponse
     {
-        $this->userService->createUser($request->validated());
+        $user = $this->userService->createUser($request->validated());
+
+        if ($request->has('roles')) {
+            $user->roles()->sync($request->input('roles'));
+        }
 
         return back()->with('success', 'User created successfully!');
     }
+
 
     public function show(User $user)
     {
@@ -60,8 +78,16 @@ class UsersController extends Controller
             abort(403);
         }
 
-        return response()->json($user);
+        $roles = Role::all();
+        $userRoles = $user->roles->pluck('id');
+
+        return response()->json([
+            'user' => new UserResource($user),
+            'roles' => $roles,
+            'userRoles' => $userRoles
+        ]);
     }
+
 
     public function update(UpdateUserRequest $request, User $user): RedirectResponse
     {
@@ -69,13 +95,20 @@ class UsersController extends Controller
             abort(403);
         }
 
-        $this->userService->updateUser($user, $request->validated());
-        Mail::to($user->email)->send(new \App\Mail\TestEmail($user));
+        $data = $request->validated();
 
+        // Оновлення даних користувача
+        $this->userService->updateUser($user, $data);
+
+        // Оновлення ролей (якщо передані)
+        if ($request->has('roles')) {
+            $user->roles()->sync($request->input('roles'));
+        }
 
         return redirect()->route('admin.users.index')
             ->with('success', 'User updated successfully.');
     }
+
 
     public function destroy(User $user): RedirectResponse
     {

@@ -23,6 +23,8 @@ class UpdateUserRequest extends FormRequest
             'password' => ['nullable', 'string', 'min:6'],
             'active' => ['required', 'boolean'],
             'locale' => ['required', Rule::in(User::LOCALES)],
+            'roles' => 'array', // Додаємо валідацію для ролей
+            'roles.*' => 'exists:roles,id', // Переконуємося, що передані ролі існують
         ];
     }
 }

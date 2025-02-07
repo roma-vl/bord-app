@@ -17,6 +17,8 @@ class StoreUserRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8'],
+            'roles' => 'array', // Додаємо валідацію для ролей
+            'roles.*' => 'exists:roles,id', // Переконуємося, що передані ролі існують
         ];
     }
 }

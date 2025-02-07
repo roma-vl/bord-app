@@ -10,18 +10,25 @@ class UserService
 {
     public function createUser(array $data): User
     {
-        return User::create([
+        $user = User::create([
             'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
+            'email' => strtolower($data['email']),
+            'password' => bcrypt($data['password']),
             'email_verified_at' => now(),
         ]);
+
+        if (!empty($data['roles'])) {
+            $user->roles()->sync($data['roles']);
+        }
+
+        return $user;
     }
+
 
     public function updateUser(User $user, array $data): User
     {
         $user->name = $data['name'];
-        $user->email = $data['email'];
+        $user->email = strtolower($data['email']);
         if (!empty($data['password'])) {
             $user->password = Hash::make($data['password']);
         }
