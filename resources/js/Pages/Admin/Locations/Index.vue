@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import {computed, ref} from "vue";
 import {Head, router, useForm, usePage} from "@inertiajs/vue3";
 import axios from "axios";
 import FlashMessage from "@/Components/FlashMessage.vue";
@@ -30,16 +30,12 @@ const openModal = async (parent, located, locatedId = null) => {
             const response = await axios.get(route('admin.locations.show', { type: parent, id: locatedId }));
             modalData.value = response.data;
             form.name = response.data.name;
-            if( parent === 'country' ) {
-                form.country_id = response.data.id;
-            } else if (parent === 'region') {
-                form.region_id = response.data.id;
-                form.country_id = response.data.country;
-            } else if (parent === 'area') {
-                form.area_id = response.data.id;
-                form.region_id = response.data.region;
-                form.country_id = response.data.country;
-            }
+            const locationData = {
+                country: () => { form.country_id = response.data.id; },
+                region: () => { form.region_id = response.data.id; form.country_id = response.data.country; },
+                area: () => { form.area_id = response.data.id; form.region_id = response.data.region; form.country_id = response.data.country; },
+            };
+            locationData[parent]?.();
         } catch (error) {
             console.error("Помилка завантаження даних:", error);
         }
@@ -49,6 +45,7 @@ const openModal = async (parent, located, locatedId = null) => {
 
     modalOpen.value = true;
 };
+
 const form = useForm({
     type: "",
     name: "",
@@ -130,17 +127,18 @@ const deleteLocation = (id, type) => {
     });
 };
 
-const modalInfo = () => {
+const modalInfo = computed(() => {
     if (modalData.value?.area) {
-        return "Додати село в район" + modalData.value.area;
+        return `Додати село в район ${modalData.value.area}`;
     } else if (modalData.value?.region) {
-        return "Додати район в область" + modalData.value.region;
+        return `Додати район в область ${modalData.value.region}`;
     } else if (modalData.value?.country) {
-        return "Додати область в країну" + modalData.value.country;
+        return `Додати область в країну ${modalData.value.country}`;
     } else {
         return "Додати країну";
     }
-}
+});
+
 
 loadCountries();
 </script>
@@ -170,7 +168,7 @@ loadCountries();
                                     {{ country.country }}
                                 </span>
                             <div class="flex items-right">
-                                <button @click="openModal('country', 'region', country.id)"
+                                <button @click.stop="openModal('country', 'region', country.id)"
                                         class="text-green-500 pr-2"> Додати область</button>
                                 <button v-if="country.id !== 1"
                                         @click.stop="deleteLocation(country.id, 'country')" class="text-red-500 hover:underline">
@@ -187,7 +185,7 @@ loadCountries();
                                         @click="loadAreas(region.id)"
                                     >
                                         <span class="ml-3"> {{ region.region }}</span>
-                                        <button @click="openModal('region','area', region.id)" class="text-green-500">Додати район</button>
+                                        <button @click.stop="openModal('region','area', region.id)" class="text-green-500">Додати район</button>
                                         <button @click.stop="deleteLocation(region.id, 'region')" class="text-red-500 hover:underline">
                                             Видалити
                                         </button>
@@ -201,7 +199,7 @@ loadCountries();
                                                 @click="loadVillages(area.id)"
                                             >
                                                 <span class="ml-3"> {{ area.area }}</span>
-                                                <button @click="openModal('area', 'village', area.id)" class="text-green-500">Додати село</button>
+                                                <button @click.stop="openModal('area', 'village', area.id)" class="text-green-500">Додати село</button>
                                                 <button @click.stop="deleteLocation(area.id, 'area')" class="text-red-500 hover:underline">
                                                     Видалити
                                                 </button>
@@ -228,7 +226,7 @@ loadCountries();
                     <!-- Модальне вікно -->
                     <div v-if="modalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
                         <div class="bg-white p-6 rounded shadow-lg">
-                            <h2 class="text-xl font-bold mb-4">{{ modalInfo() }}</h2>
+                            <h2 class="text-xl font-bold mb-4">{{ modalInfo }}</h2>
                             <input v-model="form.name" placeholder="Назва" class="border p-2 w-full mb-4" />
                             <div class="flex gap-2">
                                 <button @click="submitForm" class="bg-blue-500 text-white px-4 py-2 rounded">Зберегти</button>
