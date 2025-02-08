@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\LocatedAreaController;
 use App\Http\Controllers\Admin\LocatedCountryController;
 use App\Http\Controllers\Admin\LocatedRegionController;
 use App\Http\Controllers\Admin\LocatedVillageController;
+use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\Admin\IndexController as AdminIndexController;
 use App\Http\Controllers\Admin\UsersController as AdminUsersController;
@@ -48,8 +49,19 @@ Route::middleware(['auth', 'verified'])->group(function () { //, PasswordConfirm
             Route::resource('/areas', LocatedAreaController::class);
             Route::resource('/villages', LocatedVillageController::class);
         });
-
     });
+
+    Route::get('/admin/locations', [LocationController::class, 'index'])->name('admin.locations.index');
+
+    Route::get('/admin/locations/countries', [LocationController::class, 'getCountries'])->name('admin.locations.countries');
+    Route::get('/admin/locations/regions/{countryId}', [LocationController::class, 'getRegions'])->name('admin.locations.regions');
+    Route::get('/admin/locations/areas/{regionId}', [LocationController::class, 'getAreas'])->name('admin.locations.areas');
+    Route::get('/admin/locations/villages/{areaId}', [LocationController::class, 'getVillages'])->name('admin.locations.villages');
+
+    Route::post('/admin/locations/store', [LocationController::class, 'store'])->name('admin.locations.store');
+    Route::delete('/admin/locations/destroy/{id}', [LocationController::class, 'destroy'])->name('admin.locations.destroy');
+    Route::get('/admin/locations/{type}/{id}', [LocationController::class, 'show'])->name('admin.locations.show');
+
 });
 
 require __DIR__.'/auth.php';

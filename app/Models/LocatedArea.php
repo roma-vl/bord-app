@@ -14,9 +14,6 @@ class LocatedArea extends Model
 
     protected $fillable = ['country', 'region', 'area', 'slug'];
 
-    /**
-     * Генерує slug перед збереженням, якщо його немає.
-     */
     protected static function boot()
     {
         parent::boot();
@@ -35,20 +32,20 @@ class LocatedArea extends Model
         });
     }
 
-    /**
-     * Зв'язок з країною.
-     */
     public function country()
     {
         return $this->belongsTo(LocatedCountry::class, 'country');
     }
 
-    /**
-     * Зв'язок з регіоном.
-     */
     public function region()
     {
         return $this->belongsTo(LocatedRegion::class, 'region');
     }
+
+    public function villages()
+    {
+        return $this->hasMany(LocatedVillage::class, 'area');
+    }
+
 }
 

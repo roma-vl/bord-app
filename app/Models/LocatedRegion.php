@@ -16,4 +16,10 @@ class LocatedRegion extends Model
     {
         return $this->belongsTo(LocatedCountry::class, 'country');
     }
+
+    public function areas()
+    {
+        return $this->hasMany(LocatedArea::class, 'region');
+    }
+
 }
