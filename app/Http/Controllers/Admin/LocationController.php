@@ -5,6 +5,8 @@ use App\Models\LocatedCountry;
 use App\Models\LocatedRegion;
 use App\Models\LocatedArea;
 use App\Models\LocatedVillage;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -44,49 +46,14 @@ class LocationController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'type' => 'required|in:country,region,area,village',
-            'name' => 'required|string|max:150',
-            'country' => 'nullable|integer',
-            'region' => 'nullable|integer',
-            'area' => 'nullable|integer',
-            'village' => 'nullable|integer',
-        ]);
+        $this->validateLocation($request);
 
-        switch ($request->type) {
-            case 'country':
-                LocatedCountry::create([
-                    'country' => $request->name,
-                    'slug' => \Str::slug($request->name)]);
-                break;
-            case 'region':
-                LocatedRegion::create([
-                    'country' => $request->country_id,
-                    'region' => $request->name,
-                    'slug' => \Str::slug($request->name)]);
-                break;
-            case 'area':
-                LocatedArea::create([
-                    'country' => $request->country_id,
-                    'region' => $request->region_id,
-                    'area' => $request->name,
-                    'slug' => \Str::slug($request->name)
-                ]);
-                break;
-            case 'village':
-                LocatedVillage::create([
-                    'country' => $request->country_id,
-                    'region' => $request->region_id,
-                    'area' => $request->area_id,
-                    'village' => $request->name,
-                    'slug' => \Str::slug($request->name)]);
-                break;
-        }
+        $this->createLocation($request);
 
         return redirect()->back();
     }
 
-    public function show($type, $id)
+    public function show($type, $id): JsonResponse
     {
         $model = match ($type) {
             'country' => LocatedCountry::class,
@@ -104,23 +71,89 @@ class LocationController extends Controller
         return response()->json($data);
     }
 
-    public function destroy($id, Request $request)
+    protected function deleteLocation($id, $type)
     {
+        $model = $this->getModel($type);
+        if (!$model) {
+            return response()->json(['message' => 'Тип локації не знайдено'], 400);
+        }
+
+        $item = $model::findOrFail($id);
+        $item->delete();
+    }
+
+    public function destroy($id, Request $request): RedirectResponse
+    {
+        $this->deleteLocation($id, $request->type);
+
+        return redirect()->back();
+    }
+
+    protected function createLocation(Request $request)
+    {
+        $model = $this->getModel($request->type);
+        if (!$model) {
+            return response()->json(['message' => 'Тип локації не знайдено'], 400);
+        }
+
+        $data = [
+            'slug' => \Str::slug($request->name),
+        ];
+
         switch ($request->type) {
             case 'country':
-                LocatedCountry::findOrFail($id)->delete();
+                $data['country'] = $request->name;
                 break;
             case 'region':
-                LocatedRegion::findOrFail($id)->delete();
+                $data['country'] = $request->country_id;
+                $data['region'] = $request->name;
                 break;
             case 'area':
-                LocatedArea::findOrFail($id)->delete();
+                $data['country'] = $request->country_id;
+                $data['region'] = $request->region_id;
+                $data['area'] = $request->name;
                 break;
             case 'village':
-                LocatedVillage::findOrFail($id)->delete();
+                $data['country'] = $request->country_id;
+                $data['region'] = $request->region_id;
+                $data['area'] = $request->area_id;
+                $data['village'] = $request->name;
                 break;
         }
 
-        return redirect()->back();
+        return $model::create($data);
+    }
+
+    protected function validateLocation(Request $request): void
+    {
+        $rules = [
+            'type' => 'required|in:country,region,area,village',
+            'name' => 'required|string|max:150',
+        ];
+
+        if ($request->type === 'region') {
+            $rules['country_id'] = 'required|integer';
+        } elseif ($request->type === 'area') {
+            $rules['country_id'] = 'required|integer';
+            $rules['region_id'] = 'required|integer';
+        } elseif ($request->type === 'village') {
+            $rules['country_id'] = 'required|integer';
+            $rules['region_id'] = 'required|integer';
+            $rules['area_id'] = 'required|integer';
+        }
+
+        $request->validate($rules);
+    }
+
+
+    protected function getModel($type): ?string
+    {
+        return match ($type) {
+            'country' => LocatedCountry::class,
+            'region' => LocatedRegion::class,
+            'area' => LocatedArea::class,
+            'village' => LocatedVillage::class,
+            default => null,
+        };
     }
 }
