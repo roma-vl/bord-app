@@ -82,7 +82,7 @@ onMounted(() => {
             />
         </div>
         <div class="relative mr-2">
-            <button @click.prevent="toggleDropdown" class="rounded-lg bg-white px-4 py-2 flex items-center border border-gray-300 hover:bg-gray-100">
+            <button @click.prevent="toggleDropdown" class="rounded-lg bg-white px-4 py-2 flex items-center shadow border-gray-300 hover:bg-gray-100">
                 <ViewColumnsIcon />
                 <ArrowDownIcon />
             </button>

@@ -122,10 +122,13 @@ const loadVillages = async (areaId) => {
 };
 
 const deleteLocation = (id, type) => {
-    router.delete(route("admin.locations.destroy", id), {
-        data: { type },
-    });
+    if (confirm(`Ви впевнені, що хочете видалити ${type}?`)) {
+        router.delete(route("admin.locations.destroy", id), {
+            data: { type },
+        });
+    }
 };
+
 
 const modalInfo = computed(() => {
     if (modalData.value?.area) {
@@ -185,10 +188,12 @@ loadCountries();
                                         @click="loadAreas(region.id)"
                                     >
                                         <span class="ml-3"> {{ region.region }}</span>
-                                        <button @click.stop="openModal('region','area', region.id)" class="text-green-500">Додати район</button>
+                                        <div class="flex items-right">
+                                        <button @click.stop="openModal('region','area', region.id)" class="text-green-500 pr-2">Додати район</button>
                                         <button @click.stop="deleteLocation(region.id, 'region')" class="text-red-500 hover:underline">
                                             Видалити
                                         </button>
+                                            </div>
                                     </div>
 
                                     <!-- Райони -->
@@ -199,10 +204,12 @@ loadCountries();
                                                 @click="loadVillages(area.id)"
                                             >
                                                 <span class="ml-3"> {{ area.area }}</span>
-                                                <button @click.stop="openModal('area', 'village', area.id)" class="text-green-500">Додати село</button>
+                                                <div class="flex items-right">
+                                                <button @click.stop="openModal('area', 'village', area.id)" class="text-green-500 pr-2">Додати село</button>
                                                 <button @click.stop="deleteLocation(area.id, 'area')" class="text-red-500 hover:underline">
                                                     Видалити
                                                 </button>
+                                                    </div>
                                             </div>
 
                                             <!-- Села -->

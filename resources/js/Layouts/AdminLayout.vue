@@ -56,6 +56,9 @@ const toggleFullscreen = () => {
                                 <NavLink v-if="can('permission')" :href="route('admin.permissions.index')">
                                     Permissions
                                 </NavLink>
+                                <NavLink v-if="can('location')" :href="route('admin.locations.index')">
+                                    Location
+                                </NavLink>
                             </div>
                         </div>
 
