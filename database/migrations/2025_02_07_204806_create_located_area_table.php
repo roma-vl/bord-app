@@ -12,7 +12,7 @@ return new class extends Migration {
             $table->foreignId('country')->constrained('located_countrys')->onDelete('cascade');
             $table->foreignId('region')->constrained('located_region')->onDelete('cascade');
             $table->string('area', 150);
-            $table->string('slug', 150)->unique()->nullable(); // Поле для URL
+            $table->string('slug', 150)->unique()->nullable();
             $table->timestamps();
         });
     }

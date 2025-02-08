@@ -7,9 +7,6 @@ use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
         $this->call([
@@ -19,7 +16,6 @@ class DatabaseSeeder extends Seeder
             UserRoleSeeder::class,
         ]);
 
-        // Генеруємо 100 випадкових користувачів
         User::factory(10)->create();
 
         // Додаємо тестового користувача (гарантовано активного)

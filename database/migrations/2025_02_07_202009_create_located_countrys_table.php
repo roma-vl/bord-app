@@ -9,7 +9,7 @@ return new class extends Migration {
         Schema::create('located_countrys', function (Blueprint $table) {
             $table->id();
             $table->string('country', 60)->unique();
-            $table->string('slug', 60)->unique(); // Поле для URL
+            $table->string('slug', 60)->unique();
             $table->timestamps();
         });
 

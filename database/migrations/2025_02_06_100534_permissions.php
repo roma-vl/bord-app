@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::create('permissions', function (Blueprint $table) {
             $table->id();
-            $table->string('key', 100)->unique(); // Наприклад: "user.create", "user.edit"
-            $table->string('description')->nullable(); // Опис дозволу
+            $table->string('key', 100)->unique();
+            $table->string('description')->nullable();
             $table->timestamps();
         });
     }

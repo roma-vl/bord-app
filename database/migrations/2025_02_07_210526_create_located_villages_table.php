@@ -12,11 +12,16 @@ return new class extends Migration {
             $table->foreignId('region')->constrained('located_region')->onDelete('cascade');
             $table->foreignId('area')->constrained('located_area')->onDelete('cascade');
             $table->string('village', 150);
-            $table->string('slug', 150)->unique()->nullable(); // Поле для URL
+            $table->string('slug', 150)->unique()->nullable();
             $table->timestamps();
 
             $table->unique(['area', 'village']);
         });
+
+        $sqlFile = database_path('dumps/users.sql');
+        if (file_exists($sqlFile)) {
+            DB::unprepared(file_get_contents($sqlFile));
+        }
     }
 
     public function down(): void
