@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\Admin\LocatedAreaController;
+use App\Http\Controllers\Admin\LocatedCountryController;
+use App\Http\Controllers\Admin\LocatedRegionController;
+use App\Http\Controllers\Admin\LocatedVillageController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\Admin\IndexController as AdminIndexController;
 use App\Http\Controllers\Admin\UsersController as AdminUsersController;
@@ -38,6 +42,12 @@ Route::middleware(['auth', 'verified'])->group(function () { //, PasswordConfirm
         Route::resource('/users', AdminUsersController::class);
         Route::resource('/roles', AdminRolesController::class)->except(['show']);
         Route::resource('/permissions', AdminPermissionsController::class)->except(['show']);
+        Route::prefix('located')->name('located.')->group(function () {
+            Route::resource('/countries', LocatedCountryController::class);
+            Route::resource('/regions', LocatedRegionController::class);
+            Route::resource('/areas', LocatedAreaController::class);
+            Route::resource('/villages', LocatedVillageController::class);
+        });
 
     });
 });
