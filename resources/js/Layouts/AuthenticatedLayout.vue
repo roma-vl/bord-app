@@ -19,29 +19,20 @@ const messages = () => {
 
 <template>
     <div>
-        <div class="min-h-screen bg-gray-100">
-            <nav
-                class="border-b border-gray-100 bg-white"
-            >
-                <!-- Primary Navigation Menu -->
+        <div class="min-h-screen bg-gray-100" style='background: url("/storage/images/background/1.jpg") center top no-repeat;'>
+                <nav class="border-b border-gray-100 bg-white/80 backdrop-blur-md">
                 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div class="flex h-16 justify-between">
                         <div class="flex">
-                            <!-- Logo -->
                             <div class="flex shrink-0 items-center">
                                 <Link :href="route('main')">
-                                    <ApplicationLogo
-                                        class="block h-9 w-auto fill-current text-gray-800"
-                                    />
+                                    <ApplicationLogo class="block fill-current  w-24" />
                                 </Link>
                             </div>
                         </div>
 
-
                         <div class="hidden sm:ms-6 sm:flex sm:items-center">
-
-                           <Locale/>
-
+                            <Locale/>
                             <div class="relative ms-3">
                                 <Dropdown align="right" width="72">
                                     <template #trigger>
@@ -114,7 +105,7 @@ const messages = () => {
                                         <span class="inline-flex rounded-md">
                                             <button
                                                 type="button"
-                                                class="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none"
+                                                class="inline-flex items-center rounded-md border border-transparent  px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none"
                                             >
                                                 {{ $page.props.auth?.user?.name ?? 'Ваш профіль' }}
 
@@ -206,28 +197,12 @@ const messages = () => {
                         block: showingNavigationDropdown,
                         hidden: !showingNavigationDropdown,
                     }"
-                    class="sm:hidden"
-                >
-<!--                    <div class="space-y-1 pb-3 pt-2">-->
-<!--                        <ResponsiveNavLink-->
-<!--                            :href="route('dashboard')"-->
-<!--                            :active="route().current('dashboard')"-->
-<!--                        >-->
-<!--                            Dashboard-->
-<!--                        </ResponsiveNavLink>-->
-<!--                    </div>-->
+                    class="sm:hidden">
 
-                    <!-- Responsive Settings Options -->
-                    <div
-                        class="border-t border-gray-200 pb-1 pt-4"
-                        v-if="$page.props.auth"
-                    >
+                    <div class="border-t border-gray-200 pb-1 pt-4">
                         <div class="px-4">
-                            <div
-                                class="text-base font-medium text-gray-800"
-                            >
+                            <div class="text-base font-medium text-gray-800">
                                 {{ $page.props.auth?.user?.name ?? 'Ваш профіль' }}
-
                             </div>
                             <div class="text-sm font-medium text-gray-500">
                                 {{ $page.props.auth?.user?.email ?? '' }}

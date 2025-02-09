@@ -69,7 +69,7 @@ onBeforeUnmount(() => {
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg p-3">
                     <div class="container mx-auto p-4">
                         <!-- Пошук з автопідказками -->
-                        <div class="relative flex items-center gap-4 bg-gray-100 p-4 rounded-lg shadow-md search-container">
+                        <div class="flex items-center gap-4 bg-gray-100 p-4 rounded-lg shadow-md search-container">
                             <div class="relative w-full" >
                                 <input
                                     v-model="searchQuery"
@@ -173,6 +173,21 @@ onBeforeUnmount(() => {
                         <!-- NEW-оголошення -->
                         <section class="p-6 rounded mt-6">
                             <h2 class="text-xl font-semibold mb-4">Останні оголошення</h2>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <div v-for="listing in news" :key="listing.id" class="border p-4 rounded shadow">
+                                    <img :src="listing.image" alt="Фото" class="w-full h-40 object-cover rounded" />
+                                    <h3 class="mt-2 text-lg font-semibold">{{ listing.title }}</h3>
+                                    <p class="text-green-600 font-bold">{{ listing.price }}</p>
+                                    <Link :href="`/listings/${listing.id}`" class="text-blue-500 hover:underline">
+                                        Детальніше
+                                    </Link>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- NEW-оголошення -->
+                        <section class="p-6 rounded mt-6">
+                            <h2 class="text-xl font-semibold mb-4">Ви переглядали</h2>
                             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                                 <div v-for="listing in news" :key="listing.id" class="border p-4 rounded shadow">
                                     <img :src="listing.image" alt="Фото" class="w-full h-40 object-cover rounded" />
