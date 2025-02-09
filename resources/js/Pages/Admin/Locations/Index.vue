@@ -159,7 +159,7 @@ loadCountries();
                         + Додати Країну
                     </button>
                 </div>
-                <div class="min-w-full bg-white rounded-lg shadow p-6">
+                <div class="min-w-full bg-white rounded-lg shadow p-6 min-h-[700px]">
                     <ul class="space-y-2">
                         <!-- Країни -->
                         <li v-for="country in countries" :key="country.id">

@@ -13,6 +13,7 @@
         "ezyang/htmlpurifier": "^4.18",
         "imagine/imagine": "^1.5",
         "inertiajs/inertia-laravel": "^2.0",
+        "kalnoy/nestedset": "^6.0",
         "laravel/framework": "^11.31",
         "laravel/reverb": "^1.0",
         "laravel/sanctum": "^4.0",

@@ -1,15 +1,16 @@
 <?php
 
+use App\Http\Controllers\Admin\Adverts\CategoryController;
+use App\Http\Controllers\Admin\IndexController as AdminIndexController;
 use App\Http\Controllers\Admin\LocatedAreaController;
 use App\Http\Controllers\Admin\LocatedCountryController;
 use App\Http\Controllers\Admin\LocatedRegionController;
 use App\Http\Controllers\Admin\LocatedVillageController;
 use App\Http\Controllers\Admin\LocationController;
-use App\Http\Controllers\IndexController;
-use App\Http\Controllers\Admin\IndexController as AdminIndexController;
-use App\Http\Controllers\Admin\UsersController as AdminUsersController;
-use App\Http\Controllers\Admin\RolesController as AdminRolesController;
 use App\Http\Controllers\Admin\PermissionsController as AdminPermissionsController;
+use App\Http\Controllers\Admin\RolesController as AdminRolesController;
+use App\Http\Controllers\Admin\UsersController as AdminUsersController;
+use App\Http\Controllers\IndexController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -75,6 +76,9 @@ Route::middleware(['auth', 'verified'])->group(function () { //, PasswordConfirm
             Route::resource('/regions', LocatedRegionController::class);
             Route::resource('/areas', LocatedAreaController::class);
             Route::resource('/villages', LocatedVillageController::class);
+        });
+        Route::prefix('adverts')->name('adverts.')->group(function () {
+            Route::resource('/category', CategoryController::class);
         });
     });
 
