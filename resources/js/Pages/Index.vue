@@ -1,15 +1,12 @@
 <script setup>
-import { defineProps, ref } from "vue";
-import { Head, Link } from "@inertiajs/vue3";
+import {computed, defineProps, onBeforeUnmount, onMounted, ref} from "vue";
+import {Head, Link, usePage} from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 
-defineProps({
-    categories: Array,
-    listings: Array,
-    news: Array,
-});
+const categories = usePage().props.categories;
+const news = usePage().props.news;
+const listings = usePage().props.listings;
 
-// Регіони України
 const regions = [
     "Вся Україна",
     "Київська область",
@@ -23,23 +20,44 @@ const regions = [
 
 const selectedRegion = ref(regions[0]);
 const searchQuery = ref("");
-
-// Список історії пошуку (автопідказки)
 const searchHistory = ref(["iPhone 13", "Ноутбук Dell", "Годинник Apple", "Квартира у Києві"]);
-
-// Відображати список автопідказок чи ні
 const showSuggestions = ref(false);
-
-// Додаємо запит в історію
+const openCategory = ref(null);
 const selectSuggestion = (query) => {
     searchQuery.value = query;
     showSuggestions.value = false;
 };
 
-// Видалення запиту з історії
 const removeSuggestion = (index) => {
     searchHistory.value.splice(index, 1);
 };
+
+const toggleCategory = (categoryId) => {
+    if (openCategory.value === categoryId) {
+        openCategory.value = null;
+    } else {
+        openCategory.value = categoryId;
+    }
+};
+
+const selectedCategoryName = computed(() => {
+    const category = categories.find((c) => c.id === openCategory.value);
+    return category ? category.name : "";
+});
+
+const handleClickOutside = (event) => {
+    if (!event.target.closest(".search-container")) {
+        showSuggestions.value = false;
+    }
+};
+
+onMounted(() => {
+    document.addEventListener("click", handleClickOutside);
+});
+
+onBeforeUnmount(() => {
+    document.removeEventListener("click", handleClickOutside);
+});
 </script>
 
 <template>
@@ -51,18 +69,18 @@ const removeSuggestion = (index) => {
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg p-3">
                     <div class="container mx-auto p-4">
                         <!-- Пошук з автопідказками -->
-                        <div class="relative flex items-center gap-4 bg-gray-100 p-4 rounded-lg shadow-md">
-                            <div class="relative w-full">
+                        <div class="relative flex items-center gap-4 bg-gray-100 p-4 rounded-lg shadow-md search-container">
+                            <div class="relative w-full" >
                                 <input
                                     v-model="searchQuery"
                                     type="text"
                                     placeholder="Що шукаєте?"
                                     class="w-full px-4 py-2  rounded-lg"
                                     @focus="showSuggestions = true"
-                                    @blur="setTimeout(() => showSuggestions = false, 200)"
                                 />
                                 <!-- Випадаючий список підказок -->
                                 <ul v-if="showSuggestions && searchHistory.length" class="absolute left-0 w-full bg-white border mt-1 rounded-lg shadow-lg z-10">
+                                   <div class="text-sm text-gray-400 uppercase p-1 pl-4">Ви нещодавно шукали</div>
                                     <li
                                         v-for="(suggestion, index) in searchHistory"
                                         :key="index"
@@ -71,6 +89,16 @@ const removeSuggestion = (index) => {
                                     >
                                         {{ suggestion }}
                                         <button @click.stop="removeSuggestion(index)" class="text-red-500 text-lg">×</button>
+                                    </li>
+
+                                    <div class="text-sm text-gray-400 uppercase p-1 pl-4">Рекомендації</div>
+                                    <li
+                                        v-for="(suggestion, index) in searchHistory"
+                                        :key="index"
+                                        class="flex justify-between items-center px-4 py-2 cursor-pointer hover:bg-gray-200"
+                                        @click="selectSuggestion(suggestion)"
+                                    >
+                                        {{ suggestion }}
                                     </li>
                                 </ul>
                             </div>
@@ -89,13 +117,43 @@ const removeSuggestion = (index) => {
                         <!-- Категорії -->
                         <section class="my-8">
                             <h2 class="text-xl font-semibold mb-4 text-center">Розділи на сервісі</h2>
-                            <div class="grid grid-cols-3 md:grid-cols-6 gap-4">
-                                <div v-for="category in categories" :key="category.id" class="text-center">
-                                    <img :src="category.icon" alt="Іконка" class="w-12 h-12 mx-auto" />
-                                    <p class="text-sm mt-2">{{ category.name }}</p>
+
+                            <div class="grid grid-cols-3 md:grid-cols-6 gap-4 items-start">
+                                <template v-for="category in categories" :key="category.id">
+                                    <div class="text-center">
+                                        <button
+                                            class="p-3 shadow rounded bg-gray-100 hover:bg-gray-200 w-full min-h-[120px]"
+                                            @click="toggleCategory(category.id)">
+                                            <img :src="category.icon" alt="Іконка" class="w-12 h-12 mx-auto" />
+                                            <span class="text-sm mt-2 hover:underline">{{ category.name }}</span>
+                                        </button>
+                                    </div>
+                                </template>
+
+                                <!-- Контейнер підрозділів між елементами -->
+                                <div v-if="openCategory" class="col-span-full">
+                                    <transition name="fade">
+                                        <div class="bg-white shadow-md rounded p-4 mt-2">
+
+                                            <p class="pb-3">
+                                                <span class="font-bold text-sm"> > Переглянути всі оголошення в </span>
+                                                <span class="text-sm hover:underline cursor-pointer">{{ selectedCategoryName }}</span>
+                                            </p>
+                                            <hr>
+                                            <!-- Вивід підрозділів у 3 колонки -->
+                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-3">
+                                                <template v-for="subCategory in categories" :key="subCategory.id">
+                                                    <p class="text-sm hover:underline cursor-pointer">
+                                                        {{ subCategory.name }}
+                                                    </p>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </transition>
                                 </div>
                             </div>
                         </section>
+
 
                         <!-- VIP-оголошення -->
                         <section class="bg-gray-100 p-6 rounded">
