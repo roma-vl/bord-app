@@ -3,22 +3,17 @@ import { ref } from 'vue';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
-import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
 import Locale from "@/Layouts/Partials/Locale.vue";
 
 const showingNavigationDropdown = ref(false);
-const isNotifyVisible = ref(false);
 const isMessagesVisible = ref(false);
 
 const messages = () => {
     isMessagesVisible.value = !isMessagesVisible.value;
 };
 
-const notify = () => {
-    isNotifyVisible.value = !isNotifyVisible.value;
-};
 
 </script>
 
@@ -34,23 +29,11 @@ const notify = () => {
                         <div class="flex">
                             <!-- Logo -->
                             <div class="flex shrink-0 items-center">
-                                <Link :href="route('dashboard')">
+                                <Link :href="route('main')">
                                     <ApplicationLogo
                                         class="block h-9 w-auto fill-current text-gray-800"
                                     />
                                 </Link>
-                            </div>
-
-                            <!-- Navigation Links -->
-                            <div
-                                class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex"
-                            >
-                                <NavLink
-                                    :href="route('dashboard')"
-                                    :active="route().current('dashboard')"
-                                >
-                                    Dashboard
-                                </NavLink>
                             </div>
                         </div>
 
@@ -125,7 +108,7 @@ const notify = () => {
                             </div>
 
 
-                            <div class="relative ms-3">
+                            <div class="relative ms-3" v-if="$page.props.auth">
                                 <Dropdown align="right" width="48">
                                     <template #trigger>
                                         <span class="inline-flex rounded-md">
@@ -133,7 +116,7 @@ const notify = () => {
                                                 type="button"
                                                 class="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none"
                                             >
-                                                {{ $page.props.auth.user.name }}
+                                                {{ $page.props.auth?.user?.name ?? 'Ваш профіль' }}
 
                                                 <svg
                                                     class="-me-0.5 ms-2 h-4 w-4"
@@ -225,27 +208,29 @@ const notify = () => {
                     }"
                     class="sm:hidden"
                 >
-                    <div class="space-y-1 pb-3 pt-2">
-                        <ResponsiveNavLink
-                            :href="route('dashboard')"
-                            :active="route().current('dashboard')"
-                        >
-                            Dashboard
-                        </ResponsiveNavLink>
-                    </div>
+<!--                    <div class="space-y-1 pb-3 pt-2">-->
+<!--                        <ResponsiveNavLink-->
+<!--                            :href="route('dashboard')"-->
+<!--                            :active="route().current('dashboard')"-->
+<!--                        >-->
+<!--                            Dashboard-->
+<!--                        </ResponsiveNavLink>-->
+<!--                    </div>-->
 
                     <!-- Responsive Settings Options -->
                     <div
                         class="border-t border-gray-200 pb-1 pt-4"
+                        v-if="$page.props.auth"
                     >
                         <div class="px-4">
                             <div
                                 class="text-base font-medium text-gray-800"
                             >
-                                {{ $page.props.auth.user.name }}
+                                {{ $page.props.auth?.user?.name ?? 'Ваш профіль' }}
+
                             </div>
                             <div class="text-sm font-medium text-gray-500">
-                                {{ $page.props.auth.user.email }}
+                                {{ $page.props.auth?.user?.email ?? '' }}
                             </div>
                         </div>
 
