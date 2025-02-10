@@ -16,7 +16,6 @@ const props = defineProps({
 });
 const category = props.category;
 
-
 const openEditModal = async (categoryId) => {
     const { data } = await axios.get(route("admin.adverts.category.edit", categoryId));
     selectedCategory.value = data.category;
@@ -38,25 +37,37 @@ const deleteCategory = (id) => {
         });
     }
 };
+
+const moveUp = (id) => {
+    router.post(route("admin.adverts.category.moveUp", id), {}, {
+        preserveScroll: true,
+        onSuccess: () => router.replace(route("admin.adverts.category.index")),
+    });
+};
+
+const moveDown = (id) => {
+    router.post(route("admin.adverts.category.moveDown", id), {}, {
+        preserveScroll: true,
+        onSuccess: () => router.replace(route("admin.adverts.category.index")),
+    });
+};
 </script>
 
 <template>
     <li>
-        <div class="flex justify-between items-center bg-white hover:bg-gray-100 p-3 mb-2 rounded cursor-pointer shadow">
+        <div class="flex justify-between items-center bg-white hover:bg-gray-100 p-3 mb-2 rounded cursor-pointer shadow border-l-[3px] border-gray-300">
             <span class="font-semibold">{{ props.prefix }}{{ props.category.name }}</span>
             <div class="flex items-right">
-                <button @click.stop="openEditModal(category.id)" class="text-blue-500 pr-2">
-                    Редагувати
-                </button>
-                <button @click.stop="deleteCategory(category.id)" class="text-red-500 hover:underline">
-                    Видалити
-                </button>
+                <button @click.stop="moveUp(category.id)" class="text-green-500 pr-2">🔼</button>
+                <button @click.stop="moveDown(category.id)" class="text-orange-500 pr-2">🔽</button>
+                <button @click.stop="openEditModal(category.id)" class="text-blue-500 pr-2">Редагувати</button>
+                <button @click.stop="deleteCategory(category.id)" class="text-red-500 hover:underline">Видалити</button>
             </div>
         </div>
 
-        <ul v-if="category.children && category.children.length" class="ml-6">
-            <CategoryItem v-for="child in category.children" :key="child.id" :category="child" :prefix="prefix + ' '" />
-        </ul>
+        <div v-if="category.children_recursive?.length" class="ml-6">
+            <CategoryItem v-for="child in category.children_recursive" :key="child.id" :category="child" />
+        </div>
     </li>
 
     <Modal :show="isEditModalOpen" maxWidth="2xl" @close="isEditModalOpen = false">

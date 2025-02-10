@@ -92,6 +92,10 @@ Route::middleware(['auth', 'verified'])->group(function () { //, PasswordConfirm
     Route::post('/admin/locations/store', [LocationController::class, 'store'])->name('admin.locations.store');
     Route::delete('/admin/locations/destroy/{id}', [LocationController::class, 'destroy'])->name('admin.locations.destroy');
     Route::get('/admin/locations/{type}/{id}', [LocationController::class, 'show'])->name('admin.locations.show');
+    Route::post('/admin/adverts/category/{category}/move-up', [CategoryController::class, 'moveUp'])->name('admin.adverts.category.moveUp');
+    Route::post('/admin/adverts/category/{category}/move-down', [CategoryController::class, 'moveDown'])->name('admin.adverts.category.moveDown');
+    Route::post('/admin/adverts/category/update-order', [CategoryController::class, 'updateOrder'])->name('admin.adverts.category.updateOrder');
+
 
 });
 

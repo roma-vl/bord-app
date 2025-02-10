@@ -22,13 +22,12 @@ const getCategoryOptions = (categories, prefix = "") => {
     categories.forEach((category) => {
         options.push({ id: category.id, name: prefix + category.name });
 
-        if (category.children && category.children.length) {
-            options = options.concat(getCategoryOptions(category.children, prefix + "- "));
+        if (category.children_recursive && category.children_recursive.length) {
+            options = options.concat(getCategoryOptions(category.children_recursive, prefix + "- "));
         }
     });
     return options;
 };
-
 const formattedCategories = computed(() => getCategoryOptions(categories));
 </script>
 

@@ -12,7 +12,10 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::whereNull('parent_id')->with('children')->get();
+        $categories = Category::whereNull('parent_id')
+            ->with('childrenRecursive')
+            ->orderBy('_lft')
+            ->get();
         return Inertia::render('Admin/Advert/Index', compact('categories'));
     }
 
@@ -32,7 +35,10 @@ class CategoryController extends Controller
     }
     public function create()
     {
-        $categories = Category::defaultOrder()->withDepth()->get();
+        $categories = Category::whereNull('parent_id')
+            ->with('childrenRecursive')
+            ->orderBy('_lft')
+            ->get()->toArray();
 
         return response()->json([
             'categories' => $categories
@@ -69,4 +75,25 @@ class CategoryController extends Controller
         return redirect()->route('admin.adverts.category.index')->with('success', 'Категорія видалена!');
     }
 
+    public function moveUp(Category $category)
+    {
+        $category->up();
+        Category::fixTree();
+        return redirect()->route('admin.adverts.category.index');
+    }
+
+    public function moveDown(Category $category)
+    {
+        $category->down();
+        Category::fixTree();
+        return redirect()->route('admin.adverts.category.index');
+    }
+
+    public function updateOrder(Request $request)
+    {
+        foreach ($request->categories as $category) {
+            Category::where('id', $category['id'])->update(['_lft' => $category['order']]);
+        }
+        Category::fixTree();
+    }
 }

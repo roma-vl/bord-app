@@ -20,22 +20,12 @@ class Category extends Model
         return $this->hasMany(Category::class, 'parent_id')->with('children');
     }
 
-    protected static function boot()
+    public function childrenRecursive()
     {
-        parent::boot();
-
-        static::saving(function ($model) {
-            if (empty($model->slug)) {
-                $slug = Str::slug($model->name, '-');
-
-                $count = self::where('slug', 'LIKE', $slug . '%')->count();
-                if ($count > 0) {
-                    $slug .= '-' . ($count + 1);
-                }
-
-                $model->slug = $slug;
-            }
-        });
+        return $this->hasMany(Category::class, 'parent_id')
+            ->with('childrenRecursive')
+            ->orderBy('_lft');
     }
+
 }
 
