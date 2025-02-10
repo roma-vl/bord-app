@@ -51,6 +51,20 @@ const moveDown = (id) => {
         onSuccess: () => router.replace(route("admin.adverts.category.index")),
     });
 };
+
+const moveToTop = (id) => {
+    router.post(route("admin.adverts.category.moveToTop", id), {}, {
+        preserveScroll: true,
+        onSuccess: () => router.replace(route("admin.adverts.category.index")),
+    });
+};
+
+const moveToBottom = (id) => {
+    router.post(route("admin.adverts.category.moveToBottom", id), {}, {
+        preserveScroll: true,
+        onSuccess: () => router.replace(route("admin.adverts.category.index")),
+    });
+};
 </script>
 
 <template>
@@ -58,8 +72,10 @@ const moveDown = (id) => {
         <div class="flex justify-between items-center bg-white hover:bg-gray-100 p-3 mb-2 rounded cursor-pointer shadow border-l-[3px] border-gray-300">
             <span class="font-semibold">{{ props.prefix }}{{ props.category.name }}</span>
             <div class="flex items-right">
+                <button @click.stop="moveToTop(category.id)" class="text-purple-500 pr-2">⏫</button>
                 <button @click.stop="moveUp(category.id)" class="text-green-500 pr-2">🔼</button>
                 <button @click.stop="moveDown(category.id)" class="text-orange-500 pr-2">🔽</button>
+                <button @click.stop="moveToBottom(category.id)" class="text-purple-500 pr-2">⏬</button>
                 <button @click.stop="openEditModal(category.id)" class="text-blue-500 pr-2">Редагувати</button>
                 <button @click.stop="deleteCategory(category.id)" class="text-red-500 hover:underline">Видалити</button>
             </div>

@@ -78,22 +78,30 @@ class CategoryController extends Controller
     public function moveUp(Category $category)
     {
         $category->up();
-        Category::fixTree();
         return redirect()->route('admin.adverts.category.index');
     }
 
     public function moveDown(Category $category)
     {
         $category->down();
-        Category::fixTree();
         return redirect()->route('admin.adverts.category.index');
     }
 
-    public function updateOrder(Request $request)
+    public function moveToTop(Category $category)
     {
-        foreach ($request->categories as $category) {
-            Category::where('id', $category['id'])->update(['_lft' => $category['order']]);
+        if ($first = $category->siblings()->defaultOrder()->first()) {
+            $category->insertBeforeNode($first);
         }
-        Category::fixTree();
+        return redirect()->route('admin.adverts.category.index');
     }
+
+    public function moveToBottom(Category $category)
+    {
+        if ($last = $category->siblings()->defaultOrder('desc')->first()) {
+            $category->insertAfterNode($last);
+        }
+        return redirect()->route('admin.adverts.category.index');
+    }
+
+
 }

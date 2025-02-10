@@ -95,6 +95,8 @@ Route::middleware(['auth', 'verified'])->group(function () { //, PasswordConfirm
     Route::post('/admin/adverts/category/{category}/move-up', [CategoryController::class, 'moveUp'])->name('admin.adverts.category.moveUp');
     Route::post('/admin/adverts/category/{category}/move-down', [CategoryController::class, 'moveDown'])->name('admin.adverts.category.moveDown');
     Route::post('/admin/adverts/category/update-order', [CategoryController::class, 'updateOrder'])->name('admin.adverts.category.updateOrder');
+    Route::post('/admin/adverts/category/{category}/move-to-top', [CategoryController::class, 'moveToTop'])->name('admin.adverts.category.moveToTop');
+    Route::post('/admin/adverts/category/{category}/move-to-bottom', [CategoryController::class, 'moveToBottom'])->name('admin.adverts.category.moveToBottom');
 
 
 });
