@@ -6,19 +6,9 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 const categories = usePage().props.categories;
 const news = usePage().props.news;
 const listings = usePage().props.listings;
+const regions = usePage().props.regions;
 
-const regions = [
-    "Вся Україна",
-    "Київська область",
-    "Львівська область",
-    "Одеська область",
-    "Харківська область",
-    "Дніпропетровська область",
-    "Запорізька область",
-    "Інші регіони",
-];
-
-const selectedRegion = ref(regions[0]);
+const selectedRegion = ref('all');
 const searchQuery = ref("");
 const searchHistory = ref(["iPhone 13", "Ноутбук Dell", "Годинник Apple", "Квартира у Києві"]);
 const showSuggestions = ref(false);
@@ -104,10 +94,12 @@ onBeforeUnmount(() => {
                             </div>
 
                             <select v-model="selectedRegion" class="border rounded-lg px-3 py-2">
-                                <option v-for="region in regions" :key="region" :value="region">
-                                    {{ region }}
+                                <option value="all">Всі області</option>
+                                <option v-for="region in regions" :key="region.id" :value="region.id">
+                                    {{ region.region }}
                                 </option>
                             </select>
+
 
                             <button class="bg-green-600 text-white px-6 py-2 rounded-lg">
                                 Пошук
