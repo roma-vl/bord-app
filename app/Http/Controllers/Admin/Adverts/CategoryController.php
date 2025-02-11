@@ -69,9 +69,16 @@ class CategoryController extends Controller
         return redirect()->route('admin.adverts.category.index')->with('success', 'Категорія оновлена!');
     }
 
+    public function show( Category $category)
+    {
+        $parentAttributes = $category->getParentAttributes();
+        $attributes = $category->attributes()->orderBy('sort')->get();
+        return Inertia::render('Admin/Advert/Show', compact('category', 'attributes', 'parentAttributes'));
+    }
+
     public function destroy(Category $category)
     {
-        $category->delete();
+//        $category->delete();
         return redirect()->route('admin.adverts.category.index')->with('success', 'Категорія видалена!');
     }
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\Adverts\AttributeController;
 use App\Http\Controllers\Admin\Adverts\CategoryController;
 use App\Http\Controllers\Admin\IndexController as AdminIndexController;
 use App\Http\Controllers\Admin\LocatedAreaController;
@@ -57,13 +58,22 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::resource('/villages', LocatedVillageController::class);
         });
 
-        Route::prefix('/adverts/category')->name('adverts.category.')->controller(CategoryController::class)->group(function () {
-            Route::resource('/', CategoryController::class);
-            Route::post('/{category}/move-up', 'moveUp')->name('moveUp');
-            Route::post('/{category}/move-down', 'moveDown')->name('moveDown');
-            Route::post('/update-order', 'updateOrder')->name('updateOrder');
-            Route::post('/{category}/move-to-top', 'moveToTop')->name('moveToTop');
-            Route::post('/{category}/move-to-bottom', 'moveToBottom')->name('moveToBottom');
+        Route::prefix('/adverts')->name('adverts.')->controller(CategoryController::class)->group(function () {
+
+            Route::get('/category/{category}/attributes/create', [AttributeController::class, 'create'])->name('category.attributes.create');
+            Route::post('/category/{category}/attributes/store', [AttributeController::class, 'store'])->name('category.attributes.store');
+            Route::get('/category/{category}/attributes/{attribute}/edit', [AttributeController::class, 'edit'])->name('category.attributes.edit');
+            Route::post('/category/{category}/attributes/{attribute}/update', [AttributeController::class, 'update'])->name('category.attributes.update');
+            Route::delete('/category/{category}/attributes/{attribute}/destroy', [AttributeController::class, 'destroy'])->name('category.attributes.destroy');
+            Route::resource('/category', CategoryController::class);
+
+            Route::prefix('/category')->name('category.')->controller(CategoryController::class)->group(function () {
+                Route::post('/{category}/move-up', 'moveUp')->name('moveUp');
+                Route::post('/{category}/move-down', 'moveDown')->name('moveDown');
+                Route::post('/update-order', 'updateOrder')->name('updateOrder');
+                Route::post('/{category}/move-to-top', 'moveToTop')->name('moveToTop');
+                Route::post('/{category}/move-to-bottom', 'moveToBottom')->name('moveToBottom');
+            });
         });
     });
 

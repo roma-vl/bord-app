@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name')->index();
             $table->string('slug')->unique();
-            $table->nestedSet(); // Додає поля `lft`, `rgt`, `parent_id`, `depth`
+            $table->nestedSet();
             $table->timestamps();
         });
     }

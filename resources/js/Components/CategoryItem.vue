@@ -2,7 +2,7 @@
 import {defineProps, ref} from "vue";
 import Edit from "@/Pages/Admin/Advert/Edit.vue";
 import Modal from "@/Components/Modal.vue";
-import {router} from "@inertiajs/vue3";
+import {Link, router} from "@inertiajs/vue3";
 
 const isEditModalOpen = ref(false);
 const selectedCategory = ref(null);
@@ -76,6 +76,7 @@ const moveToBottom = (id) => {
                 <button @click.stop="moveUp(category.id)" class="text-green-500 pr-2">🔼</button>
                 <button @click.stop="moveDown(category.id)" class="text-orange-500 pr-2">🔽</button>
                 <button @click.stop="moveToBottom(category.id)" class="text-purple-500 pr-2">⏬</button>
+                <Link :href="route('admin.adverts.category.show', category.id)" class="text-blue-500 pr-2"> Show </Link>
                 <button @click.stop="openEditModal(category.id)" class="text-blue-500 pr-2">Редагувати</button>
                 <button @click.stop="deleteCategory(category.id)" class="text-red-500 hover:underline">Видалити</button>
             </div>
