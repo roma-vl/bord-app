@@ -3,6 +3,8 @@
 namespace Tests\Unit\Services;
 
 use App\Http\Services\SearchSortService;
+use App\Http\Services\UserService;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -12,33 +14,71 @@ class SearchSortServiceTest extends TestCase
     use RefreshDatabase;
 
     private SearchSortService $searchSortService;
+    private UserService $userService;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->searchSortService = new SearchSortService();
+        $this->userService = new UserService();
     }
 
     public function testApplySearchUser(): void
     {
-        User::factory()->create(['name' => 'John Doe', 'email' => 'john@example.com']);
-        User::factory()->create(['name' => 'Jane Smith', 'email' => 'jane@example.com']);
-        User::factory()->create(['name' => 'Alice Johnson', 'email' => 'alice@example.com']);
+        $role = Role::factory()->create();
+        $this->userService->createUser([
+            'name' => 'John Doe',
+            'email' => 'john@example.com',
+            'password' => 'password',
+            'roles' => [$role->id],
+        ]);
+
+        $this->userService->createUser([
+            'name' => 'John Doe2',
+            'email' => 'john2@example.com',
+            'password' => 'password',
+            'roles' => [$role->id],
+        ]);
+
+        $this->userService->createUser([
+            'name' => 'John Doe3',
+            'email' => 'john3@example.com',
+            'password' => 'password',
+            'roles' => [$role->id],
+        ]);
 
         $query = User::query();
 
         // Застосовуємо пошук
-        $this->searchSortService->applySearch($query, 'Jane');
+        $this->searchSortService->applySearch($query, 'Doe2');
 
         $this->assertEquals(1, $query->count());
-        $this->assertEquals('Jane Smith', $query->first()->name);
+        $this->assertEquals('John Doe2', $query->first()->name);
     }
 
     public function testApplySearchEmail(): void
     {
-        User::factory()->create(['name' => 'John Doe1', 'email' => 'john2@example.com']);
-        User::factory()->create(['name' => 'Jane Smith1', 'email' => 'jane2@example.com']);
-        User::factory()->create(['name' => 'Alice Johnson1', 'email' => 'alice2@example.com']);
+        $role = Role::factory()->create();
+        $this->userService->createUser([
+            'name' => 'John Doe',
+            'email' => 'john@example.com',
+            'password' => 'password',
+            'roles' => [$role->id],
+        ]);
+
+        $this->userService->createUser([
+            'name' => 'John Doe2',
+            'email' => 'john2@example.com',
+            'password' => 'password',
+            'roles' => [$role->id],
+        ]);
+
+        $this->userService->createUser([
+            'name' => 'John Doe3',
+            'email' => 'john3@example.com',
+            'password' => 'password',
+            'roles' => [$role->id],
+        ]);
 
         $query = User::query();
 

@@ -3,69 +3,48 @@
 namespace App\Http\Controllers\Admin\Adverts;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\CategoryRequest;
+use App\Http\Services\CategoryService;
 use App\Models\Adverts\Category;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Illuminate\Support\Str;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\JsonResponse;
 
 class CategoryController extends Controller
 {
+    public function __construct(private CategoryService $categoryService) {}
+
     public function index()
     {
-        $categories = Category::whereNull('parent_id')
-            ->with('childrenRecursive')
-            ->orderBy('_lft')
-            ->get();
-        return Inertia::render('Admin/Advert/Index', compact('categories'));
+        return Inertia::render('Admin/Advert/Index', [
+            'categories' => $this->categoryService->getCategories()
+        ]);
     }
 
-    public function store(Request $request)
+    public function store(CategoryRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:advert_categories,name',
-            'slug' => 'string|max:255|unique:advert_categories,slug',
-            'parent_id' => 'nullable|exists:advert_categories,id',
-        ]);
-
-        $validated['slug'] = Str::slug($validated['name'], '-');
-
-        Category::create($validated);
-
+        $this->categoryService->createCategory($request->validated());
         return redirect()->route('admin.adverts.category.index')->with('success', 'Категорія створена!');
     }
-    public function create()
-    {
-        $categories = Category::whereNull('parent_id')
-            ->with('childrenRecursive')
-            ->orderBy('_lft')
-            ->get()->toArray();
 
+    public function create(): JsonResponse
+    {
         return response()->json([
-            'categories' => $categories
+            'categories' => $this->categoryService->getCategories()
         ]);
     }
 
-    public function edit(Category $category)
+    public function edit(Category $category): JsonResponse
     {
-        $categories = Category::defaultOrder()->withDepth()->get();
         return response()->json([
             'category' => $category,
-            'categories' => $categories
+            'categories' => Category::defaultOrder()->withDepth()->get()
         ]);
     }
 
-    public function update(Request $request, Category $category)
+    public function update(CategoryRequest $request, Category $category): RedirectResponse
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:advert_categories,name,' . $category->id,
-            'slug' => 'string|max:255|unique:advert_categories,slug,' . $category->id,
-            'parent_id' => 'nullable|exists:advert_categories,id',
-        ]);
-
-        $validated['slug'] = Str::slug($validated['name'], '-');
-
-        $category->update($validated);
-
+        $this->categoryService->updateCategory($category, $request->validated());
         return redirect()->route('admin.adverts.category.index')->with('success', 'Категорія оновлена!');
     }
 
@@ -76,39 +55,33 @@ class CategoryController extends Controller
         return Inertia::render('Admin/Advert/Show', compact('category', 'attributes', 'parentAttributes'));
     }
 
-    public function destroy(Category $category)
+    public function destroy(Category $category): RedirectResponse
     {
-        $category->delete();
+        $this->categoryService->deleteCategory($category);
         return redirect()->route('admin.adverts.category.index')->with('success', 'Категорія видалена!');
     }
 
-    public function moveUp(Category $category)
+    public function moveUp(Category $category): RedirectResponse
     {
-        $category->up();
+        $this->categoryService->moveUp($category);
         return redirect()->route('admin.adverts.category.index');
     }
 
-    public function moveDown(Category $category)
+    public function moveDown(Category $category): RedirectResponse
     {
-        $category->down();
+        $this->categoryService->moveDown($category);
         return redirect()->route('admin.adverts.category.index');
     }
 
-    public function moveToTop(Category $category)
+    public function moveToTop(Category $category): RedirectResponse
     {
-        if ($first = $category->siblings()->defaultOrder()->first()) {
-            $category->insertBeforeNode($first);
-        }
+        $this->categoryService->moveToTop($category);
         return redirect()->route('admin.adverts.category.index');
     }
 
-    public function moveToBottom(Category $category)
+    public function moveToBottom(Category $category): RedirectResponse
     {
-        if ($last = $category->siblings()->defaultOrder('desc')->first()) {
-            $category->insertAfterNode($last);
-        }
+        $this->categoryService->moveToBottom($category);
         return redirect()->route('admin.adverts.category.index');
     }
-
-
 }
