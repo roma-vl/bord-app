@@ -42,7 +42,7 @@ class SearchSortServiceTest extends TestCase
 
         $query = User::query();
 
-        $this->searchSortService->applySearch($query, 'john@example.com');
+        $this->searchSortService->applySearch($query, 'john@exampl');
 
         $this->assertEquals(1, $query->count());
         $this->assertEquals('john@example.com', $query->first()->email);

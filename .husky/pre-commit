@@ -1,1 +1,2 @@
-./vendor/bin/sail artisan test
+#XDEBUG_MODE=off ./vendor/bin/sail artisan test
+
