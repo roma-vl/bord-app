@@ -1,19 +1,20 @@
 <?php
+
 namespace Database\Factories;
 
-use App\Models\LocatedCountry;
+use App\Models\LocatedRegion;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class LocatedCountryFactory extends Factory
+class LocatedRegionFactory extends Factory
 {
-    protected $model = LocatedCountry::class;
+    protected $model = LocatedRegion::class;
 
     public function definition()
     {
         return [
             'country' => $this->faker->country,
+            'region' => $this->faker->state,
             'slug' => $this->faker->slug('3'),
         ];
     }
 }
-
