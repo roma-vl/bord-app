@@ -12,6 +12,22 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mysql:8
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: testing
+          MYSQL_USER: test
+          MYSQL_PASSWORD: test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -26,16 +42,26 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-suggest
 
-      - name: Set up testing environment
-        run: |
-          mkdir -p database
-          touch database/database.sqlite
       - name: Use test environment
         run: cp .env.testing .env
 
+      - name: Run migrations
+        env:
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: testing
+          DB_USERNAME: test
+          DB_PASSWORD: test
+        run: php artisan migrate --force
+
       - name: Run tests
         env:
-          DB_CONNECTION: sqlite
-          DB_DATABASE: database/database.sqlite
           APP_KEY: base64:Ei2cgbFFUg0+5DdzAKTfdMRUsSmUh4tAufP6/MKVwVA=
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: testing
+          DB_USERNAME: test
+          DB_PASSWORD: test
         run: php artisan test
