@@ -44,11 +44,12 @@ jobs:
 
       - name: Use test environment
         run: cp .env.testing .env
-
+      - name: Wait for MySQL
+        run: sleep 15
       - name: Run migrations
         env:
           DB_CONNECTION: mysql
-          DB_HOST: 127.0.0.1
+          DB_HOST: mysql
           DB_PORT: 3306
           DB_DATABASE: testing
           DB_USERNAME: test
@@ -59,7 +60,7 @@ jobs:
         env:
           APP_KEY: base64:Ei2cgbFFUg0+5DdzAKTfdMRUsSmUh4tAufP6/MKVwVA=
           DB_CONNECTION: mysql
-          DB_HOST: 127.0.0.1
+          DB_HOST: mysql
           DB_PORT: 3306
           DB_DATABASE: testing
           DB_USERNAME: test
