@@ -78,7 +78,7 @@ class CategoryController extends Controller
 
     public function destroy(Category $category)
     {
-//        $category->delete();
+        $category->delete();
         return redirect()->route('admin.adverts.category.index')->with('success', 'Категорія видалена!');
     }
 

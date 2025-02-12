@@ -51,14 +51,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/{type}/{id}', 'show')->name('show');
         });
 
-        Route::prefix('located')->name('located.')->group(function () {
-            Route::resource('/countries', LocatedCountryController::class);
-            Route::resource('/regions', LocatedRegionController::class);
-            Route::resource('/areas', LocatedAreaController::class);
-            Route::resource('/villages', LocatedVillageController::class);
-        });
-
-        Route::prefix('/adverts')->name('adverts.')->controller(CategoryController::class)->group(function () {
+        Route::prefix('/adverts')->name('adverts.')->group(function () {
 
             Route::get('/category/{category}/attributes/create', [AttributeController::class, 'create'])->name('category.attributes.create');
             Route::post('/category/{category}/attributes/store', [AttributeController::class, 'store'])->name('category.attributes.store');
@@ -70,7 +63,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::prefix('/category')->name('category.')->controller(CategoryController::class)->group(function () {
                 Route::post('/{category}/move-up', 'moveUp')->name('moveUp');
                 Route::post('/{category}/move-down', 'moveDown')->name('moveDown');
-                Route::post('/update-order', 'updateOrder')->name('updateOrder');
                 Route::post('/{category}/move-to-top', 'moveToTop')->name('moveToTop');
                 Route::post('/{category}/move-to-bottom', 'moveToBottom')->name('moveToBottom');
             });

@@ -3,28 +3,33 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Permission;
+use App\Http\Requests\Admin\PermissionRequest;
+use App\Http\Services\PermissionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Models\Permission;
 
 class PermissionsController extends Controller
 {
-    public function __construct() {
+    private PermissionService $permissionService;
+
+    public function __construct(PermissionService $permissionService)
+    {
         if (Gate::denies('permission')) {
             abort(403);
         }
+        $this->permissionService = $permissionService;
+//        $this->authorizeResource(Permission::class, 'permission');
     }
+
     public function index(): Response
     {
-        $permissions = Permission::orderBy('id', 'desc')->get();
+        $permissions = $this->permissionService->getAll();
 
-        return Inertia::render('Admin/Permissions/Index', [
-            'permissions' => $permissions,
-        ]);
+        return Inertia::render('Admin/Permissions/Index', compact('permissions'));
     }
 
     public function create(): JsonResponse
@@ -37,35 +42,25 @@ class PermissionsController extends Controller
         return response()->json(['permission' => $permission]);
     }
 
-    public function store(Request $request)
+    public function store(PermissionRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'key' => 'required|string|unique:permissions,key',
-            'description' => 'nullable|string',
-        ]);
-
-        Permission::create($validated);
+        $this->permissionService->create($request->validated());
 
         return redirect()->route('admin.permissions.index')->with('success', 'Permission created successfully');
     }
 
-    public function update(Request $request, Permission $permission)
+    public function update(PermissionRequest $request, Permission $permission): RedirectResponse
     {
-        $validated = $request->validate([
-            'key' => 'required|string|unique:permissions,key,' . $permission->id,
-            'description' => 'nullable|string',
-        ]);
-
-        $permission->update($validated);
+        $this->permissionService->update($permission, $request->validated());
 
         return redirect()->route('admin.permissions.index')->with('success', 'Permission updated successfully');
     }
 
     public function destroy(Permission $permission): RedirectResponse
     {
-        $permission->delete();
+        $this->permissionService->delete($permission);
 
-        return redirect()->route('admin.permissions.index')
-            ->with('info', 'Permission deleted successfully');
+        return redirect()->route('admin.permissions.index')->with('info', 'Permission deleted successfully');
     }
 }
+
