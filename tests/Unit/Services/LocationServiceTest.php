@@ -1,14 +1,10 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Services;
 
 use App\Http\Services\LocationService;
 use App\Models\LocatedCountry;
-use App\Models\LocatedRegion;
-use App\Models\LocatedArea;
-use App\Models\LocatedVillage;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Mockery;
 use Tests\TestCase;
 
 class LocationServiceTest extends TestCase
