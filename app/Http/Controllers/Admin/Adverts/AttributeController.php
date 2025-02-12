@@ -2,89 +2,56 @@
 
 namespace App\Http\Controllers\Admin\Adverts;
 
-use App\Http\Controllers\Admin\Controller;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreAttributeRequest;
+use App\Http\Requests\Admin\UpdateAttributeRequest;
+use App\Http\Services\AttributeService;
 use App\Models\Adverts\Attribute;
 use App\Models\Adverts\Category;
-use Illuminate\Validation\Rule;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 
 class AttributeController extends Controller
 {
-    public function create(Category $category)
+    private AttributeService $service;
+
+    public function __construct(AttributeService $service)
+    {
+        $this->service = $service;
+    }
+
+    public function create(Category $category): JsonResponse
     {
         return response()->json([
             'category' => $category,
             'types' => Attribute::typesList(),
         ]);
-
     }
 
-    public function store(Request $request, Category $category)
+    public function store(StoreAttributeRequest $request, Category $category): RedirectResponse
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'type' => 'required|string|max:255|'. Rule::in(Attribute::typesList()),
-            'is_required' => 'nullable|boolean',
-            'variant' => 'nullable|string',
-            'sort' => 'required|integer'
-        ]);
-
-        $category->attributes()->create([
-            'name' => $validated['name'],
-            'type' => $validated['type'],
-            'is_required' => $validated['is_required'],
-            'variant' => array_map('trim', preg_split('#[\r\n]+#', $validated['variant'])),
-            'sort' => $validated['sort']
-        ]);
+        $this->service->create($category, $request->validated());
         return redirect()->route('admin.adverts.category.show', $category->id);
     }
 
-    public function edit( Category $category, Attribute $attribute)
+    public function edit(Category $category, Attribute $attribute): JsonResponse
     {
         return response()->json([
             'category' => $category,
-            'attribute' => [
-                'id' => $attribute->id,
-                'name' => $attribute->name,
-                'type' => $attribute->type,
-                'is_required' => $attribute->is_required,
-                'variant' => is_array($attribute->variant)
-                    ? implode("\n", $attribute->variant)
-                    : $attribute->variant, // Конвертуємо масив назад у рядок
-                'sort' => $attribute->sort,
-            ],
+            'attribute' => $attribute,
             'types' => Attribute::typesList(),
         ]);
     }
-    public function update(Request $request, Category $category, Attribute $attribute)
+
+    public function update(UpdateAttributeRequest $request, Category $category, Attribute $attribute): RedirectResponse
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'type' => 'required|string|max:255|'. Rule::in(Attribute::typesList()),
-            'is_required' => 'nullable|boolean',
-            'variant' => 'nullable|string',
-            'sort' => 'required|integer'
-        ]);
-
-
-        $attribute = $category->attributes()->where('id', $attribute->id)->firstOrFail();
-
-        $attribute->update([
-            'name' => $validated['name'],
-            'type' => $validated['type'],
-            'is_required' => (bool) $validated['is_required'],
-            'variant' => array_map('trim', preg_split('#[\r\n]+#', $validated['variant'])),
-            'sort' => $validated['sort']
-        ]);
-
+        $this->service->update($attribute, $request->validated());
         return redirect()->route('admin.adverts.category.show', $category->id);
     }
 
-    public function destroy( Category $category, Attribute $attribute)
+    public function destroy(Category $category, Attribute $attribute): RedirectResponse
     {
-        $attribute->delete();
+        $this->service->delete($attribute);
         return redirect()->route('admin.adverts.category.show', $category->id);
-
     }
-
 }
