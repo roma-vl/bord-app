@@ -22,7 +22,6 @@ class PermissionsController extends Controller
             abort(403);
         }
         $this->permissionService = $permissionService;
-//        $this->authorizeResource(Permission::class, 'permission');
     }
 
     public function index(): Response

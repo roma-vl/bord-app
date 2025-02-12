@@ -123,8 +123,12 @@ const loadVillages = async (areaId) => {
 
 const deleteLocation = (id, type) => {
     if (confirm(`Ви впевнені, що хочете видалити ${type}?`)) {
-        router.delete(route("admin.locations.destroy", id), {
-            data: { type },
+        router.delete(route("admin.locations.destroy", {
+            type: type,
+            id: id
+        }), {
+            preserveScroll: true,
+            onSuccess: () => router.replace(route("admin.locations.index")),
         });
     }
 };

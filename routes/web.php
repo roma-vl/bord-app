@@ -40,14 +40,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('/roles', AdminRolesController::class)->except(['show']);
         Route::resource('/permissions', AdminPermissionsController::class)->except(['show']);
 
-        Route::prefix('locations')->name('locations.')->controller(LocationController::class)->group(function () {
+        Route::prefix('/locations')->name('locations.')->controller(LocationController::class)->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('/countries', 'getCountries')->name('countries');
             Route::get('/regions/{countryId}', 'getRegions')->name('regions');
             Route::get('/areas/{regionId}', 'getAreas')->name('areas');
             Route::get('/villages/{areaId}', 'getVillages')->name('villages');
             Route::post('/store', 'store')->name('store');
-            Route::delete('/destroy/{id}', 'destroy')->name('destroy');
+            Route::delete('/destroy/{type}/{id}', 'destroy')->name('destroy');
+
             Route::get('/{type}/{id}', 'show')->name('show');
         });
 
