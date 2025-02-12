@@ -42,10 +42,6 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-suggest
 
-      - name: Use test environment
-        run: cp .env.testing .env
-      - name: Wait for MySQL
-        run: sleep 15
       - name: Run migrations
         env:
           DB_CONNECTION: mysql
