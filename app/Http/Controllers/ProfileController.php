@@ -19,6 +19,13 @@ class ProfileController extends Controller
     {
         return Inertia::render('Account/Dashboard');
     }
+
+    public function index(): Response
+    {
+        $user = Auth::user();
+        return Inertia::render('Account/Profile/Index', compact('user'));
+    }
+
     /**
      * Display the user's profile form.
      */

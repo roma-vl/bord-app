@@ -127,7 +127,7 @@ const messages = () => {
 
                                     <template #content>
                                         <DropdownLink
-                                            :href="route('account.profile.edit')"
+                                            :href="route('account.profile.index')"
                                         >
                                             Account
                                         </DropdownLink>

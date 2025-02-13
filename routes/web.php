@@ -22,10 +22,11 @@ Route::get('/greeting/{locale}', [IndexController::class, 'changeLocale'])->name
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    Route::prefix('account')->name('account.')->group(function () {
+    Route::prefix('/account')->name('account.')->group(function () {
         Route::get('/dashboard', [ProfileController::class, 'dashboard'])->name('dashboard');
-        Route::prefix('profile')->name('profile.')->group(function () {
-            Route::get('/', [ProfileController::class, 'edit'])->name('edit');
+        Route::prefix('/profile')->name('profile.')->group(function () {
+            Route::get('/', [ProfileController::class, 'index'])->name('index');
+            Route::get('/edit', [ProfileController::class, 'edit'])->name('edit');
             Route::patch('/', [ProfileController::class, 'update'])->name('update');
             Route::delete('/', [ProfileController::class, 'destroy'])->name('destroy');
         });

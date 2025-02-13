@@ -18,9 +18,9 @@ export default {
 };
 </script>
 <template>
-    <div class="flex items-center pb-2 pt-0">
-        <nav class="text-sm sm:text-base bg-white p-2 rounded-md shadow">
-            <ol class="list-none p-0 inline-flex space-x-2">
+    <div class="flex items-center">
+        <nav class="text-sm sm:text-base bg-white p-2 rounded-md shadow-md">
+            <ol class="list-none p-0 inline-flex space-x-2 px-3">
                 <li v-for="(breadcrumb, index) in breadcrumbs" :key="index" class="flex items-center">
                     <svg
                         v-if="breadcrumb.icon"
@@ -37,17 +37,13 @@ export default {
                     <template v-if="breadcrumb.url">
                         <a
                             :href="breadcrumb.url"
-                            class="text-gray-600 hover:text-blue-500 transition-colors duration-300"
-                            :class="breadcrumb.current ? 'font-bold text-gray-800' : ''"
+                            class=" hover:text-blue-600 transition-colors duration-300 font-bold text-gray-800"
                         >
                             {{ breadcrumb.title }}
                         </a>
                     </template>
                     <template v-else>
-                        <span
-                            class="text-gray-600"
-                            :class="breadcrumb.current ? 'font-bold text-gray-800' : ''"
-                        >
+                        <span class="text-gray-600">
                           {{ breadcrumb.title }}
                         </span>
                     </template>
