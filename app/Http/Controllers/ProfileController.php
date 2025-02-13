@@ -22,8 +22,7 @@ class ProfileController extends Controller
 
     public function index(): Response
     {
-        $user = Auth::user();
-        return Inertia::render('Account/Profile/Index', compact('user'));
+        return Inertia::render('Account/Profile/Index');
     }
 
     /**
