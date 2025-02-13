@@ -1,17 +1,15 @@
 <?php
 
+
 use App\Http\Controllers\Admin\Adverts\AttributeController;
 use App\Http\Controllers\Admin\Adverts\CategoryController;
 use App\Http\Controllers\Admin\IndexController as AdminIndexController;
-use App\Http\Controllers\Admin\LocatedAreaController;
-use App\Http\Controllers\Admin\LocatedCountryController;
-use App\Http\Controllers\Admin\LocatedRegionController;
-use App\Http\Controllers\Admin\LocatedVillageController;
 use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Admin\PermissionsController as AdminPermissionsController;
 use App\Http\Controllers\Admin\RolesController as AdminRolesController;
 use App\Http\Controllers\Admin\UsersController as AdminUsersController;
 use App\Http\Controllers\IndexController;
+use App\Http\Controllers\PhoneController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,6 +23,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('/account')->name('account.')->group(function () {
         Route::get('/dashboard', [ProfileController::class, 'dashboard'])->name('dashboard');
         Route::prefix('/profile')->name('profile.')->group(function () {
+            Route::get('/phone', [PhoneController::class, 'request'])->name('phone.request');
+            Route::get('/edit/phone', [PhoneController::class, 'form'])->name('phone.form');
+            Route::put('/edit/phone', [PhoneController::class, 'verify'])->name('phone.verify');
+            Route::patch('/update/phone', [PhoneController::class, 'update'])->name('phone.update');
+
             Route::get('/', [ProfileController::class, 'index'])->name('index');
             Route::get('/edit', [ProfileController::class, 'edit'])->name('edit');
             Route::patch('/', [ProfileController::class, 'update'])->name('update');

@@ -4,12 +4,18 @@ namespace App\Models;
 
 use App\Notifications\CustomVerifyEmail;
 use App\Notifications\ResetPasswordNotification;
+use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+/**
+ * @property $phone_verified
+ * @property $phone_verify_token
+ * @property $phone_verify_token_expire
+ */
 class User extends Authenticatable implements MustVerifyEmail
 {
     use HasFactory, Notifiable, SoftDeletes;
@@ -21,7 +27,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'password',
         'locale',
-        'email_verified_at'
+        'email_verified_at',
+        'phone',
     ];
 
     protected $hidden = [
@@ -36,6 +43,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'phone_verify_token_expire' => 'datetime',
         ];
     }
 
@@ -70,5 +78,44 @@ class User extends Authenticatable implements MustVerifyEmail
             ->unique()
             ->values()
             ->toArray();
+    }
+
+    public function unverifyPhone(): void
+    {
+        $this->phone_verified = false;
+        $this->phone_verify_token = null;
+        $this->phone_verify_token_expire = null;
+        $this->saveOrFail();
+    }
+
+    public function requestPhoneVerification(Carbon $now): string
+    {
+        if (empty($this->phone)) {
+            throw new \DomainException('Phone number is empty.');
+        }
+        if (!empty($this->phone_verify_token) && $this->phone_verify_token_expire &&
+            $this->phone_verify_token_expire->gt($now)) {
+            throw new \DomainException('Phone is already requested.');
+        }
+        $this->phone_verified = false;
+        $this->phone_verify_token = (string)random_int(10000, 99999);
+        $this->phone_verify_token_expire = $now->copy()->addSeconds(300);
+        $this->saveOrFail();
+
+        return $this->phone_verify_token;
+    }
+
+    public function verifyPhone($token, Carbon $now): void
+    {
+        if ($token !== $this->phone_verify_token) {
+            throw new \DomainException('Incorrect verify token.');
+        }
+        if ($this->phone_verify_token_expire->lt($now)) {
+            throw new \DomainException('Token is expired.');
+        }
+        $this->phone_verified = true;
+        $this->phone_verify_token = null;
+        $this->phone_verify_token_expire = null;
+        $this->saveOrFail();
     }
 }

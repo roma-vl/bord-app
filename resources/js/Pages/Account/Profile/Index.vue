@@ -1,13 +1,10 @@
 <script setup>
-import { defineProps } from 'vue';
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import {Head} from "@inertiajs/vue3";
+import {Head, usePage} from "@inertiajs/vue3";
 import Breadcrumb from "@/Components/Breadcrumb.vue";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
 
-defineProps({
-    user: Object
-});
-
+const user = usePage().props.auth.user;
 const breadcrumbData = [
     { url: route("main"), icon: "svg" },
     { title: "Profile" },
@@ -27,7 +24,6 @@ const breadcrumbData = [
                             <div class="w-48 h-48 bg-gray-400 rounded-full"></div>
                         </div>
 
-                        <!-- Деталі користувача -->
                         <div class="w-2/3 p-6 bg-white shadow-md rounded overflow-hidden flex flex-col m-0 ml-4">
                             <div class="grid grid-cols-2 gap-4">
                             <h2 class=" text-2xl font-bold mb-4">Профіль користувача</h2>
@@ -40,6 +36,10 @@ const breadcrumbData = [
                                     <p class="text-gray-600"><strong>Прізвище:</strong> {{ user.last_name }}</p>
                                     <p class="text-gray-600"><strong>Email:</strong> {{ user.email }}</p>
                                     <p class="text-gray-600"><strong>Локаль:</strong> {{ user.locale }}</p>
+                                    <p class="text-gray-600"><strong>Телефон:</strong> {{ user.phone }}</p>
+                                    <PrimaryButton v-if="Number(user.phone_verified) === 0">
+                                        <a :href="route('account.profile.phone.request')">Підтвердити</a>
+                                    </PrimaryButton>
                                 </div>
                                 <div>
                                     <p class="text-gray-600"><strong>Створено:</strong> {{ user.created_at }}</p>
