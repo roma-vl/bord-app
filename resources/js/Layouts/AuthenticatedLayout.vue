@@ -127,9 +127,9 @@ const messages = () => {
 
                                     <template #content>
                                         <DropdownLink
-                                            :href="route('profile.edit')"
+                                            :href="route('account.profile.edit')"
                                         >
-                                            Profile
+                                            Account
                                         </DropdownLink>
                                         <DropdownLink
                                             :href="route('admin.index')"
@@ -210,7 +210,7 @@ const messages = () => {
                         </div>
 
                         <div class="mt-3 space-y-1">
-                            <ResponsiveNavLink :href="route('profile.edit')">
+                            <ResponsiveNavLink :href="route('account.profile.edit')">
                                 Profile
                             </ResponsiveNavLink>
                             <ResponsiveNavLink

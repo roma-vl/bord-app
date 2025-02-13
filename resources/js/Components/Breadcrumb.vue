@@ -18,11 +18,10 @@ export default {
 };
 </script>
 <template>
-    <div class="flex items-center bg-gray-100 pb-2 pt-0">
-        <nav class="text-sm sm:text-base bg-white p-2 md:p-4 lg:p-4 rounded-md shadow">
+    <div class="flex items-center pb-2 pt-0">
+        <nav class="text-sm sm:text-base bg-white p-2 rounded-md shadow">
             <ol class="list-none p-0 inline-flex space-x-2">
                 <li v-for="(breadcrumb, index) in breadcrumbs" :key="index" class="flex items-center">
-                    <!-- Рендер іконки -->
                     <svg
                         v-if="breadcrumb.icon"
                         @click="navigateTo(breadcrumb.url)"

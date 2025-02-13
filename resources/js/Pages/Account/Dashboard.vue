@@ -46,11 +46,6 @@ const closeDialog = () => {
     <Head title="Dashboard" />
 
     <AuthenticatedLayout>
-        <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                {{ t('welcome', { name: $page.props.auth.user.name }) }}
-            </h2>
-        </template>
 
         <div class="py-2">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">

@@ -18,14 +18,17 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [IndexController::class, 'index'])->middleware([])->name('main');
 Route::get('/greeting/{locale}', [IndexController::class, 'changeLocale'])->name('greeting');
-Route::get('/dashboard', [IndexController::class, 'dashboard'])->middleware(['auth'])->name('dashboard');
+
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    Route::prefix('profile')->name('profile.')->group(function () {
-        Route::get('/', [ProfileController::class, 'edit'])->name('edit');
-        Route::patch('/', [ProfileController::class, 'update'])->name('update');
-        Route::delete('/', [ProfileController::class, 'destroy'])->name('destroy');
+    Route::prefix('account')->name('account.')->group(function () {
+        Route::get('/dashboard', [ProfileController::class, 'dashboard'])->name('dashboard');
+        Route::prefix('profile')->name('profile.')->group(function () {
+            Route::get('/', [ProfileController::class, 'edit'])->name('edit');
+            Route::patch('/', [ProfileController::class, 'update'])->name('update');
+            Route::delete('/', [ProfileController::class, 'destroy'])->name('destroy');
+        });
     });
 
     Route::prefix('admin')->name('admin.')->group(function () {

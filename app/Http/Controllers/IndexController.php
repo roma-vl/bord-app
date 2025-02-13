@@ -30,11 +30,6 @@ class IndexController extends Controller
         return redirect()->back();
     }
 
-    public function dashboard(): Response
-    {
-        return Inertia::render('Dashboard');
-    }
-
     public function index(): Response
     {
         $categories = [
