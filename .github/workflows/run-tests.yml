@@ -40,7 +40,7 @@ jobs:
           coverage: none
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest
+        run: sail composer install --prefer-dist --no-progress --no-suggest
 
       - name: Run migrations
         env:
@@ -50,7 +50,7 @@ jobs:
           DB_DATABASE: testing
           DB_USERNAME: test
           DB_PASSWORD: test
-        run: php artisan migrate --force
+        run: sail artisan migrate --force
 
       - name: Run tests
         env:
