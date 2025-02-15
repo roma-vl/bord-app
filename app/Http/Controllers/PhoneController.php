@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Contracts\SmsServiceInterface;
 use App\Http\Requests\PhoneUpdateRequest;
 use App\Http\Requests\ProfileUpdateRequest;
 use Carbon\Carbon;
@@ -14,13 +15,19 @@ use Inertia\Response;
 
 class PhoneController extends Controller
 {
+    private SmsServiceInterface $smsService;
+
+    public function __construct(SmsServiceInterface $smsService)
+    {
+        $this->smsService = $smsService;
+    }
+
     public function update(PhoneUpdateRequest $request): RedirectResponse
     {
         $user = Auth::user();
 
         $oldPhone = $user->phone;
         $request->user()->fill($request->validated());
-
 
         $request->user()->save();
 
@@ -37,6 +44,7 @@ class PhoneController extends Controller
 
         try {
             $token = $user->requestPhoneVerification(Carbon::now());
+            $this->smsService->sendVerifyCode($user->phone, $token);
         } catch (DomainException $e) {
             request()->session()->flash('error', $e->getMessage());
         }
