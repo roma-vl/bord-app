@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Adverts\Advert;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -46,6 +47,11 @@ class LocatedArea extends Model
     {
         return $this->hasMany(LocatedVillage::class, 'area');
     }
+    public function adverts()
+    {
+        return $this->hasMany(Advert::class, 'area_id');
+    }
+
 
 }
 
