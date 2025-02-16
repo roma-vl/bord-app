@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Cabinet\Profile;
 use App\Contracts\SmsServiceInterface;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\PhoneUpdateRequest;
-use App\Http\Requests\ProfileUpdateRequest;
 use Carbon\Carbon;
 use DomainException;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -36,7 +36,7 @@ class PhoneController extends Controller
         }
 
 //        Mail::to($request->user()->email)->send(new \App\Mail\TestEmail($request->user()));
-        return Redirect::route('account.profile.edit');
+        return Redirect::route('account.profile.settings');
     }
     public function request( Request $request): RedirectResponse
     {

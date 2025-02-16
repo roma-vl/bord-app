@@ -8,9 +8,11 @@ use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Admin\PermissionsController as AdminPermissionsController;
 use App\Http\Controllers\Admin\RolesController as AdminRolesController;
 use App\Http\Controllers\Admin\UsersController as AdminUsersController;
+use App\Http\Controllers\Cabinet\Adverts\AdvertController;
+use App\Http\Controllers\Cabinet\Chat\ChatController;
+use App\Http\Controllers\Cabinet\Profile\PhoneController;
+use App\Http\Controllers\Cabinet\Profile\ProfileController;
 use App\Http\Controllers\IndexController;
-use App\Http\Controllers\PhoneController;
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -21,7 +23,7 @@ Route::get('/greeting/{locale}', [IndexController::class, 'changeLocale'])->name
 Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('/account')->name('account.')->group(function () {
-        Route::get('/dashboard', [ProfileController::class, 'dashboard'])->name('dashboard');
+        Route::get('/dashboard', [ProfileController::class, 'dashboard'])->name('dashboard'); //прибрати потім
         Route::prefix('/profile')->name('profile.')->group(function () {
             Route::get('/phone', [PhoneController::class, 'request'])->name('phone.request');
             Route::get('/edit/phone', [PhoneController::class, 'form'])->name('phone.form');
@@ -29,10 +31,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::patch('/update/phone', [PhoneController::class, 'update'])->name('phone.update');
 
             Route::get('/', [ProfileController::class, 'index'])->name('index');
-            Route::get('/edit', [ProfileController::class, 'edit'])->name('edit');
+            Route::get('/settings', [ProfileController::class, 'settings'])->name('settings');
             Route::patch('/', [ProfileController::class, 'update'])->name('update');
             Route::delete('/', [ProfileController::class, 'destroy'])->name('destroy');
         });
+
+        Route::prefix('/adverts')->name('adverts.')->group(function () {
+            Route::get('/', [AdvertController::class, 'index'])->name('index');
+        });
+        Route::prefix('/chats')->name('chats.')->group(function () {
+            Route::get('/', [ChatController::class, 'index'])->name('index');
+        });
+
     });
 
     Route::prefix('admin')->name('admin.')->group(function () {
