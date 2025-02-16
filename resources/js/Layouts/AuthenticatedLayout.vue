@@ -19,7 +19,7 @@ const messages = () => {
 
 <template>
     <div>
-        <div class="min-h-screen bg-gray-100" style='background: url("/storage/images/background/1.jpg") center top no-repeat;'>
+        <div class="min-h-screen bg-gray-100" > <!-- style='background: url("/storage/images/background/1.jpg") center top no-repeat;' -->
                 <nav class="border-b border-gray-100 bg-white/80 backdrop-blur-md">
                 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div class="flex h-16 justify-between">
@@ -32,7 +32,21 @@ const messages = () => {
                         </div>
 
                         <div class="hidden sm:ms-6 sm:flex sm:items-center">
-                            <Locale/>
+                            <div class="relative ms-3 ">
+                                <a :href="route('account.profile.settings')"
+                                   class="justify-self-end w-48 h-12 flex items-center justify-center text-md font-medium text-violet-600 transition-all duration-300 ease-in-out relative
+                                before:absolute before:bottom-0 before:left-0 before:w-full before:h-[3px] before:bg-violet-600 before:origin-bottom-right before:scale-x-0
+                                 before:transition-transform before:duration-300 before:ease-in-out after:absolute after:top-0 after:left-0 after:w-full after:h-[2px]
+                                 after:bg-violet-600 after:origin-top-left after:scale-x-0 after:transition-transform after:duration-300 after:ease-in-out
+                                  hover:before:scale-x-100 hover:before:origin-bottom-left hover:after:scale-x-100 hover:after:origin-top-right group">
+                                    Додати Оголошення
+                                    <span class="absolute left-0 top-0 h-full w-[3px] bg-violet-600 scale-y-0 transition-transform duration-300 ease-in-out group-hover:scale-y-100 origin-top"></span>
+                                    <span class="absolute right-0 top-0 h-full w-[3px] bg-violet-600 scale-y-0 transition-transform duration-300 ease-in-out group-hover:scale-y-100 origin-bottom"></span>
+                                </a>
+                            </div>
+                            <div class="relative ms-3">
+                                <Locale/>
+                            </div>
                             <div class="relative ms-3">
                                 <Dropdown align="right" width="72">
                                     <template #trigger>
@@ -210,7 +224,7 @@ const messages = () => {
                         </div>
 
                         <div class="mt-3 space-y-1">
-                            <ResponsiveNavLink :href="route('account.profile.edit')">
+                            <ResponsiveNavLink :href="route('account.profile.settings')">
                                 Profile
                             </ResponsiveNavLink>
                             <ResponsiveNavLink
@@ -276,13 +290,14 @@ const messages = () => {
                 </div>
 
                 <div>
-                    <h2 id="footer-heading" class="sr-only">Footer</h2>
-                    <div class="mx-auto max-w-7xl px-6 pb-8 pt-16 sm:pt-24 lg:px-8 lg:pt-32">
+                    <div class="mx-auto max-w-7xl px-6 pt-6 ">
                         <div class="xl:grid xl:grid-cols-3 xl:gap-8">
-                            <div class="space-y-8">
-                                <img class="h-20" src="https://aaah0mnbncqtinas.public.blob.vercel-storage.com/FX5ATkass4-no-background-VmcZHSX7xE4ng29ATNphGUdb388fxH.png" alt="Company name">
-                                <p class="text-sm leading-6 text-gray-600">Making football look better to the world and a more respecful game.</p>
-                                <div class="flex space-x-6">
+                            <div>
+                                <Link :href="route('main')">
+                                    <ApplicationLogo class="block fill-current  w-24" />
+                                </Link>
+                                <p class="text-sm leading-6 p-2 text-gray-600">Making football look better to the world and a more respecful game.</p>
+                                <div class="flex space-x-6 justify-center">
                                     <a href="#" class="text-gray-400 hover:text-gray-500">
                                         <span class="sr-only">Facebook</span>
                                         <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -316,7 +331,7 @@ const messages = () => {
                                     </a>
                                 </div>
                             </div>
-                            <div class="mt-16 grid grid-cols-2 gap-8 xl:col-span-2 xl:mt-0">
+                            <div class="grid grid-cols-2 gap-8 xl:col-span-2 xl:mt-0">
                                 <div class="md:grid md:grid-cols-2 md:gap-8">
                                     <div>
                                         <h3 class="text-sm font-semibold leading-6 text-gray-900">Solutions</h3>
@@ -329,9 +344,6 @@ const messages = () => {
                                             </li>
                                             <li>
                                                 <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Commerce</a>
-                                            </li>
-                                            <li>
-                                                <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Insights</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -346,9 +358,6 @@ const messages = () => {
                                             </li>
                                             <li>
                                                 <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Guides</a>
-                                            </li>
-                                            <li>
-                                                <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">API Status</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -365,12 +374,6 @@ const messages = () => {
                                             </li>
                                             <li>
                                                 <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Jobs</a>
-                                            </li>
-                                            <li>
-                                                <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Press</a>
-                                            </li>
-                                            <li>
-                                                <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Partners</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -391,7 +394,7 @@ const messages = () => {
                                 </div>
                             </div>
                         </div>
-                        <div class="mt-16 border-t border-gray-900/10 pt-8 sm:mt-20 lg:mt-24">
+                        <div class="mt-6 border-t border-gray-900/10 pt-8">
                             <p class="text-xs leading-5 text-gray-500">&copy; 2025 Зозулька, Inc. All rights reserved.</p>
                         </div>
                     </div>
