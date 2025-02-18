@@ -38,6 +38,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::prefix('/adverts')->name('adverts.')->group(function () {
             Route::get('/', [AdvertController::class, 'index'])->name('index');
+            Route::get('/create', [AdvertController::class, 'create'])->name('create');
+            Route::get('/areas/{regionId}', [AdvertController::class, 'getAreas'])->name('areas');
+            Route::get('/villages/{areaId}', [AdvertController::class, 'getVillages'])->name('villages');
+            Route::get('/attributes/{categoryId}', [AdvertController::class, 'getAttributes'])->name('attributes');
+            Route::post('/store', [AdvertController::class, 'store'])->name('store');
         });
         Route::prefix('/chats')->name('chats.')->group(function () {
             Route::get('/', [ChatController::class, 'index'])->name('index');

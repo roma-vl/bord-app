@@ -12,7 +12,7 @@ class UpdateAttributeRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'type' => ['required', 'string', 'max:255', Rule::in(Attribute::typesList())],
+            'type' => ['required', 'string', 'max:255'],
             'is_required' => 'nullable|boolean',
             'variant' => 'nullable|string',
             'sort' => 'required|integer',

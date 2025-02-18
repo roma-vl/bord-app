@@ -13,7 +13,7 @@ const form = useForm({
     name: props.data.attribute.name,
     type: props.data.attribute.type,
     is_required: Boolean(props.data.attribute.is_required),
-    variant: props.data.attribute.variant,
+    variants: props.data.attribute.variants,
     sort: props.data.attribute.sort,
 });
 
@@ -55,7 +55,7 @@ const submit = () => {
 
             <div class="mb-4">
                 <label class="block text-gray-700">Варіанти (по одному на рядок)</label>
-                <textarea v-model="form.variant" class="w-full p-2 border rounded"></textarea>
+                <textarea v-model="form.variants" class="w-full p-2 border rounded"></textarea>
             </div>
 
             <div class="mb-4">

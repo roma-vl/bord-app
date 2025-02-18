@@ -6,6 +6,7 @@ use App\Models\LocatedArea;
 use App\Models\LocatedCountry;
 use App\Models\LocatedRegion;
 use App\Models\LocatedVillage;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -30,6 +31,14 @@ class Advert extends Model
         'expires_at'   => 'datetime',
     ];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'category_id');
+    }
     public function country()
     {
         return $this->belongsTo(LocatedCountry::class, 'country_id');
@@ -47,6 +56,16 @@ class Advert extends Model
     public function village()
     {
         return $this->belongsTo(LocatedVillage::class, 'village_id');
+    }
+
+    public function isDraft(): bool
+    {
+        return $this->status === self::STATUS_DRAFT;
+    }
+
+    public function isActive(): bool
+    {
+        return $this->status === self::STATUS_ACTIVE;
     }
 
     public static function statusesList(): array

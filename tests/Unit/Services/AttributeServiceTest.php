@@ -26,14 +26,14 @@ class AttributeServiceTest extends TestCase
                 'name' => 'Test Attribute',
                 'type' => 'text',
                 'is_required' => true,
-                'variant' => ['option1', 'option2'],
+                'variants' => ['option1', 'option2'],
                 'sort' => 1
             ])
             ->andReturn(new Attribute([
                 'name' => 'Test Attribute',
                 'type' => 'text',
                 'is_required' => true,
-                'variant' => ['option1', 'option2'],
+                'variants' => ['option1', 'option2'],
                 'sort' => 1
             ]));
 
@@ -41,7 +41,7 @@ class AttributeServiceTest extends TestCase
             'name' => 'Test Attribute',
             'type' => 'text',
             'is_required' => true,
-            'variant' => "option1\noption2",
+            'variants' => "option1\noption2",
             'sort' => 1
         ];
 
@@ -65,7 +65,7 @@ class AttributeServiceTest extends TestCase
                 'name' => 'Updated Attribute',
                 'type' => 'select',
                 'is_required' => false,
-                'variant' => ['option3'],
+                'variants' => ['option3'],
                 'sort' => 2
             ]);
 
@@ -73,7 +73,7 @@ class AttributeServiceTest extends TestCase
             'name' => 'Updated Attribute',
             'type' => 'select',
             'is_required' => false,
-            'variant' => "option3",
+            'variants' => "option3",
             'sort' => 2
         ];
 

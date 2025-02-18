@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('type');
             $table->boolean('is_required')->default(false);
-            $table->boolean('variants')->default(false);
+            $table->json('variants');
             $table->integer('sort');
             $table->timestamps();
         });

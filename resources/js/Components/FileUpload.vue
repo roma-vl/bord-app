@@ -43,22 +43,6 @@ const submitFiles = async () => {
     }
 
     console.log(files, 'formData')
-
-    // try {
-    //     const response = await fetch(props.uploadUrl, {
-    //         method: "POST",
-    //         body: formData,
-    //     });
-    //
-    //     if (!response.ok) {
-    //         throw new Error("Failed to upload files.");
-    //     }
-    //
-    //     console.log("Files uploaded successfully!");
-    //     clearFiles();
-    // } catch (error) {
-    //     console.error(error.message);
-    // }
 };
 
 const dragEnterHandler = () => (isDraggedOver.value = true);
@@ -150,21 +134,20 @@ const formatFileSize = (size) => {
                         </li>
                     </ul>
                 </section>
-
-                <footer class="flex justify-end px-8 pb-8 pt-4">
-                    <button
-                        class="rounded-sm px-3 py-1 bg-blue-700 hover:bg-blue-500 text-white focus:shadow-outline focus:outline-none"
-                        @click="submitFiles"
-                    >
-                        Upload now
-                    </button>
-                    <button
-                        class="ml-3 rounded-sm px-3 py-1 hover:bg-gray-300 focus:shadow-outline focus:outline-none"
-                        @click="clearFiles"
-                    >
-                        Cancel
-                    </button>
-                </footer>
+<!--                <footer class="flex justify-end px-8 pb-8 pt-4">-->
+<!--                    <button-->
+<!--                        class="rounded-sm px-3 py-1 bg-blue-700 hover:bg-blue-500 text-white focus:shadow-outline focus:outline-none"-->
+<!--                        @click="submitFiles"-->
+<!--                    >-->
+<!--                        Upload now-->
+<!--                    </button>-->
+<!--                    <button-->
+<!--                        class="ml-3 rounded-sm px-3 py-1 hover:bg-gray-300 focus:shadow-outline focus:outline-none"-->
+<!--                        @click="clearFiles"-->
+<!--                    >-->
+<!--                        Cancel-->
+<!--                    </button>-->
+<!--                </footer>-->
             </article>
         </main>
 </template>

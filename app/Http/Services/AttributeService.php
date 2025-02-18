@@ -12,7 +12,7 @@ class AttributeService
     public function create(Category $category, array $data): Attribute
     {
         $data['is_required'] = (bool) ($data['is_required'] ?? false);
-        $data['variant'] = $this->processVariant($data['variant'] ?? '');
+        $data['variants'] = $this->processVariant($data['variants'] ?? '');
 
         return $category->attributes()->create($data);
     }
@@ -20,7 +20,7 @@ class AttributeService
     public function update(Attribute $attribute, array $data): Attribute
     {
         $data['is_required'] = (bool) ($data['is_required'] ?? false);
-        $data['variant'] = $this->processVariant($data['variant'] ?? '');
+        $data['variants'] = $this->processVariant($data['variants'] ?? '');
 
         $attribute->update($data);
         return $attribute;
