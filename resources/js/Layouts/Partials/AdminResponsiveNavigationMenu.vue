@@ -23,8 +23,8 @@ defineProps({
     >
         <div class="space-y-1 pb-3 pt-2">
             <ResponsiveNavLink
-                :href="route('dashboard')"
-                :active="route().current('dashboard')"
+                :href="route('account.dashboard')"
+                :active="route().current('account.dashboard')"
             >
                 Dashboard
             </ResponsiveNavLink>

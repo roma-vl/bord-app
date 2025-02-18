@@ -25,7 +25,7 @@ const adverts = [
                         <div class="grid grid-cols-2 gap-4 items-start mb-3">
                             <h2 class="text-xl font-bold mb-4">Мої оголошення</h2>
 
-                            <a :href="route('account.profile.settings')"
+                            <a :href="route('account.adverts.create')"
                                class="justify-self-end w-48 h-12 flex items-center justify-center text-md font-medium text-violet-500 hover:text-violet-600 transition-all duration-300 ease-in-out relative
                                 before:absolute before:bottom-0 before:left-0 before:w-full before:h-[3px] before:bg-violet-600 before:origin-bottom-right before:scale-x-0
                                  before:transition-transform before:duration-300 before:ease-in-out after:absolute after:top-0 after:left-0 after:w-full after:h-[2px]
