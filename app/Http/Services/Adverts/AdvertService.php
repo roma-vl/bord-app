@@ -47,15 +47,15 @@ class AdvertService
             $advert->village()->associate($villages);
             $advert->saveOrFail();
 
-//            foreach ($category->allAttributes() as $attribute) {
-//                $value = $request['attributes'][$attribute->id] ?? null;
-//                if ($value !== null) {
-//                    $advert->value()->create([
-//                        'attribute_id' => $attribute->id,
-//                        'value' => $value,
-//                    ]);
-//                }
-//            }
+            foreach ($category->allArrayAttributes() as $attribute) {
+                $value = $request['attributes'][$attribute['id']] ?? null;
+                if ($value !== null) {
+                    $advert->value()->create([
+                        'attribute_id' => $attribute['id'],
+                        'value' => $value,
+                    ]);
+                }
+            }
 
             return $advert;
         });

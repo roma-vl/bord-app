@@ -5,12 +5,10 @@ import ProfileMenu from "@/Pages/Account/Profile/Partials/ProfileMenu.vue";
 
 const user = usePage().props.auth.user;
 
-// Заглушка для оголошень
-const adverts = [
-    { id: 1, title: "Продам велосипед", price: "5000 грн", created_at: "2025-02-10" },
-    { id: 2, title: "Оренда квартири в центрі", price: "15 000 грн/міс", created_at: "2025-02-05" },
-    { id: 3, title: "iPhone 13 Pro Max", price: "30 000 грн", created_at: "2025-01-28" },
-];
+const adverts = usePage().props.adverts;
+
+console.log(adverts, "adverts");
+
 </script>
 
 <template>
@@ -41,16 +39,23 @@ const adverts = [
 
 
                         <div class="p-6 bg-white shadow rounded overflow-hidden">
-                            <div v-if="adverts.length" class="divide-y">
-                                <div v-for="advert in adverts" :key="advert.id" class="py-4 flex justify-between">
+                            <div v-if="adverts.data.length" class="divide-y">
+                                <div v-for="advert in adverts.data" :key="advert.id" class="py-4 flex justify-between">
                                     <div>
                                         <h3 class="text-lg font-semibold">{{ advert.title }}</h3>
                                         <p class="text-gray-600">{{ advert.price }}</p>
                                         <p class="text-sm text-gray-400">Опубліковано: {{ advert.created_at }}</p>
                                     </div>
-                                    <div class="flex space-x-2">
-                                        <a :href="route('account.adverts.index', advert.id)" class="text-blue-600 hover:underline">Редагувати</a>
-                                        <a href="#" class="text-red-600 hover:underline">Видалити</a>
+                                    <div class="flex flex-col ">
+                                        <div class="flex items-start justify-end">
+                                             <span class="text-gray-500"> Статус: {{advert.status}}</span>
+                                             <span class="text-gray-500"> Переглядів: (6)</span>
+                                             <span class="text-gray-500"> Закладки: (2)</span>
+                                        </div>
+                                        <div class="flex items-end space-x-2 justify-end">
+                                            <a :href="route('account.adverts.index', advert.id)" class="text-blue-600 hover:underline">Редагувати</a>
+                                            <a href="#" class="text-red-600 hover:underline">Видалити</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

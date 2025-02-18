@@ -7,6 +7,7 @@ use App\Http\Requests\Cabinet\Adverts\CreateRequest;
 use App\Http\Services\Adverts\AdvertService;
 use App\Http\Services\CategoryService;
 use App\Http\Services\LocationService;
+use App\Models\Adverts\Advert;
 use App\Models\Adverts\Category;
 use DomainException;
 use Illuminate\Database\Eloquent\Casts\Json;
@@ -33,7 +34,10 @@ class AdvertController extends Controller
         $this->advertService = $advertService;
     }
     public function index(): Response    {
-        return Inertia::render('Account/Advert/Index');
+        $adverts = Advert::where('user_id', Auth::id())->paginate(10);
+        return Inertia::render('Account/Advert/Index', [
+            'adverts' => $adverts
+        ]);
     }
 
     public function create(): Response

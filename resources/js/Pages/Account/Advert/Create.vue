@@ -4,6 +4,7 @@ import { Head, useForm, usePage } from "@inertiajs/vue3";
 import {computed, ref, watch} from "vue";
 import axios from "axios";
 import FileUpload from "@/Components/FileUpload.vue";
+import InputError from "@/Components/InputError.vue";
 
 const user = usePage().props.auth.user;
 
@@ -17,9 +18,6 @@ console.log(props.categories, "categories");
 const areas = ref([]);
 const villages = ref([]);
 const attributes = ref([]);
-const uploadedImages = ref([]);
-const dragging = ref(false);
-
 const form = useForm({
     category_id: '',
     country_id: '',
@@ -30,6 +28,7 @@ const form = useForm({
     price: '',
     address: '',
     content: '',
+    attributes: {}
 });
 
 watch(() => form.region_id, async (newRegionId) => {
@@ -62,19 +61,19 @@ watch(() => form.area_id, async (newVillagesId) => {
 });
 
 watch(() => form.category_id, async (newCategoryId) => {
-    // form.village_id = '';
-    attributes.value = [];
+    attributes.value = []; // Спочатку очищаємо
 
     if (!newCategoryId) return;
 
     try {
         const response = await axios.get(route("account.adverts.attributes", { categoryId: newCategoryId }));
-        attributes.value = response.data;
-        console.log(attributes.value, "attributes");
+        attributes.value = response.data ?? []; // Переконуємося, що це масив
+        console.log("Завантажені атрибути:", attributes.value);
     } catch (error) {
-        console.error("Помилка завантаження сіл", error);
+        console.error("Помилка завантаження атрибутів", error);
     }
 });
+
 
 
 const submit = () => {
@@ -111,13 +110,15 @@ const formattedCategories = computed(() => getCategoryOptions(props.categories))
 
                             <div class="mb-4">
                                 <label class="block text-sm font-medium mb-2">Назва</label>
-                                <input v-model="form.title" type="text" required class="w-full border-gray-300 p-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
+                                <input v-model="form.title" type="text"  class="w-full border-gray-300 p-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
                             </div>
+                            <InputError class="mt-2" :message="form.errors.title"/>
 
                             <div class="mb-4">
                                 <label class="block text-sm font-medium mb-2">Ціна</label>
                                 <input v-model="form.price" type="number" required class="w-full border-gray-300 p-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
                             </div>
+                            <InputError class="mt-2" :message="form.errors.price"/>
 
                             <div class="mb-4">
                                 <label class="block text-sm font-medium mb-2">Категорія</label>
@@ -127,6 +128,7 @@ const formattedCategories = computed(() => getCategoryOptions(props.categories))
                                     </option>
                                 </select>
                             </div>
+                            <InputError class="mt-2" :message="form.errors.category_id"/>
 
                             <div class="mb-4">
                                 <label class="block text-sm font-medium mb-2">Фото</label>
@@ -172,26 +174,47 @@ const formattedCategories = computed(() => getCategoryOptions(props.categories))
                                 <label class="block text-sm font-medium mb-2">Опис</label>
                                 <textarea v-model="form.content" class="w-full border-gray-300 p-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"></textarea>
                             </div>
+                            <InputError class="mt-2" :message="form.errors.content"/>
 
-                            <div class="grid grid-cols-2 gap-4 mt-4">
-                                <div>
-                                    <label class="block text-sm font-medium mb-2">Колір</label>
-                                    <select class="w-full border-gray-300 p-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                                        <option>Червоний</option>
-                                        <option>Синій</option>
-                                        <option>Зелений</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium mb-2">Розмір</label>
-                                    <select class="w-full border-gray-300 p-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                                        <option>Малий</option>
-                                        <option>Середній</option>
-                                        <option>Великий</option>
-                                    </select>
+                            <div v-if="attributes && attributes.length > 0">
+                                <h3 class="text-lg font-medium">Атрибути</h3>
+                                <div v-for="attribute in attributes" :key="attribute.id" class="mb-4">
+                                    <label :for="'attribute_' + attribute.id" class="block text-sm font-medium mb-2">
+                                        {{ attribute.name }}
+                                    </label>
+
+                                    <template v-if="attribute.variants && attribute.variants.length">
+                                        <select
+                                            :id="'attribute_' + attribute.id"
+                                            v-model="form.attributes[attribute.id]"
+                                            class="w-full border-gray-300 p-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                        >
+                                            <option value=""></option>
+                                            <option v-for="variant in attribute.variants" :key="variant" :value="variant">
+                                                {{ variant }}
+                                            </option>
+                                        </select>
+                                    </template>
+
+                                    <template v-else-if="attribute.type === 'integer' || attribute.type === 'float'">
+                                        <input
+                                            :id="'attribute_' + attribute.id"
+                                            type="number"
+                                            v-model="form.attributes[attribute.id]"
+                                            class="w-full border-gray-300 p-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                        />
+                                    </template>
+
+                                    <template v-else>
+                                        <input
+                                            :id="'attribute_' + attribute.id"
+                                            type="text"
+                                            v-model="form.attributes[attribute.id]"
+                                            class="w-full border-gray-300 p-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                        />
+                                    </template>
                                 </div>
                             </div>
-
                             <button type="submit" class="mt-6 bg-blue-500 text-white px-6 py-3 rounded-md shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">Створити</button>
                         </form>
                     </div>

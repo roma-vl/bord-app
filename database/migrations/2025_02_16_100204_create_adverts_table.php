@@ -31,10 +31,11 @@ return new class extends Migration
             $table->boolean('premium')->default(false);
             $table->timestamp('published_at')->nullable();
             $table->timestamp('expires_at')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
 
-        Schema::create('advert_advert_value', function (Blueprint $table) {
+        Schema::create('advert_advert_values', function (Blueprint $table) {
             $table->integer('advert_id')->references('id')->on('advert_adverts')->onDelete('cascade');
             $table->integer('attribute_id')->references('id')->on('advert_attributes')->onDelete('cascade');
             $table->string('value');

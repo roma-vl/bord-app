@@ -2,6 +2,7 @@
 
 namespace App\Models\Adverts;
 
+use App\Models\Adverts\Value;
 use App\Models\LocatedArea;
 use App\Models\LocatedCountry;
 use App\Models\LocatedRegion;
@@ -38,6 +39,11 @@ class Advert extends Model
     public function category()
     {
         return $this->belongsTo(Category::class, 'category_id');
+    }
+
+    public function value()
+    {
+        return $this->hasMany(Value::class, 'advert_id', 'id');
     }
     public function country()
     {

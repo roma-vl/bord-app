@@ -29,16 +29,9 @@ class Category extends Model
         })->flatten(); // Вирівнюємо масив
     }
 
-
-
-    public function getAllAttributes()
+    public function allArrayAttributes(): array
     {
-        return $this->getParentAttributes()->merge($this->attributes);
-    }
-
-    public function allAttributes(): array
-    {
-        $parent = $this->getParentAttributes();
+        $parent = $this->getParentAttributes()->toArray();
         $attr = $this->attributes()->orderBy('sort')->getModels();
         return array_merge($parent, $attr);
     }
