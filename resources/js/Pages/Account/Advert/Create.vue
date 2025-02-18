@@ -3,8 +3,8 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head, useForm, usePage } from "@inertiajs/vue3";
 import {computed, ref, watch} from "vue";
 import axios from "axios";
-import FileUpload from "@/Components/FileUpload.vue";
 import InputError from "@/Components/InputError.vue";
+import AdvertFileUpload from "@/Pages/Account/Advert/Partials/AdvertFileUpload.vue";
 
 const user = usePage().props.auth.user;
 
@@ -108,13 +108,13 @@ const formattedCategories = computed(() => getCategoryOptions(props.categories))
                     <div class="px-4">
                         <form @submit.prevent="submit">
 
-                            <div class="mb-4">
+                            <div class="mb-4 w-2/3">
                                 <label class="block text-sm font-medium mb-2">Назва</label>
                                 <input v-model="form.title" type="text"  class="w-full border-gray-300 p-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
                             </div>
                             <InputError class="mt-2" :message="form.errors.title"/>
 
-                            <div class="mb-4">
+                            <div class="mb-4 w-2/3">
                                 <label class="block text-sm font-medium mb-2">Ціна</label>
                                 <input v-model="form.price" type="number" required class="w-full border-gray-300 p-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
                             </div>
@@ -132,7 +132,7 @@ const formattedCategories = computed(() => getCategoryOptions(props.categories))
 
                             <div class="mb-4">
                                 <label class="block text-sm font-medium mb-2">Фото</label>
-                                <FileUpload uploadUrl="https://example.com/upload" />
+                                <AdvertFileUpload uploadUrl="https://example.com/upload" />
                             </div>
 
 
