@@ -5,8 +5,10 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 
 const categories = usePage().props.categories;
 const news = usePage().props.news;
-const listings = usePage().props.listings;
+const vip = usePage().props.vip;
 const regions = usePage().props.regions;
+
+
 
 const selectedRegion = ref('all');
 const searchQuery = ref("");
@@ -41,6 +43,12 @@ const handleClickOutside = (event) => {
     }
 };
 
+// Отримуємо лише підкатегорії вибраної категорії
+const subCategories = computed(() => {
+    const category = categories.find(c => c.id === openCategory.value);
+    return category ? category.root_with_one_children : []; // Використовуй children, а не всі вкладені
+});
+console.log(subCategories.value.length, "categories");
 onMounted(() => {
     document.addEventListener("click", handleClickOutside);
 });
@@ -106,7 +114,6 @@ onBeforeUnmount(() => {
                             </button>
                         </div>
 
-                        <!-- Категорії -->
                         <section class="my-8">
                             <h2 class="text-xl font-semibold mb-4 text-center">Розділи на сервісі</h2>
 
@@ -116,25 +123,24 @@ onBeforeUnmount(() => {
                                         <button
                                             class="p-3 shadow rounded bg-gray-100 hover:bg-gray-200 w-full min-h-[120px]"
                                             @click="toggleCategory(category.id)">
-                                            <img :src="category.icon" alt="Іконка" class="w-12 h-12 mx-auto" />
+                                            <img src="https://categories.olxcdn.com/assets/categories/olxua/arenda-prokat-3428-1x.png" alt="Іконка" class="w-12 h-12 mx-auto" />
                                             <span class="text-sm mt-2 hover:underline">{{ category.name }}</span>
                                         </button>
                                     </div>
+
                                 </template>
 
-                                <!-- Контейнер підрозділів між елементами -->
-                                <div v-if="openCategory" class="col-span-full">
+                                <div v-if="openCategory && subCategories.length > 0" class="col-span-full">
                                     <transition name="fade">
                                         <div class="bg-white shadow-md rounded p-4 mt-2">
-
                                             <p class="pb-3">
                                                 <span class="font-bold text-sm"> > Переглянути всі оголошення в </span>
                                                 <span class="text-sm hover:underline cursor-pointer">{{ selectedCategoryName }}</span>
                                             </p>
                                             <hr>
-                                            <!-- Вивід підрозділів у 3 колонки -->
+
                                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-3">
-                                                <template v-for="subCategory in categories" :key="subCategory.id">
+                                                <template v-for="subCategory in subCategories" :key="subCategory.id">
                                                     <p class="text-sm hover:underline cursor-pointer">
                                                         {{ subCategory.name }}
                                                     </p>
@@ -143,6 +149,7 @@ onBeforeUnmount(() => {
                                         </div>
                                     </transition>
                                 </div>
+
                             </div>
                         </section>
 
@@ -151,11 +158,11 @@ onBeforeUnmount(() => {
                         <section class="bg-gray-100 p-6 rounded">
                             <h2 class="text-xl font-semibold mb-4">VIP-оголошення</h2>
                             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                <div v-for="listing in listings" :key="listing.id" class="border p-4 rounded shadow">
-                                    <img :src="listing.image" alt="Фото" class="w-full h-40 object-cover rounded" />
+                                <div v-for="listing in vip" :key="listing.id" class="border p-4 rounded shadow">
+                                    <img src="/storage/images/adverts/info/empty.jpg" alt="Фото" class="w-full  object-cover rounded" />
                                     <h3 class="mt-2 text-lg font-semibold">{{ listing.title }}</h3>
                                     <p class="text-green-600 font-bold">{{ listing.price }}</p>
-                                    <Link :href="`/listings/${listing.id}`" class="text-blue-500 hover:underline">
+                                    <Link :href="route('adverts.show', listing.id)"  class="text-blue-500 hover:underline">
                                         Детальніше
                                     </Link>
                                 </div>
@@ -167,10 +174,10 @@ onBeforeUnmount(() => {
                             <h2 class="text-xl font-semibold mb-4">Останні оголошення</h2>
                             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                                 <div v-for="listing in news" :key="listing.id" class="border p-4 rounded shadow">
-                                    <img :src="listing.image" alt="Фото" class="w-full h-40 object-cover rounded" />
+                                    <img src="/storage/images/adverts/info/empty.jpg" alt="Фото" class="w-full  object-cover rounded" />
                                     <h3 class="mt-2 text-lg font-semibold">{{ listing.title }}</h3>
                                     <p class="text-green-600 font-bold">{{ listing.price }}</p>
-                                    <Link :href="`/listings/${listing.id}`" class="text-blue-500 hover:underline">
+                                    <Link :href="route('adverts.show', listing.id)" class="text-blue-500 hover:underline">
                                         Детальніше
                                     </Link>
                                 </div>
@@ -182,10 +189,10 @@ onBeforeUnmount(() => {
                             <h2 class="text-xl font-semibold mb-4">Ви переглядали</h2>
                             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                                 <div v-for="listing in news" :key="listing.id" class="border p-4 rounded shadow">
-                                    <img :src="listing.image" alt="Фото" class="w-full h-40 object-cover rounded" />
+                                    <img src="/storage/images/adverts/info/empty.jpg" alt="Фото" class="w-full  object-cover rounded" />
                                     <h3 class="mt-2 text-lg font-semibold">{{ listing.title }}</h3>
                                     <p class="text-green-600 font-bold">{{ listing.price }}</p>
-                                    <Link :href="`/listings/${listing.id}`" class="text-blue-500 hover:underline">
+                                    <Link :href="route('adverts.show', listing.id)" class="text-blue-500 hover:underline">
                                         Детальніше
                                     </Link>
                                 </div>

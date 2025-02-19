@@ -4,6 +4,7 @@ namespace App\Models\Adverts;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Kalnoy\Nestedset\NodeTrait;
 
 class Category extends Model
@@ -20,6 +21,13 @@ class Category extends Model
         return $this->hasMany(Category::class, 'parent_id')->with('children');
     }
 
+    public function rootWithOneChildren(): HasMany
+    {
+        return $this->hasMany(Category::class, 'parent_id')
+            ->select(['id', 'name', 'parent_id']); // Обмежуємо поля, щоб не тягнути зайве
+    }
+
+
     public function getParentAttributes()
     {
         $parents = $this->ancestors()->with('attributes')->get(); // Отримуємо всіх батьків
@@ -35,6 +43,7 @@ class Category extends Model
         $attr = $this->attributes()->orderBy('sort')->getModels();
         return array_merge($parent, $attr);
     }
+
     public function attributes()
     {
         return $this->hasMany(Attribute::class, 'category_id', 'id');
@@ -46,6 +55,10 @@ class Category extends Model
             ->with('childrenRecursive')
             ->orderBy('_lft');
     }
+    // У моделі Category.php
+
+
+
 
 }
 

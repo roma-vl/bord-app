@@ -17,10 +17,15 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/', [IndexController::class, 'index'])->middleware([])->name('main');
+Route::prefix('/adverts')->name('adverts.')->group(function () {
+    Route::get('/show/{advert}', [IndexController::class, 'show'])->name('show');
+});
 Route::get('/greeting/{locale}', [IndexController::class, 'changeLocale'])->name('greeting');
 
 
 Route::middleware(['auth', 'verified'])->group(function () {
+
+
 
     Route::prefix('/account')->name('account.')->group(function () {
         Route::get('/dashboard', [ProfileController::class, 'dashboard'])->name('dashboard'); //прибрати потім
@@ -38,6 +43,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::prefix('/adverts')->name('adverts.')->group(function () {
             Route::get('/', [AdvertController::class, 'index'])->name('index');
+            Route::get('/show/{advert}', [IndexController::class, 'show'])->name('show');
+            Route::get('/edit/{advert}', [AdvertController::class, 'edit'])->name('edit');
             Route::get('/create', [AdvertController::class, 'create'])->name('create');
             Route::get('/areas/{regionId}', [AdvertController::class, 'getAreas'])->name('areas');
             Route::get('/villages/{areaId}', [AdvertController::class, 'getVillages'])->name('villages');

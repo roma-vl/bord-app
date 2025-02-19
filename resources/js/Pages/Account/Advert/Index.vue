@@ -53,7 +53,8 @@ console.log(adverts, "adverts");
                                              <span class="text-gray-500"> Закладки: (2)</span>
                                         </div>
                                         <div class="flex items-end space-x-2 justify-end">
-                                            <a :href="route('account.adverts.index', advert.id)" class="text-blue-600 hover:underline">Редагувати</a>
+                                            <a :href="route('account.adverts.edit', advert.id)" class="text-blue-600 hover:underline">Редагувати</a>
+                                            <a :href="route('adverts.show', advert.id)" class="text-blue-600 hover:underline">Переглянути</a>
                                             <a href="#" class="text-red-600 hover:underline">Видалити</a>
                                         </div>
                                     </div>

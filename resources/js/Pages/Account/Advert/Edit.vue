@@ -11,24 +11,25 @@ const user = usePage().props.auth.user;
 const props = defineProps({
     categories: Array,
     regions: Array,
+    advert: Object,
 });
 // const categories = usePage().props.categories;
-console.log(props.categories, "categories");
+console.log(props.advert, "categories");
 
 const areas = ref([]);
 const villages = ref([]);
 const attributes = ref([]);
 const form = useForm({
-    category_id: '',
-    country_id: '',
-    region_id: '',
-    area_id: '',
-    village_id: '',
-    title: '',
-    price: '',
-    address: '',
-    content: '',
-    attributes: {},
+    category_id: props.advert.category_id,
+    country_id: props.advert.country_id,
+    region_id: props.advert.region_id,
+    area_id: props.advert.area_id,
+    village_id: props.advert.village_id,
+    title: props.advert.title,
+    price: props.advert.price,
+    address: props.advert.address,
+    content: props.advert.content,
+    attributes: props.advert.attributes,
     images: []
 });
 
@@ -77,44 +78,44 @@ watch(() => form.category_id, async (newCategoryId) => {
 
 
 
-const submit = () => {
-    form.post(route("account.adverts.store"), {
-        onSuccess: () => {
-            console.log("Оголошення створено");
-            form.reset();
-        },
-    });
-};
-
 // const submit = () => {
-//     const formData = new FormData();
-//
-//     // Додаємо всі поля форми
-//     Object.keys(form).forEach((key) => {
-//         if (key !== 'images') {
-//             formData.append(key, form[key]);
-//         }
-//     });
-//
-//     // Додаємо зображення
-//     form.images.forEach((image) => {
-//         formData.append('images[]', image);
-//     });
-//
-//     // Відправляємо запит з FormData
-//     axios.post(route("account.adverts.store"), formData, {
-//         headers: {
-//             "Content-Type": "multipart/form-data",
-//         },
-//     })
-//         .then(() => {
+//     form.post(route("account.adverts.store"), {
+//         onSuccess: () => {
 //             console.log("Оголошення створено");
 //             form.reset();
-//         })
-//         .catch((error) => {
-//             console.error("Помилка при відправці форми", error);
-//         });
+//         },
+//     });
 // };
+
+const submit = () => {
+    const formData = new FormData();
+
+    // Додаємо всі поля форми
+    Object.keys(form).forEach((key) => {
+        if (key !== 'images') {
+            formData.append(key, form[key]);
+        }
+    });
+
+    // Додаємо зображення
+    form.images.forEach((image) => {
+        formData.append('images[]', image);
+    });
+
+    // Відправляємо запит з FormData
+    axios.post(route("account.adverts.store"), formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    })
+        .then(() => {
+            console.log("Оголошення створено");
+            form.reset();
+        })
+        .catch((error) => {
+            console.error("Помилка при відправці форми", error);
+        });
+};
 
 
 const getCategoryOptions = (categories, prefix = "") => {
@@ -152,6 +153,7 @@ const addFile = (file) => {
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow sm:rounded-lg p-6">
                     <div class="px-4">
+                        Редагувати оголошення
                         <form @submit.prevent="submit">
 
                             <div class="mb-4">

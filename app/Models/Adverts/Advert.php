@@ -2,15 +2,17 @@
 
 namespace App\Models\Adverts;
 
-use App\Models\Adverts\Value;
 use App\Models\LocatedArea;
 use App\Models\LocatedCountry;
 use App\Models\LocatedRegion;
 use App\Models\LocatedVillage;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Builder;
+
 
 class Advert extends Model
 {
@@ -43,7 +45,12 @@ class Advert extends Model
 
     public function value()
     {
-        return $this->hasMany(Value::class, 'advert_id', 'id');
+        return $this->hasMany(Value::class, 'advert_id');
+    }
+
+    public function photo()
+    {
+        return $this->hasMany(Photo::class, 'advert_id', 'id');
     }
     public function country()
     {
@@ -74,6 +81,53 @@ class Advert extends Model
         return $this->status === self::STATUS_ACTIVE;
     }
 
+    public function sendToModeration(): void
+    {
+        if (!$this->isDraft()) {
+            throw new \DomainException('Advert is not draft.');
+        }
+        if (!\count($this->photo)) {
+            throw new \DomainException('Upload photos.');
+        }
+        $this->update([
+            'status' => self::STATUS_MODERATION,
+        ]);
+    }
+
+    public function moderate(Carbon $date): void
+    {
+        if ($this->status !== self::STATUS_MODERATION) {
+            throw new \DomainException('Advert is not sent to moderation.');
+        }
+        $this->update([
+            'published_at' => $date,
+            'expires_at' => $date->copy()->addDays(15),
+            'status' => self::STATUS_ACTIVE,
+        ]);
+    }
+
+    public function reject($reason): void
+    {
+        $this->update([
+            'status' => self::STATUS_DRAFT,
+            'reject_reason' => $reason,
+        ]);
+    }
+
+    public function expire(): void
+    {
+        $this->update([
+            'status' => self::STATUS_CLOSED,
+        ]);
+    }
+
+    public function close(): void
+    {
+        $this->update([
+            'status' => self::STATUS_CLOSED,
+        ]);
+    }
+
     public static function statusesList(): array
     {
         return [
@@ -86,5 +140,17 @@ class Advert extends Model
             self::STATUS_DELETED         => 'Видалений',
             self::STATUS_EXPIRED         => 'Закінчився термін дії',
         ];
+    }
+    public function scopeForUser(Builder $query, User $user): Builder
+    {
+        return $query->where('user_id', $user->id);
+    }
+
+    public function scopeForCategory(Builder $query, Category $category)
+    {
+        return $query->whereIn('category_id', array_merge(
+            [$category->id],
+            $category->descendants()->pluck('id')->toArray()
+        ));
     }
 }

@@ -10,5 +10,11 @@ class Value extends Model
 
     public $timestamps = false;
 
-    protected $fillable = ['attribute_id', 'value'];
+    protected $fillable = ['advert_id', 'attribute_id', 'value'];
+
+    public function attribute()
+    {
+        return $this->belongsTo(Attribute::class, 'attribute_id');
+    }
+
 }

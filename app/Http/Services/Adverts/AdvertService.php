@@ -2,8 +2,12 @@
 
 namespace App\Http\Services\Adverts;
 
+
+use App\Http\Requests\Cabinet\Adverts\AttributesRequest;
 use App\Http\Requests\Cabinet\Adverts\CreateRequest;
+use App\Http\Requests\Cabinet\Adverts\EditRequest;
 use App\Http\Requests\Cabinet\Adverts\PhotosRequest;
+use App\Http\Requests\Cabinet\Adverts\RejectRequest;
 use App\Models\Adverts\Advert;
 use App\Models\Adverts\Category;
 use App\Models\LocatedArea;
@@ -11,6 +15,7 @@ use App\Models\LocatedCountry;
 use App\Models\LocatedRegion;
 use App\Models\LocatedVillage;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class AdvertService
@@ -61,18 +66,86 @@ class AdvertService
         });
     }
 
+    public function edit($id, EditRequest $request): void
+    {
+        $advert = $this->getAdvert($id);
+        $advert->update($request->only([
+            'title',
+            'content',
+            'price',
+            'address',
+        ]));
+    }
+
+    public function editAttributes($id, AttributesRequest $request): void
+    {
+        $advert = $this->getAdvert($id);
+
+        DB::transaction(function () use ($request, $advert) {
+            foreach ($advert->value as $value) {
+                $value->delete();
+            }
+
+            foreach ($advert->category->allArrayAttributes() as $attribute) {
+                $value = $request['attributes'][$attribute['id']] ?? null;
+                if ($value !== null) {
+                    $advert->value()->create([
+                        'attribute_id' => $attribute['id'],
+                        'value' => $value,
+                    ]);
+                }
+            }
+            $advert->update();
+        });
+    }
+
     public function addPhoto($id, PhotosRequest $photosRequest): void
     {
         $advert = $this->getAdvert($id);
 
         DB::transaction(function () use ($photosRequest, $advert) {
             foreach ($photosRequest->file('photos') as $photo) {
-                $advert->photos->create([
+                $advert->photo()->create([
                     'file' => $photo->store('adverts/' . $advert->id, 'public'),
                 ]);
             }
         });
     }
+    public function sendToModeration($id): void
+    {
+        $advert = $this->getAdvert($id);
+        $advert->sendToModeration();
+    }
+
+
+    public function moderate($id): void
+    {
+        $advert = $this->getAdvert($id);
+        $advert->moderate(Carbon::now());
+    }
+
+    public function reject($id, RejectRequest $request): void
+    {
+        $advert = $this->getAdvert($id);
+        $advert->reject($request['reason']);
+    }
+    public function expire(Advert $advert): void
+    {
+        $advert->expire();
+    }
+
+    public function close($id): void
+    {
+        $advert = $this->getAdvert($id);
+        $advert->close();
+    }
+
+    public function remove($id): void
+    {
+        $advert = $this->getAdvert($id);
+        $advert->delete();
+    }
+
 
     public function getAdvert($id): Advert
     {

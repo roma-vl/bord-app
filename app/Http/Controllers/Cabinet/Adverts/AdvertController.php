@@ -10,7 +10,6 @@ use App\Http\Services\LocationService;
 use App\Models\Adverts\Advert;
 use App\Models\Adverts\Category;
 use DomainException;
-use Illuminate\Database\Eloquent\Casts\Json;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
@@ -34,7 +33,7 @@ class AdvertController extends Controller
         $this->advertService = $advertService;
     }
     public function index(): Response    {
-        $adverts = Advert::where('user_id', Auth::id())->paginate(10);
+        $adverts = Advert::forUser( Auth::user())->orderByDesc('id')->paginate(10);
         return Inertia::render('Account/Advert/Index', [
             'adverts' => $adverts
         ]);
@@ -48,6 +47,18 @@ class AdvertController extends Controller
             'categories' => $categories,
             'regions' => $regions,
         ]);
+    }
+
+    public function edit(Advert $advert): Response
+    {
+        $categories = $this->categoryService->getCategories();
+        $regions = $this->locationService->getRegions(self::COUNTRY_ID);
+        return Inertia::render('Account/Advert/Edit', [
+            'advert' => $advert,
+            'categories' => $categories,
+            'regions' => $regions
+        ]);
+
     }
 
     public function store(CreateRequest $request): RedirectResponse|JsonResponse

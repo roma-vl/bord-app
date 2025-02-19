@@ -1,13 +1,13 @@
 
 <script setup>
 import { ref } from "vue";
-
-const props = defineProps({
-    uploadUrl: {
-        type: String,
-        required: true,
-    },
-});
+//
+// const props = defineProps({
+//     uploadUrl: {
+//         type: String,
+//         required: true,
+//     },
+// });
 
 const files = ref({});
 const isDraggedOver = ref(false);
