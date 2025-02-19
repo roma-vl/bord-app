@@ -31,7 +31,7 @@ const toggleFullscreen = () => {
 </script>
 
 <template>
-        <div class="min-h-screen bg-gray-100">
+        <div class="min-h-screen bg-gray-100 flex flex-col">
             <nav class="border-b border-gray-100 bg-white">
                 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div class="flex h-16 justify-between">
@@ -222,12 +222,11 @@ const toggleFullscreen = () => {
 
             <SideMenu />
             <!-- Page Content -->
-            <main>
+            <main class="flex-grow">
                 <slot />
             </main>
 
             <footer class=" bg-gray-100" aria-labelledby="footer-heading">
-                <h2 >Footer</h2>
             </footer>
         </div>
 </template>
