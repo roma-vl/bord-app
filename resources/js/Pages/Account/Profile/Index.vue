@@ -18,7 +18,9 @@ const user = usePage().props.auth.user;
 
                     <div class="flex min-h-[400px] p-3 px-6">
                         <div class="w-1/3 bg-white flex items-center justify-center shadow-md rounded overflow-hidden">
-                            <div class="w-48 h-48 bg-gray-400 rounded-full"></div>
+
+                            <img v-if="user.avatar_url" class="w-60 h-60 bg-gray-400 rounded-lg" :src="user.avatar_url">
+                            <div v-else  class="w-48 h-48 bg-gray-400 rounded-full"></div>
                         </div>
 
                         <div class="w-2/3 p-6 bg-white shadow-md rounded overflow-hidden flex flex-col m-0 ml-4">

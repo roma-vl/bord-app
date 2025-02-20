@@ -14,6 +14,7 @@ const props = defineProps({
 });
 console.log(props.advert, "props");
 const isLiked = ref(false);
+const userPhone = ref(false);
 
 const toggleLike = () => {
     isLiked.value = !isLiked.value;
@@ -24,7 +25,9 @@ const photos = [
         id: 1,
         file: "https://img.freepik.com/free-photo/funny-duck-3d-illustration_183364-80316.jpg?t=st=1739995450~exp=1739999050~hmac=ff47a4a1fc83795e58a4f89455cb048ca2ec288e1daef9ce6dfdabc6d3d83c17&w=740"
     },
-    {id: 2, file: "https://img.freepik.com/premium-vector/happy-turkey-cartoon-running_49499-219.jpg?w=996"},
+    {
+        id: 2,
+        file: "https://img.freepik.com/premium-vector/happy-turkey-cartoon-running_49499-219.jpg?w=996"},
     {
         id: 3,
         file: "https://img.freepik.com/premium-vector/cute-frog-cartoon-character-cowboy-style_1639-50300.jpg?w=826"
@@ -53,11 +56,20 @@ const getValue = (attributeName) => {
     return valueObj ? valueObj.value : "-";
 };
 
-// Головне зображення
 const mainPhoto = ref(photos.length ? photos[0].file : "");
 
 const setMainPhoto = (photo) => {
     mainPhoto.value = photo;
+};
+
+const getPhone = async (id) => {
+    if (userPhone.value) return;
+    try {
+        const response = await axios.get(route('adverts.phone', id));
+        userPhone.value = response.data;
+    } catch (error) {
+        console.error("Помилка при завантаженні номера користувача", error);
+    }
 };
 </script>
 
@@ -166,16 +178,16 @@ const setMainPhoto = (photo) => {
                                 <span class="pt-2 text-gray-800 text-sm pl-2"> Договірна</span>
                             </div>
 
-                            <button class="relative z-0 h-14 rounded-md border-2 hover:border-[5px] hover:bg-white hover:text-blue-500 border-blue-500  bg-blue-500 w-full mt-5 mb-5 text-neutral-50 after:absolute after:left-0 after:top-0
-                    after:-z-10 after:h-full after:w-full after:rounded-md after:bg-blue-500 hover:after:scale-x-125 hover:after:scale-y-150
-                     hover:after:opacity-0 hover:after:transition hover:after:duration-500">
+                            <button class=" h-14 rounded-md border-2 hover:border-[5px] hover:bg-white hover:text-blue-500
+                            border-blue-500  bg-blue-500 w-full mt-5 mb-5 text-neutral-50 after:absolute after:left-0 after:top-0
+                    after:-z-10 after:h-full after:w-full after:rounded-md">
                                 <span class="text-lg font-bold">Повідомлення</span>
                             </button>
 
-                            <button class="relative z-0 h-14 rounded-md border-2 hover:border-[5px] border-blue-500 w-full mb-5 text-blue-500 after:absolute after:left-0 after:top-0
-                    after:-z-10 after:h-full after:w-full after:rounded-md  hover:after:scale-x-125 hover:after:scale-y-150
-                     hover:after:opacity-0 hover:after:transition hover:after:duration-500">
-                                <span class="text-lg font-bold">Показати телефон</span>
+                            <button @click.prevent="getPhone(advert.id)" class="h-14 rounded-md border-2 hover:border-[5px]
+                             border-blue-500 w-full mb-5 text-blue-500 after:absolute after:left-0 after:top-0
+                    after:-z-10 after:h-full after:w-full after:rounded-md">
+                                <span class="text-lg font-bold">{{userPhone ? userPhone : ' Показати телефон'}}</span>
                             </button>
                         </div>
 
@@ -208,15 +220,6 @@ const setMainPhoto = (photo) => {
                                 <img src="https://inweb.ua/blog/wp-content/uploads/2020/09/vstavte-etot-kod-na-svoyu-html-stranitsu-ili-vidzhet.jpg" alt="">
                             </div>
                         </div>
-
-                        <div class="rounded-lg shadow p-3 bg-white mt-5">
-                            <div class="mt-4 ">
-                                <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Зв'язатися
-                                </button>
-
-                            </div>
-                        </div>
-
                     </div>
                 </div>
             </div>
