@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Adverts\Advert;
 use App\Models\Adverts\Category;
 use App\Models\LocatedRegion;
+use App\Models\Location;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
@@ -35,12 +36,14 @@ class IndexController extends Controller
 
     public function index(): Response
     {
+
         $categories = Category::whereNull('parent_id')
             ->with(['rootWithOneChildren' => function ($query) {
                 $query->orderBy('name');
             }])->orderBy('name')->get();
 
-        $regions = LocatedRegion::all();
+        $regions = Location::whereDepth(1)->get();
+        $regions2 = LocatedRegion::all();
         $news = Advert::where('status', 'active')->orderByDesc('id')->limit(4)->get();
         $vip = Advert::where('status', 'active')->where('premium', 1)->orderByDesc('id')->limit(4)->get();
 
