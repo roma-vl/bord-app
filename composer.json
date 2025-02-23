@@ -20,6 +20,7 @@
         "laravel/telescope": "^5.3",
         "laravel/tinker": "^2.9",
         "nesbot/carbon": "^3.8",
+        "owen-it/laravel-auditing": "^13.7",
         "tightenco/ziggy": "^2.0",
         "twilio/sdk": "^8.3"
     },

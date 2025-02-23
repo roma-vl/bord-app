@@ -24,24 +24,22 @@ const citiesData = {
     ]
 };
 
-const villagesData = {
-    "Центр": [
-        { name: "Вулиця Центральна" },
-        { name: "Вулиця Літературна" }
-    ],
-    "Оболонь": [
-        { name: "Вулиця Південна" },
-        { name: "Вулиця Сонячна" }
-    ],
-    "Шевченківський район": [
-        { name: "Вулиця Шевченка" },
-        { name: "Вулиця Миколайська" }
-    ]
-};
+// const villagesData = {
+//     "Центр": [
+//         { name: "Вулиця Центральна" },
+//         { name: "Вулиця Літературна" }
+//     ],
+//     "Оболонь": [
+//         { name: "Вулиця Південна" },
+//         { name: "Вулиця Сонячна" }
+//     ],
+//     "Шевченківський район": [
+//         { name: "Вулиця Шевченка" },
+//         { name: "Вулиця Миколайська" }
+//     ]
+// };
 
-const selectedRegion = ref('all');
-const selectedCity = ref(null);
-const selectedVillage = ref(null);
+const selectedRegion = ref('Уся Україна');
 const searchQuery = ref("");
 const searchHistory = ref(["iPhone 13", "Ноутбук Dell", "Годинник Apple", "Квартира у Києві"]);
 const searchRecommendations = ref(["iPhone 13", "Ноутбук Dell", "Годинник Apple", "Квартира у Києві"]);
@@ -52,12 +50,6 @@ const showLocationDropdown = ref(false);
 
 const openSubmenu = ref({ region: null, city: null });
 
-const locationQuery = computed(() => {
-    if (selectedVillage) return selectedVillage;
-    if (selectedCity) return selectedCity;
-    if (selectedRegion === 'all') return 'Уся Україна';
-    return selectedRegion;
-});
 
 const toggleLocationDropdown = () => {
     showLocationDropdown.value = !showLocationDropdown.value;
@@ -76,18 +68,7 @@ const toggleSubmenu = (type, name) => {
 };
 
 const selectLocation = (location) => {
-    if (location.type === 'region') {
-        selectedRegion.value = location.name;
-        selectedCity.value = null;
-        selectedVillage.value = null;
-        openSubmenu.value = { region: null, city: null };
-    } else if (location.type === 'city') {
-        selectedCity.value = location.name;
-        selectedVillage.value = null;
-        openSubmenu.value.city = null;
-    } else if (location.type === 'village') {
-        selectedVillage.value = location.name;
-    }
+    selectedRegion.value = location.name;
     showLocationDropdown.value = false;
 };
 
@@ -136,7 +117,6 @@ onBeforeUnmount(() => {
 
 <template>
     <Head title="Головна | Оголошення" />
-
     <AuthenticatedLayout>
         <div class="py-2">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
@@ -170,36 +150,30 @@ onBeforeUnmount(() => {
 
                             <div class="flex items-center gap-4">
                                 <div class="relative w-[180px]">
-                                    <input v-model="locationQuery" @click="toggleLocationDropdown" type="text" placeholder="Уся Україна"
+                                    <input v-model="selectedRegion" @click="toggleLocationDropdown" type="text" placeholder="Уся Україна"
                                         class="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-green-600 transition duration-200" readonly/>
                                     <div v-if="showLocationDropdown" class="absolute left-0 w-full bg-white border mt-1 rounded-lg shadow-lg z-10">
                                         <ul class="py-2">
-                                            {{console.log(!selectedRegion, 'sss')}}
-                                            <li v-if="!selectedRegion" @click="selectLocation({ type: 'region', name: 'all' })"
+                                            <li
+                                                @click="selectLocation({ type: 'region', name: 'Уся Україна' })"
+                                                contenteditable="true"
                                                 class="px-4 py-2 cursor-pointer hover:bg-gray-200 transition duration-200">
-                                                Уся Україна
+                                                Вся Україна
                                             </li>
                                             <li v-for="(region, index) in regions" :key="index" class="relative">
-                                                <div @click="toggleSubmenu('region', region.name)"
+                                                <div
+                                                    @click="toggleSubmenu('region', region.name)"
                                                     class="px-4 py-2 cursor-pointer hover:bg-gray-200 transition duration-200 flex items-center justify-between">
                                                     {{ region.name }}
                                                     <span v-if="citiesData[region.name] && citiesData[region.name].length" class="text-gray-400 ml-2">›</span>
                                                 </div>
-                                                <ul v-if="openSubmenu.region === region.name && citiesData[region.name] && citiesData[region.name].length" class="absolute right-full top-0 w-60 bg-white border rounded-lg shadow-lg ml-1">
+                                                <ul v-if="openSubmenu.region === region.name && citiesData[region.name] && citiesData[region.name].length"
+                                                    class="absolute right-full top-0 w-60 bg-white border rounded-lg shadow-lg ml-1">
                                                     <li v-for="(city, cityIndex) in citiesData[region.name]" :key="cityIndex" class="relative">
-                                                        <div @click="toggleSubmenu('city', city.name)"
+                                                        <div @click="selectLocation({ type: 'village', name: city.name })"
                                                             class="px-4 py-2 cursor-pointer hover:bg-gray-200 transition duration-200 flex items-center justify-between">
                                                             {{ city.name }}
-                                                            <span v-if="villagesData[city.name] && villagesData[city.name].length" class="text-gray-400 ml-2">›</span>
                                                         </div>
-                                                        <ul v-if="openSubmenu.city === city.name && villagesData[city.name] && villagesData[city.name].length" class="absolute right-full top-0 w-60 bg-white border rounded-lg shadow-lg ml-1">
-                                                            <li v-for="(village, villageIndex) in villagesData[city.name]"
-                                                                :key="villageIndex"
-                                                                @click="selectLocation({ type: 'village', name: village.name })"
-                                                                class="px-4 py-2 cursor-pointer hover:bg-gray-200 transition duration-200">
-                                                                {{ village.name }}
-                                                            </li>
-                                                        </ul>
                                                     </li>
                                                 </ul>
                                             </li>
