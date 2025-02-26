@@ -11,12 +11,8 @@ const vip = usePage().props.vip;
 
 const selectedRegion = ref(null);
 const selectedCity = ref(null);
-const search = ref("");
 const regions = ref([]);
 const cities = ref([]);
-
-
-
 const searchQuery = ref("");
 const searchHistory = ref(["iPhone 13", "Ноутбук Dell", "Годинник Apple", "Квартира у Києві"]);
 const searchRecommendations = ref(["iPhone 13", "Ноутбук Dell", "Годинник Apple", "Квартира у Києві"]);
@@ -25,9 +21,28 @@ const openCategory = ref(null);
 const showLocationDropdown = ref(false);
 const loadingRegions = ref(false);
 const loadingCities = ref(false);
+const citySearchQuery = ref("");
+const cityIdSearchQuery = ref("");
+const filteredCities = ref([]);
 
+const searchCities = async () => {
+
+    if (citySearchQuery.value.length < 2) {
+        filteredCities.value = [];
+        return;
+    }
+    cities.value = [];
+    regions.value = [];
+    loadingCities.value = true;
+    try {
+        const response = await axios.get(route("adverts.regions.search", { region: citySearchQuery.value }));
+        filteredCities.value = response.data.regions;
+    } finally {
+        loadingCities.value = false;
+    }
+};
 const fetchRegions = async () => {
-    if (regions.value) {
+    if (regions.value && citySearchQuery.value.length === 0) {
         loadingRegions.value = true;
         try {
             const response = await axios.get(route("adverts.regions"));
@@ -54,8 +69,8 @@ const fetchCities = async (regionId) => {
 };
 
 const selectCity = (city) => {
-    selectedCity.value = city.name;
-    cities.value = [];
+    citySearchQuery.value = city.name;
+    cityIdSearchQuery.value = city.id;
     showLocationDropdown.value = false;
 }
 const selectSuggestion = (query) => {
@@ -69,11 +84,17 @@ const removeSuggestion = (index) => {
 const handleClickOutside = (event) => {
     if (!event.target.closest(".search-container")) {
         cities.value = [];
+        regions.value = [];
         showLocationDropdown.value = false;
     }
 };
 
-
+const search = () => {
+    if (searchQuery.value.trim() === "") return;
+    console.log(searchQuery.value, "searchQuery");
+    console.log(cityIdSearchQuery.value, "citySearchQuery");
+}
+watch(citySearchQuery, searchCities);
 onMounted(() => {
     document.addEventListener("click", handleClickOutside);
 });
@@ -118,12 +139,19 @@ onBeforeUnmount(() => {
 
                             <div class="flex items-center gap-4">
                                 <div class="relative w-[180px]">
-                                    <input @click="fetchRegions" type="text"
-                                           :value="selectedCity ? selectedCity  : ''"
+                                    <input v-model="citySearchQuery" @focus="fetchRegions" type="text"
                                            class="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-green-600 transition duration-200"
                                            placeholder="Оберіть область" />
 
                                     <div v-if="showLocationDropdown" class="absolute left-0 w-full bg-white border mt-1 rounded-lg shadow-lg z-10 h-[400px] overflow-y-auto">
+                                        <ul v-if="filteredCities.length">
+                                            <li v-for="city in filteredCities" :key="city.id"
+                                                @click="selectCity(city)"
+                                                class="px-4 py-2 cursor-pointer hover:bg-gray-200 transition duration-200">
+                                                {{ city.name }}
+                                            </li>
+                                        </ul>
+
                                         <ul v-if="(regions && cities.length === 0)">
                                             <li v-if="loadingRegions" class="px-4 py-2 text-gray-400">Завантаження...</li>
                                             <li v-for="region in regions" :key="region.id"
@@ -144,7 +172,9 @@ onBeforeUnmount(() => {
                                     </div>
                                 </div>
 
-                                <button class="bg-green-600 text-white px-8 py-3 rounded-lg text-lg focus:outline-none hover:bg-green-700 transition duration-300">
+                                <button
+                                    @click="search"
+                                    class="bg-green-600 text-white px-8 py-3 rounded-lg text-lg focus:outline-none hover:bg-green-700 transition duration-300">
                                     Пошук
                                 </button>
                             </div>

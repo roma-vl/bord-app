@@ -62,11 +62,26 @@ class IndexController extends Controller
             ->whereDepth(3)
             ->orderBy('name')
             ->take(300)
-            ->get();
+            ->get(['name', 'slug', 'id']);
 
         return response()->json([
             'cities' => $cities
         ]);
+    }
+    public function search( $region): JsonResponse
+    {
+
+    if (strlen($region) < 2) {
+        return response()->json(['regions' => []]); // Мінімум 2 символи
+    }
+
+    $regions = Location::where('name', 'like', "%{$region}%")
+        ->orderBy('name', 'asc')
+        ->limit(10)
+        ->get(['id', 'name', 'slug']);
+
+    return response()->json(['regions' => $regions]);
+
     }
 
     public function show(Advert $advert)
