@@ -1,5 +1,5 @@
 <script setup>
-import {onBeforeUnmount, onMounted, ref, watch} from "vue";
+import {computed, onBeforeUnmount, onMounted, ref, watch} from "vue";
 import {Head, Link, usePage} from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import axios from "axios";
@@ -88,7 +88,26 @@ const handleClickOutside = (event) => {
         showLocationDropdown.value = false;
     }
 };
+const toggleCategory = (categoryId) => {
+    if (openCategory.value === categoryId) {
+        openCategory.value = null;
+    } else {
+        openCategory.value = categoryId;
+    }
+};
 
+
+const selectedCategoryName = computed(() => {
+    const category = categories.find((c) => c.id === openCategory.value);
+    return category ? category.name : "";
+});
+
+
+
+const subCategories = computed(() => {
+    const category = categories.find(c => c.id === openCategory.value);
+    return category ? category.root_with_one_children : [];
+});
 const search = () => {
     if (searchQuery.value.trim() === "") return;
     console.log(searchQuery.value, "searchQuery");

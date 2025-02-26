@@ -14,6 +14,7 @@ import LogoutIcon from "@/Components/Icon/LogoutIcon.vue";
 import SettingsIcon from "@/Components/Icon/SettingsIcon.vue";
 import HelperCenterIcon from "@/Components/Icon/HelperCenterIcon.vue";
 import UpDownIcon from "@/Components/Icon/UpDownIcon.vue";
+import CommandLineIcon from "@/Components/Icon/CommandLineIcon.vue";
 
 const showingNavigationDropdown = ref(false);
 const isMessagesVisible = ref(false);
@@ -159,6 +160,9 @@ const messages = () => {
                                                 </div>
                                                 <div aria-label="navigation" class="py-2">
                                                     <nav class="grid gap-1">
+                                                        <a :href="route('admin.index')" class="flex items-center leading-6 space-x-3 py-3 px-4 w-full text-lg text-gray-600 focus:outline-none hover:bg-gray-100 rounded-md">
+                                                            <CommandLineIcon /> <span>Admin Panel</span>
+                                                        </a>
                                                         <a :href="route('account.adverts.index')" class="flex items-center leading-6 space-x-3 py-3 px-4 w-full text-lg text-gray-600 focus:outline-none hover:bg-gray-100 rounded-md">
                                                             <GuideIcon /> <span>Adverts</span>
                                                         </a>
