@@ -20,6 +20,8 @@ Route::get('/', [IndexController::class, 'index'])->middleware([])->name('main')
 Route::prefix('/adverts')->name('adverts.')->group(function () {
     Route::get('/show/{advert}', [IndexController::class, 'show'])->name('show');
     Route::get('/phone/{advert}', [IndexController::class, 'phone'])->name('phone');
+    Route::get('/regions', [IndexController::class, 'regions'])->name('regions');
+    Route::get('/regions/{region}/cities', [IndexController::class, 'cities'])->name('cities');
 });
 Route::get('/greeting/{locale}', [IndexController::class, 'changeLocale'])->name('greeting');
 

@@ -6,6 +6,7 @@ use App\Models\Adverts\Advert;
 use App\Models\Adverts\Category;
 use App\Models\LocatedRegion;
 use App\Models\Location;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
@@ -42,21 +43,29 @@ class IndexController extends Controller
                 $query->orderBy('name');
             }])->orderBy('name')->get();
 
-        $regions = Location::whereDepth(1)->get();
-        $regions2 = LocatedRegion::all();
         $news = Advert::where('status', 'active')->orderByDesc('id')->limit(4)->get();
         $vip = Advert::where('status', 'active')->where('premium', 1)->orderByDesc('id')->limit(4)->get();
 
-
-        return Inertia::render('Index', compact('categories', 'vip', 'news', 'regions'));
+        return Inertia::render('Index', compact('categories', 'vip', 'news'));
     }
 
-    public function region(Category $category, LocatedRegion $locatedRegion)
+    public function regions(): JsonResponse
     {
-        $regions = LocatedRegion::where('parent_id', $locatedRegion ? $locatedRegion->id : null)
-            ->orderBy('name')->get();
+        $regions = Location::whereDepth(1)->get();
         return response()->json([
             'regions' => $regions
+        ]);
+    }
+    public function cities(Location $region): JsonResponse
+    {
+        $cities = $region->descendants()
+            ->whereDepth(3)
+            ->orderBy('name')
+            ->take(300)
+            ->get();
+
+        return response()->json([
+            'cities' => $cities
         ]);
     }
 

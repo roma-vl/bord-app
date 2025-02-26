@@ -1,110 +1,78 @@
 <script setup>
-import {computed, onBeforeUnmount, onMounted, ref} from "vue";
+import {onBeforeUnmount, onMounted, ref, watch} from "vue";
 import {Head, Link, usePage} from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import axios from "axios";
 
 const categories = usePage().props.categories;
 const news = usePage().props.news;
 const vip = usePage().props.vip;
-const regions = usePage().props.regions;
 
-const citiesData = {
-    "Київ": [
-        { name: "Центр" },
-        { name: "Оболонь" },
-        { name: "Троєщина" }
-    ],
-    "Львів": [
-        { name: "Шевченківський район" },
-        { name: "Галицький район" }
-    ],
-    "Одеса": [
-        { name: "Приморський район" },
-        { name: "Київський район" }
-    ]
-};
 
-// const villagesData = {
-//     "Центр": [
-//         { name: "Вулиця Центральна" },
-//         { name: "Вулиця Літературна" }
-//     ],
-//     "Оболонь": [
-//         { name: "Вулиця Південна" },
-//         { name: "Вулиця Сонячна" }
-//     ],
-//     "Шевченківський район": [
-//         { name: "Вулиця Шевченка" },
-//         { name: "Вулиця Миколайська" }
-//     ]
-// };
+const selectedRegion = ref(null);
+const selectedCity = ref(null);
+const search = ref("");
+const regions = ref([]);
+const cities = ref([]);
 
-const selectedRegion = ref('Уся Україна');
+
+
 const searchQuery = ref("");
 const searchHistory = ref(["iPhone 13", "Ноутбук Dell", "Годинник Apple", "Квартира у Києві"]);
 const searchRecommendations = ref(["iPhone 13", "Ноутбук Dell", "Годинник Apple", "Квартира у Києві"]);
 const showSuggestions = ref(false);
 const openCategory = ref(null);
 const showLocationDropdown = ref(false);
+const loadingRegions = ref(false);
+const loadingCities = ref(false);
 
-
-const openSubmenu = ref({ region: null, city: null });
-
-
-const toggleLocationDropdown = () => {
-    showLocationDropdown.value = !showLocationDropdown.value;
-    if (showLocationDropdown.value) {
-        openSubmenu.value = { region: null, city: null };
+const fetchRegions = async () => {
+    if (regions.value) {
+        loadingRegions.value = true;
+        try {
+            const response = await axios.get(route("adverts.regions"));
+            regions.value = response.data.regions;
+        } finally {
+            loadingRegions.value = false;
+        }
     }
+    showLocationDropdown.value = true;
+};
+const fetchCities = async (regionId) => {
+    selectedRegion.value = regions.value.find(r => r.id === regionId);
+    selectedCity.value = null;
+    cities.value = [];
+    loadingCities.value = true;
+
+    try {
+        const response = await axios.get(route("adverts.cities", { region: regionId }));
+        cities.value = response.data.cities;
+    } finally {
+        loadingCities.value = false;
+    }
+    showLocationDropdown.value = true;
 };
 
-const toggleSubmenu = (type, name) => {
-    if (type === 'region') {
-        openSubmenu.value.region = openSubmenu.value.region === name ? null : name;
-    } else if (type === 'city') {
-        openSubmenu.value.city = openSubmenu.value.city === name ? null : name;
-    }
-    console.log(openSubmenu.value, "openSubmenu.value");
-};
-
-const selectLocation = (location) => {
-    selectedRegion.value = location.name;
+const selectCity = (city) => {
+    selectedCity.value = city.name;
+    cities.value = [];
     showLocationDropdown.value = false;
-};
-
-
+}
 const selectSuggestion = (query) => {
     searchQuery.value = query;
     showSuggestions.value = false;
 };
-
 const removeSuggestion = (index) => {
     searchHistory.value.splice(index, 1);
 };
 
-const toggleCategory = (categoryId) => {
-    if (openCategory.value === categoryId) {
-        openCategory.value = null;
-    } else {
-        openCategory.value = categoryId;
-    }
-};
-
-const selectedCategoryName = computed(() => {
-    const category = categories.find((c) => c.id === openCategory.value);
-    return category ? category.name : "";
-});
-
 const handleClickOutside = (event) => {
     if (!event.target.closest(".search-container")) {
-        showSuggestions.value = false;
+        cities.value = [];
+        showLocationDropdown.value = false;
     }
 };
 
-const subCategories = computed(() => {
-    const category = categories.find(c => c.id === openCategory.value);
-    return category ? category.root_with_one_children : [];
-});
 
 onMounted(() => {
     document.addEventListener("click", handleClickOutside);
@@ -150,32 +118,27 @@ onBeforeUnmount(() => {
 
                             <div class="flex items-center gap-4">
                                 <div class="relative w-[180px]">
-                                    <input v-model="selectedRegion" @click="toggleLocationDropdown" type="text" placeholder="Уся Україна"
-                                        class="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-green-600 transition duration-200" readonly/>
-                                    <div v-if="showLocationDropdown" class="absolute left-0 w-full bg-white border mt-1 rounded-lg shadow-lg z-10">
-                                        <ul class="py-2">
-                                            <li
-                                                @click="selectLocation({ type: 'region', name: 'Уся Україна' })"
-                                                contenteditable="true"
+                                    <input @click="fetchRegions" type="text"
+                                           :value="selectedCity ? selectedCity  : ''"
+                                           class="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-green-600 transition duration-200"
+                                           placeholder="Оберіть область" />
+
+                                    <div v-if="showLocationDropdown" class="absolute left-0 w-full bg-white border mt-1 rounded-lg shadow-lg z-10 h-[400px] overflow-y-auto">
+                                        <ul v-if="(regions && cities.length === 0)">
+                                            <li v-if="loadingRegions" class="px-4 py-2 text-gray-400">Завантаження...</li>
+                                            <li v-for="region in regions" :key="region.id"
+                                                @click="fetchCities(region.id)"
                                                 class="px-4 py-2 cursor-pointer hover:bg-gray-200 transition duration-200">
-                                                Вся Україна
+                                                {{ region.name }}
                                             </li>
-                                            <li v-for="(region, index) in regions" :key="index" class="relative">
-                                                <div
-                                                    @click="toggleSubmenu('region', region.name)"
-                                                    class="px-4 py-2 cursor-pointer hover:bg-gray-200 transition duration-200 flex items-center justify-between">
-                                                    {{ region.name }}
-                                                    <span v-if="citiesData[region.name] && citiesData[region.name].length" class="text-gray-400 ml-2">›</span>
-                                                </div>
-                                                <ul v-if="openSubmenu.region === region.name && citiesData[region.name] && citiesData[region.name].length"
-                                                    class="absolute right-full top-0 w-60 bg-white border rounded-lg shadow-lg ml-1">
-                                                    <li v-for="(city, cityIndex) in citiesData[region.name]" :key="cityIndex" class="relative">
-                                                        <div @click="selectLocation({ type: 'village', name: city.name })"
-                                                            class="px-4 py-2 cursor-pointer hover:bg-gray-200 transition duration-200 flex items-center justify-between">
-                                                            {{ city.name }}
-                                                        </div>
-                                                    </li>
-                                                </ul>
+                                        </ul>
+
+                                        <ul v-else>
+                                            <li v-if="loadingCities" class="px-4 py-2 text-gray-400">Завантаження міст...</li>
+                                            <li v-for="city in cities" :key="city.id"
+                                                @click="selectCity(city)"
+                                                class="px-4 py-2 cursor-pointer hover:bg-gray-200 transition duration-200">
+                                                {{ city.name }}
                                             </li>
                                         </ul>
                                     </div>
