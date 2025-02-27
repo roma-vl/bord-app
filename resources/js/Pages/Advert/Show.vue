@@ -78,22 +78,42 @@ const getPhone = async (id) => {
         <div class="py-2">
 
             <div class=" mx-auto max-w-7xl sm:px-6 lg:px-8 p-6  ">
-                <div class="flex gap-2 mb-6 bg-white p-3">
-                    <button @click="submitAction('admin.adverts.adverts.edit')"
-                            class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Редагувати
-                    </button>
-                    <button @click="submitAction('admin.adverts.adverts.photos')"
-                            class="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded">Фото
-                    </button>
-                    <button v-if="isOnModeration" @click="submitAction('admin.adverts.adverts.moderate')"
-                            class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">На модерації
-                    </button>
-                    <button v-if="isOnModeration || isActive" @click="submitAction('admin.adverts.adverts.reject')"
-                            class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">Відхилити
-                    </button>
-                    <button @click="submitAction('admin.adverts.adverts.destroy')"
-                            class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded">Видалити
-                    </button>
+                <div class="flex justify-between gap-2 mb-6 bg-white p-3 ">
+                    <div class="flex flex-row gap-2">
+                        <button @click="submitAction('adverts.adverts.edit')"
+                                class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded">Редагувати
+                        </button>
+                        <button @click="submitAction('adverts.adverts.photos')"
+                                class="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-1 rounded">Фото
+                        </button>
+                        <button v-if="isOnModeration" @click="submitAction('adverts.adverts.moderate')"
+                                class="bg-green-500 hover:bg-green-600 text-white px-4 py-1 rounded">Публікувати
+                        </button>
+                        <button v-if="isOnModeration || isActive" @click="submitAction('admin.adverts.adverts.reject')"
+                                class="bg-green-500 hover:bg-green-600 text-white px-4 py-1 rounded">Закрити
+                        </button>
+                        <button @click="submitAction('adverts.adverts.destroy')"
+                                class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-1 rounded">Видалити
+                        </button>
+                    </div>
+
+                    <div class=" flex flex-row gap-2 items-center">
+                        <button @click="submitAction('admin.adverts.adverts.edit')"
+                                class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded">Редагувати
+                        </button>
+                        <button @click="submitAction('admin.adverts.adverts.photos')"
+                                class="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-1 rounded">Фото
+                        </button>
+                        <button v-if="isOnModeration" @click="submitAction('admin.adverts.adverts.moderate')"
+                                class="bg-green-500 hover:bg-green-600 text-white px-4 py-1 rounded">На модерації
+                        </button>
+                        <button v-if="isOnModeration || isActive" @click="submitAction('admin.adverts.adverts.reject')"
+                                class="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded">Відхилити
+                        </button>
+                        <button @click="submitAction('admin.adverts.adverts.destroy')"
+                                class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-1 rounded">Видалити
+                        </button>
+                    </div>
                 </div>
 
                 <div class="list-disc list-inside text-gray-800">
@@ -154,6 +174,17 @@ const getPhone = async (id) => {
                             <p class="mt-4 text-gray-800 text-sm">
                                 Опубліковано {{
                                     new Date(advert.published_at).toLocaleDateString("uk-UA", {
+                                        year: "numeric",
+                                        month: "long",
+                                        day: "numeric",
+                                        hour: "2-digit",
+                                        minute: "2-digit",
+                                    })
+                                }}
+                            </p>
+                            <p class="mt-4 text-gray-800 text-sm">
+                                Опубліковано {{
+                                    new Date(advert.expires_at).toLocaleDateString("uk-UA", {
                                         year: "numeric",
                                         month: "long",
                                         day: "numeric",

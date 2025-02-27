@@ -24,17 +24,17 @@ class Category extends Model
     public function rootWithOneChildren(): HasMany
     {
         return $this->hasMany(Category::class, 'parent_id')
-            ->select(['id', 'name', 'parent_id']); // Обмежуємо поля, щоб не тягнути зайве
+            ->select(['id', 'name', 'parent_id', 'slug']);
     }
 
 
     public function getParentAttributes()
     {
-        $parents = $this->ancestors()->with('attributes')->get(); // Отримуємо всіх батьків
+        $parents = $this->ancestors()->with('attributes')->get();
 
         return $parents->map(function ($parent) {
-            return $parent->attributes()->orderBy('sort')->get(); // Отримуємо атрибути кожного батька
-        })->flatten(); // Вирівнюємо масив
+            return $parent->attributes()->orderBy('sort')->get();
+        })->flatten();
     }
 
     public function allArrayAttributes(): array
@@ -55,10 +55,6 @@ class Category extends Model
             ->with('childrenRecursive')
             ->orderBy('_lft');
     }
-    // У моделі Category.php
-
-
-
 
 }
 

@@ -23,6 +23,13 @@ Route::prefix('/adverts')->name('adverts.')->group(function () {
     Route::get('/regions', [IndexController::class, 'regions'])->name('regions');
     Route::get('/regions/{region}/cities', [IndexController::class, 'cities'])->name('cities');
     Route::get('/regions-search/{region}', [IndexController::class, 'search'])->name('regions.search');
+    Route::get('{categorySlug}/{subCategorySlug?}/{citySlug?}', [IndexController::class, 'showCategory'])->name('category.show')
+        ->where([
+            'categorySlug' => '[a-z0-9-]+',
+            'subCategorySlug' => '[a-z0-9-]+',
+            'citySlug' => '[a-z0-9-]+'
+        ]);
+
 });
 Route::get('/greeting/{locale}', [IndexController::class, 'changeLocale'])->name('greeting');
 

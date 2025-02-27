@@ -97,9 +97,9 @@ const toggleCategory = (categoryId) => {
 };
 
 
-const selectedCategoryName = computed(() => {
+const selectedCategory = computed(() => {
     const category = categories.find((c) => c.id === openCategory.value);
-    return category ? category.name : "";
+    return category ? category : "";
 });
 
 
@@ -134,7 +134,7 @@ onBeforeUnmount(() => {
                             <div class="relative w-full">
                                 <input v-model="searchQuery" type="text" placeholder="Що шукаєте?"
                                     class="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-green-600"
-                                    @focus="showSuggestions = true" @blur="hideSuggestions"/>
+                                    @focus="showSuggestions = true"/>
                                 <ul v-if="showSuggestions && searchHistory.length"
                                     class="absolute left-0 w-full bg-white border mt-1 rounded-lg shadow-lg z-10">
                                     <div class="text-sm text-gray-400 uppercase p-1 pl-4">Ви нещодавно шукали</div>
@@ -157,15 +157,14 @@ onBeforeUnmount(() => {
                             </div>
 
                             <div class="flex items-center gap-4">
-                                <div class="relative w-[180px]">
+                                <div class="relative w-[250px]">
                                     <input v-model="citySearchQuery" @focus="fetchRegions" type="text"
                                            class="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-green-600 transition duration-200"
                                            placeholder="Оберіть область" />
 
                                     <div v-if="showLocationDropdown" class="absolute left-0 w-full bg-white border mt-1 rounded-lg shadow-lg z-10 h-[400px] overflow-y-auto">
                                         <ul v-if="filteredCities.length">
-                                            <li v-for="city in filteredCities" :key="city.id"
-                                                @click="selectCity(city)"
+                                            <li v-for="city in filteredCities" :key="city.id" @click="selectCity(city)"
                                                 class="px-4 py-2 cursor-pointer hover:bg-gray-200 transition duration-200">
                                                 {{ city.name }}
                                             </li>
@@ -217,13 +216,13 @@ onBeforeUnmount(() => {
                                         <div class="bg-white shadow-md rounded p-4 mt-2">
                                             <p class="pb-3">
                                                 <span class="font-bold text-sm"> > Переглянути всі оголошення в </span>
-                                                <span class="text-sm hover:underline cursor-pointer">{{ selectedCategoryName }}</span>
+                                                <a :href="selectedCategory.slug" class="text-sm hover:underline cursor-pointer">{{ selectedCategory.name }}</a>
                                             </p><hr>
 
                                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-3">
                                                 <template v-for="subCategory in subCategories" :key="subCategory.id">
                                                     <p class="text-sm hover:underline cursor-pointer">
-                                                        {{ subCategory.name }}
+                                                        <a :href="'adverts/' +selectedCategory.slug + '/' + subCategory.slug">{{ subCategory.name }}</a>
                                                     </p>
                                                 </template>
                                             </div>

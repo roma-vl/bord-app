@@ -109,6 +109,23 @@ class IndexController extends Controller
         ]);
     }
 
+    public function showCategory($categorySlug, $subCategorySlug = null, $citySlug = null)
+    {
+        $category = Category::where('slug', $categorySlug)->firstOrFail();
+
+        $subCategory = $subCategorySlug
+            ? Category::where('slug', $subCategorySlug)->where('parent_id', $category->id)->firstOrFail()
+            : null;
+
+        $subCategories = $subCategory ?
+            $subCategory->descendants()->orderBy('name')->get(['id', 'name', 'slug']) :
+            $category->descendants()->orderBy('name')->get(['id', 'name', 'slug']);
+
+        $city = $citySlug ? Location::where('slug', $citySlug)->firstOrFail() : null;
+        return Inertia::render('Advert/Category',
+            compact('category', 'subCategory','subCategories', 'city'));
+    }
+
     public function phone(Advert $advert): string
     {
         return $advert->user->phone;
