@@ -3,20 +3,36 @@ import { Head, router, usePage } from "@inertiajs/vue3";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import FlashMessage from "@/Components/FlashMessage.vue";
 import Modal from "@/Components/Modal.vue";
-import { ref } from "vue";
+import {computed, ref} from "vue";
 import Create from "@/Pages/Admin/Roles/Create.vue";
 import Edit from "@/Pages/Admin/Roles/Edit.vue";
 import {useAcl} from "@/composables/useAcl.js";
+import TrashIcon from "@/Components/Icon/TrashIcon.vue";
+import PencilIcon from "@/Components/Icon/PencilIcon.vue";
+import Grid from "@/Components/Grid.vue";
+import RefreshIcon from "@/Components/Icon/RefreshIcon.vue";
 
 const { can } = useAcl();
 
-const flash = usePage().props.flash;
-const roles = usePage().props.roles;
+const flash = computed(() => usePage().props.flash);
+const roles = computed(() => usePage().props.roles.data);
 
 const isCreateModalOpen = ref(false);
 const isEditModalOpen = ref(false);
 const selectedRole = ref(null);
+const pagination = computed(() => usePage().props.roles);
 
+const headings = [
+    { key: "id", value: "ID", sortable: true, disabled: true},
+    { key: "name", value: "Title" },
+    { key: "is_enabled", value: "Enabled" },
+    { key: "actions", value: "Actions", disabled: true },
+];
+
+const routes = [
+    { key: "index", value: "admin.roles.index" },
+    { key: "search", value: "admin.roles.search" },
+];
 const openCreateModal = async () => {
 
     try {
@@ -43,29 +59,25 @@ const openEditModal = async (id) => {
             isEditModalOpen.value = true;
         }
 
-    } catch (error) {1
+    } catch (error) {
         showForbidden.value = true;
         errorForbidden.value = error.response;
         console.log('dd')
     }
 };
-
-const deleteRole = (id) => {
-    if (confirm("Are you sure you want to delete this role?")) {
-        router.delete(route("admin.roles.destroy", id), {
-            preserveScroll: true,
-            onSuccess: () => router.replace(route("admin.roles.index")),
-        });
-    }
-};
-
-const refreshRoles = () => {
-    router.get(route("admin.roles.index"), {
+const restoreRole = (id) => {
+    router.put(route("admin.roles.restore", id), {}, {
         preserveScroll: true,
         onSuccess: () => router.replace(route("admin.roles.index")),
     });
 };
-//v-if="can('user.edit')"
+const deleteRole = (id) => {
+    if (confirm("Are you sure you want to delete this role?")) {
+        router.delete(route("admin.roles.destroy", id), {
+            onSuccess: () => router.replace(route("admin.roles.index")),
+        });
+    }
+};
 
 </script>
 
@@ -81,35 +93,46 @@ const refreshRoles = () => {
                         + New Role
                     </button>
                 </div>
+                <Grid
+                    :items="roles"
+                    :pagination="pagination"
+                    :headings="headings"
+                    :routes="routes"
+                >
+                    <template #column-is_enabled="{ row }">
 
-                <table class="min-w-full bg-white border border-gray-300">
-                    <thead>
-                    <tr>
-                        <th class="py-2 px-4 border">ID</th>
-                        <th class="py-2 px-4 border">Name</th>
-                        <th class="py-2 px-4 border">Enabled</th>
-                        <th class="py-2 px-4 border">Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr v-for="role in roles" :key="role.id">
-                        <td class="py-2 px-4 border">{{ role.id }}</td>
-                        <td class="py-2 px-4 border">{{ role.name }}</td>
-                        <td class="py-2 px-4 border">{{ role.is_enabled ? '✅' : '❌' }}</td>
-                        <td class="py-2 px-4 border flex gap-2">
-                            <button  @click="openEditModal(role.id)" class="bg-yellow-500 px-3 py-1 text-white rounded">Edit</button>
-                            <button @click="deleteRole(role.id)" class="bg-red-500 px-3 py-1 text-white rounded">Delete</button>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                        <div class="flex gap-2">
+                            <div class="flex justify-end gap-4">
+                                <span v-if="row.is_enabled" class="text-green-600 bg-green-200 border-green-200 px-1 rounded-md  items-center"> enable </span>
+                                <span v-else class="text-red-600 bg-red-200 border-red-200 px-1 rounded-md  items-center"> disable </span>
+                            </div>
+                        </div>
+                    </template>
+                    <template #column-actions="{ row }">
+                        {{console.log(row, 'row')}}
+                        <div class="flex gap-2">
+                            <div class="flex justify-end gap-4">
+                                <a v-if="!row.deleted_at" @click.prevent="openEditModal(row.id)" class="text-blue-600 hover:text-blue-900 cursor-pointer">
+                                    <PencilIcon />
+                                </a>
+                                <a  v-if="!row.deleted_at" @click.prevent="deleteRole(row.id)" class="text-red-600 hover:text-red-900 cursor-pointer">
+                                    <TrashIcon />
+                                </a>
+                                <a v-else  @click.prevent="restoreRole(row.id)" class="text-green-600 hover:text-green-900 cursor-pointer">
+                                    <RefreshIcon />
+                                </a>
+
+                            </div>
+                        </div>
+                    </template>
+                </Grid>
 
                 <Modal :show="isCreateModalOpen" maxWidth="2xl" @close="isCreateModalOpen = false">
-                    <Create :data="selectedRole" @roleCreated="refreshRoles" />
+                    <Create :data="selectedRole" @userCreated="isCreateModalOpen = false" />
                 </Modal>
 
                 <Modal :show="isEditModalOpen" maxWidth="2xl" @close="isEditModalOpen = false">
-                    <Edit :data="selectedRole" @roleUpdated="refreshRoles" />
+                    <Edit :data="selectedRole" @roleUpdated="isEditModalOpen = false" />
                 </Modal>
             </div>
         </div>
