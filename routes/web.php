@@ -54,6 +54,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/', [AdvertController::class, 'index'])->name('index');
             Route::get('/show/{advert}', [IndexController::class, 'show'])->name('show');
             Route::get('/edit/{advert}', [AdvertController::class, 'edit'])->name('edit');
+            Route::delete('/destroy/{advert}', [AdvertController::class, 'destroy'])->name('destroy');
+            Route::get('/edit/{advert}/photos', [AdvertController::class, 'photos'])->name('edit.photos');
             Route::post('/publish/{advert}', [AdvertController::class, 'publish'])->name('actions.publish');
             Route::post('/draft/{advert}', [AdvertController::class, 'draft'])->name('actions.draft');
             Route::get('/create', [AdvertController::class, 'create'])->name('create');
@@ -96,6 +98,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
             Route::get('/moderation', [AdvertsController::class, 'moderation'])->name('actions.moderation');
             Route::post('/moderation/{advert}/active', [AdvertsController::class, 'active'])->name('actions.moderation.active');
+            Route::post('/moderation/{advert}/reject', [AdvertsController::class, 'reject'])->name('actions.moderation.reject');
 
             Route::get('/category/{category}/attributes/create', [AttributeController::class, 'create'])->name('category.attributes.create');
             Route::post('/category/{category}/attributes/store', [AttributeController::class, 'store'])->name('category.attributes.store');

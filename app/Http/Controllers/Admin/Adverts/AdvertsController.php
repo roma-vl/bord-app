@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Adverts;
 
 use App\Http\Controllers\Controller;
 use App\Models\Adverts\Advert;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class AdvertsController extends Controller
@@ -23,5 +24,16 @@ class AdvertsController extends Controller
         }
 
         return back()->with('success', 'Advert is publish successfully!');
+    }
+
+    public function reject(Advert $advert, Request $request)
+    {
+        $validated =  $request->validate([
+            'reject_reason' => 'required|string|min:3|max:255',
+        ]);
+
+        $advert->reject($validated['reject_reason']);
+
+        return back()->with('success', 'Advert is Rejected successfully!');
     }
 }

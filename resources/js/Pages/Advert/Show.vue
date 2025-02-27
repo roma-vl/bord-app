@@ -1,9 +1,12 @@
 <script setup>
 import {computed, ref} from "vue";
-import {router, useForm} from "@inertiajs/vue3";
+import {router, useForm, usePage} from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import HeartIcon from "@/Components/Icon/HeartIcon.vue";
 import HeartSolidIcon from "@/Components/Icon/HeartSolidIcon.vue";
+import Reject from "@/Pages/Admin/Advert/Actions/Reject.vue";
+import Modal from "@/Components/Modal.vue";
+import FlashMessage from "@/Components/FlashMessage.vue";
 
 const props = defineProps({
     advert: Object,
@@ -12,10 +15,11 @@ const props = defineProps({
     photos: Array,
     category: Object
 });
-console.log(props.advert, "props");
+const flash = computed(() => usePage().props.flash);
 const isLiked = ref(false);
 const userPhone = ref(false);
-
+const isRejectModalOpen = ref(false);
+const advertId = ref(null);
 const toggleLike = () => {
     isLiked.value = !isLiked.value;
 };
@@ -71,6 +75,7 @@ const getPhone = async (id) => {
         console.error("Помилка при завантаженні номера користувача", error);
     }
 };
+
 const publish = async () => {
     router.post(route("account.adverts.actions.publish", { advert: props.advert.id }), {
         onSuccess: () => router.replace(route("admin.users.index")),
@@ -84,6 +89,22 @@ const toDraft = async () => {
     });
 
 };
+const activate = async () => {
+    router.post(route("admin.adverts.actions.moderation.active", { advert: props.advert.id }), {
+        onSuccess: () => router.replace(route("admin.users.index")),
+    });
+    console.log(id, "id");
+};
+
+const rejectAdvert = () => {
+    isRejectModalOpen.value = true;
+    advertId.value = props.advert.id;
+};
+const deleteAdvert = () => {
+    if (confirm("Ви впевнені, що хочете видалити оголошення?")) {
+        router.delete(route("account.adverts.destroy", props.advert.id));
+    }
+};
 </script>
 
 <template>
@@ -93,42 +114,24 @@ const toDraft = async () => {
             <div class=" mx-auto max-w-7xl sm:px-6 lg:px-8 p-6  ">
                 <div class="flex justify-between gap-2 mb-6 bg-white p-3 ">
                     <div class="flex flex-row gap-2">
-                        <button @click="submitAction('adverts.adverts.edit')"
-                                class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded">Редагувати
-                        </button>
-                        <button @click="submitAction('adverts.adverts.photos')"
-                                class="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-1 rounded">Фото
-                        </button>
-                        <button v-if="isDraft" @click="publish"
-                                class="bg-green-500 hover:bg-green-600 text-white px-4 py-1 rounded">Публікувати
-                        </button>
+                        <a :href="route('account.adverts.edit', props.advert.id)"
+                           class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded">Редагувати</a>
+                        <a :href="route('account.adverts.edit.photos', props.advert.id)"
+                           class="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-1 rounded">Фото</a>
+                        <button v-if="isDraft" @click="publish" class="bg-green-500 hover:bg-green-600 text-white px-4 py-1 rounded">Публікувати</button>
                         <button v-if="isActive" @click="submitAction('adverts.adverts.close')"
-                                class="bg-green-500 hover:bg-green-600 text-white px-4 py-1 rounded">Закрити
-                        </button>
+                                class="bg-green-500 hover:bg-green-600 text-white px-4 py-1 rounded">Закрити</button>
                         <button v-if="isOnModeration || isActive" @click="toDraft"
-                                class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-1 rounded">Повернути в чорновик
-                        </button>
-                        <button @click="submitAction('adverts.adverts.destroy')"
-                                class="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded">Видалити
-                        </button>
+                                class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-1 rounded">Повернути в чорновик</button>
+                        <button @click="deleteAdvert"
+                                class="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded">Видалити</button>
                     </div>
 
                     <div class=" flex flex-row gap-2 items-center">
-                        <button @click="submitAction('admin.adverts.adverts.edit')"
-                                class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded">Редагувати
-                        </button>
-                        <button @click="submitAction('admin.adverts.adverts.photos')"
-                                class="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-1 rounded">Фото
-                        </button>
-                        <button v-if="isOnModeration" @click="submitAction('admin.adverts.adverts.moderate')"
-                                class="bg-green-500 hover:bg-green-600 text-white px-4 py-1 rounded">На модерації
-                        </button>
-                        <button v-if="isOnModeration || isActive" @click="submitAction('admin.adverts.adverts.reject')"
-                                class="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded">Відхилити
-                        </button>
-                        <button @click="submitAction('admin.adverts.adverts.destroy')"
-                                class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-1 rounded">Видалити
-                        </button>
+                        <button v-if="isOnModeration" @click="activate"
+                                class="bg-green-500 hover:bg-green-600 text-white px-4 py-1 rounded">Опублікувати</button>
+                        <button v-if="isOnModeration || isActive" @click="rejectAdvert"
+                                class="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded">Відхилити</button>
                     </div>
                 </div>
 
@@ -142,14 +145,14 @@ const toDraft = async () => {
                 </div>
             </div>
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8 p-6 bg-white-50 ">
+                <FlashMessage :flash="flash" />
                 <div v-if="isDraft" class="bg-yellow-100 text-yellow-800 p-3 rounded mb-4">Це чернетка.</div>
                 <div v-if="isOnModeration" class="bg-yellow-100 text-yellow-800 p-3 rounded mb-4">На модерації.</div>
                 <div v-if="advert.reject_reason" class="bg-red-100 text-red-800 p-3 rounded mb-4">
-                    {{ advert.reject_reason }}
+                   Причина відмови: {{ advert.reject_reason }}
                 </div>
 
                 <div class="flex gap-6 ">
-                    <!-- Галерея -->
                     <div class="w-2/3 ">
                         <div class="bg-white rounded-lg shadow p-3">
                             <div class="w-full h-[600px] flex justify-center items-center ">
@@ -170,7 +173,6 @@ const toDraft = async () => {
                                     {{ attribute.name }} : {{ getValue(attribute.name) }}
                                 </span>
                             </div>
-
 
                             <p class="mt-4 text-gray-900 text-lg font-bold">Опис</p>
                             <p class="mt-4 text-gray-800">{{ advert.content }}</p>
@@ -270,6 +272,9 @@ const toDraft = async () => {
                     </div>
                 </div>
             </div>
+            <Modal :show="isRejectModalOpen" maxWidth="2xl" @close="isRejectModalOpen = false">
+                <Reject :advertId="advertId" @rejectCreated="isRejectModalOpen = false" />
+            </Modal>
         </div>
     </AuthenticatedLayout>
 </template>

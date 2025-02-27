@@ -6,12 +6,15 @@ import TrashIcon from "@/Components/Icon/TrashIcon.vue";
 import PencilIcon from "@/Components/Icon/PencilIcon.vue";
 import Grid from "@/Components/Grid.vue";
 import RefreshIcon from "@/Components/Icon/RefreshIcon.vue";
-import {computed} from "vue";
+import {computed, ref} from "vue";
+import Modal from "@/Components/Modal.vue";
+import Reject from "@/Pages/Admin/Advert/Actions/Reject.vue";
 
 const flash = computed(() => usePage().props.flash);
 const adverts_moderation = computed(() => usePage().props.adverts_moderation.data);
 const pagination = computed(() => usePage().props.adverts_moderation);
-
+const isRejectModalOpen = ref(false);
+const advertId = ref(null);
 const headings = [
     { key: "id", value: "ID", sortable: true, disabled: true},
     { key: "title", value: "Title" },
@@ -43,21 +46,23 @@ const restoreUser = (id) => {
         onSuccess: () => router.replace(route("admin.users.index")),
     });
 };
-const activate = async (advert) => {
+const activateAdvert = async (advert) => {
     router.post(route("admin.adverts.actions.moderation.active", { advert: advert }), {
         onSuccess: () => router.replace(route("admin.users.index")),
     });
-    console.log(id, "id");
 };
 
-const reject = async (id) => {
-
-    console.log(id, "id");
+const rejectAdvert = async (id) => {
+    isCreateModalOpen.value = true;
+    advertId.value = id;
 };
-const openEditModal = async (id) => {
 
-    console.log(id, "id");
+const deleteAdvert = (id) => {
+    if (confirm("Ви впевнені, що хочете видалити оголошення?")) {
+        router.delete(route("account.adverts.destroy", id));
+    }
 };
+
 </script>
 
 <template>
@@ -78,12 +83,12 @@ const openEditModal = async (id) => {
                             <div class="flex gap-2">
                                 <div class="flex justify-end gap-4">
                                         <a :href="route('adverts.show', row.id)" class="text-blue-600 hover:underline" >Переглянути</a>
-                                        <a @click.prevent="activate(row.id)" class="text-green-600 hover:text-green-900 cursor-pointer">активувати</a>
-                                        <a @click.prevent="reject(row.id)" class="text-red-600 hover:text-red-900 cursor-pointer">завернути</a>
-                                        <a v-if="!row.deleted_at" @click.prevent="openEditModal(row.id)" class="text-blue-600 hover:text-blue-900 cursor-pointer">
+                                        <a @click.prevent="activateAdvert(row.id)" class="text-green-600 hover:text-green-900 cursor-pointer">активувати</a>
+                                        <a @click.prevent="rejectAdvert(row.id)" class="text-red-600 hover:text-red-900 cursor-pointer">завернути</a>
+                                        <a v-if="!row.deleted_at" :href="route('account.adverts.edit', row.id)" class="text-blue-600 hover:text-blue-900 cursor-pointer">
                                             <PencilIcon />
                                         </a>
-                                        <a  v-if="!row.deleted_at" @click.prevent="deleteUser(row.id)" class="text-red-600 hover:text-red-900 cursor-pointer">
+                                        <a  v-if="!row.deleted_at" @click.prevent="deleteAdvert(row.id)" class="text-red-600 hover:text-red-900 cursor-pointer">
                                             <TrashIcon />
                                         </a>
                                         <a v-else  @click.prevent="restoreUser(row.id)" class="text-green-600 hover:text-green-900 cursor-pointer">
@@ -97,8 +102,8 @@ const openEditModal = async (id) => {
                 </div>
             </div>
         </div>
-<!--        <Modal :show="isCreateModalOpen" maxWidth="2xl" @close="isCreateModalOpen = false">-->
-<!--            <Create :categories="selectedCategory" @categoryCreated="refreshCategories" />-->
-<!--        </Modal>-->
+        <Modal :show="isRejectModalOpen" maxWidth="2xl" @close="isRejectModalOpen = false">
+            <Reject :advertId="advertId" @rejectCreated="isRejectModalOpen = false" />
+        </Modal>
     </AdminLayout>
 </template>

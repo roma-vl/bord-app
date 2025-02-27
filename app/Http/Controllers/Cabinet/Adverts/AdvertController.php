@@ -86,6 +86,19 @@ class AdvertController extends Controller
        return redirect()->route('account.adverts.index')->with('success', 'Оголошення створено!');
     }
 
+    public function photos(Advert $advert): Response
+    {
+        return Inertia::render('Account/Advert/Photos', [
+            'advert' => $advert,
+        ]);
+    }
+
+    public function destroy(Advert $advert): RedirectResponse
+    {
+        $advert->delete();
+        return redirect()->route('account.adverts.index')->with('success', 'Advert is Deleted!');
+    }
+
     public function getAreas(int $regionId): JsonResponse
     {
         return response()->json($this->locationService->getAreas($regionId));

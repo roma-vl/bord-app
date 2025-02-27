@@ -129,6 +129,7 @@ class Advert extends Model
     {
         $this->update([
             'status' => self::STATUS_ACTIVE,
+            'reject_reason' => '',
         ]);
     }
 

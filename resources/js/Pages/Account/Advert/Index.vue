@@ -2,10 +2,13 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head, usePage } from "@inertiajs/vue3";
 import ProfileMenu from "@/Pages/Account/Profile/Partials/ProfileMenu.vue";
+import {computed} from "vue";
+import FlashMessage from "@/Components/FlashMessage.vue";
 
 const user = usePage().props.auth.user;
 
 const adverts = usePage().props.adverts;
+const flash = computed(() => usePage().props.flash);
 
 console.log(adverts, "adverts");
 
@@ -17,7 +20,7 @@ console.log(adverts, "adverts");
         <div class="py-2">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg p-3">
-
+                    <FlashMessage :flash="flash" />
                     <ProfileMenu :activeTab="'account.adverts.index'" />
                     <div class=" px-4">
                         <div class="grid grid-cols-2 gap-4 items-start mb-3">
