@@ -61,6 +61,17 @@ class AdvertController extends Controller
 
     }
 
+    public function publish(Advert $advert): RedirectResponse
+    {
+        $advert->sendToModeration();
+        return back()->with('success', 'Advert send to Moderate!');
+    }
+    public function draft(Advert $advert): RedirectResponse
+    {
+        $advert->backToDraft();
+        return back()->with('success', 'Advert is Draft!');
+    }
+
     public function store(CreateRequest $request): RedirectResponse|JsonResponse
     {
         $ff  = $request->all();

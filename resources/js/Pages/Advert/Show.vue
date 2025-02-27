@@ -1,6 +1,6 @@
 <script setup>
 import {computed, ref} from "vue";
-import {useForm} from "@inertiajs/vue3";
+import {router, useForm} from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import HeartIcon from "@/Components/Icon/HeartIcon.vue";
 import HeartSolidIcon from "@/Components/Icon/HeartSolidIcon.vue";
@@ -71,6 +71,19 @@ const getPhone = async (id) => {
         console.error("Помилка при завантаженні номера користувача", error);
     }
 };
+const publish = async () => {
+    router.post(route("account.adverts.actions.publish", { advert: props.advert.id }), {
+        onSuccess: () => router.replace(route("admin.users.index")),
+    });
+
+};
+
+const toDraft = async () => {
+    router.post(route("account.adverts.actions.draft", { advert: props.advert.id }), {
+        onSuccess: () => router.replace(route("admin.users.index")),
+    });
+
+};
 </script>
 
 <template>
@@ -86,14 +99,17 @@ const getPhone = async (id) => {
                         <button @click="submitAction('adverts.adverts.photos')"
                                 class="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-1 rounded">Фото
                         </button>
-                        <button v-if="isOnModeration" @click="submitAction('adverts.adverts.moderate')"
+                        <button v-if="isDraft" @click="publish"
                                 class="bg-green-500 hover:bg-green-600 text-white px-4 py-1 rounded">Публікувати
                         </button>
-                        <button v-if="isOnModeration || isActive" @click="submitAction('admin.adverts.adverts.reject')"
+                        <button v-if="isActive" @click="submitAction('adverts.adverts.close')"
                                 class="bg-green-500 hover:bg-green-600 text-white px-4 py-1 rounded">Закрити
                         </button>
+                        <button v-if="isOnModeration || isActive" @click="toDraft"
+                                class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-1 rounded">Повернути в чорновик
+                        </button>
                         <button @click="submitAction('adverts.adverts.destroy')"
-                                class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-1 rounded">Видалити
+                                class="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded">Видалити
                         </button>
                     </div>
 
@@ -183,7 +199,7 @@ const getPhone = async (id) => {
                                 }}
                             </p>
                             <p class="mt-4 text-gray-800 text-sm">
-                                Опубліковано {{
+                                Закінчення {{
                                     new Date(advert.expires_at).toLocaleDateString("uk-UA", {
                                         year: "numeric",
                                         month: "long",

@@ -1,6 +1,7 @@
 <?php
 
 
+use App\Http\Controllers\Admin\Adverts\AdvertsController;
 use App\Http\Controllers\Admin\Adverts\AttributeController;
 use App\Http\Controllers\Admin\Adverts\CategoryController;
 use App\Http\Controllers\Admin\IndexController as AdminIndexController;
@@ -35,9 +36,6 @@ Route::get('/greeting/{locale}', [IndexController::class, 'changeLocale'])->name
 
 
 Route::middleware(['auth', 'verified'])->group(function () {
-
-
-
     Route::prefix('/account')->name('account.')->group(function () {
         Route::get('/dashboard', [ProfileController::class, 'dashboard'])->name('dashboard'); //прибрати потім
         Route::prefix('/profile')->name('profile.')->group(function () {
@@ -56,6 +54,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/', [AdvertController::class, 'index'])->name('index');
             Route::get('/show/{advert}', [IndexController::class, 'show'])->name('show');
             Route::get('/edit/{advert}', [AdvertController::class, 'edit'])->name('edit');
+            Route::post('/publish/{advert}', [AdvertController::class, 'publish'])->name('actions.publish');
+            Route::post('/draft/{advert}', [AdvertController::class, 'draft'])->name('actions.draft');
             Route::get('/create', [AdvertController::class, 'create'])->name('create');
             Route::get('/areas/{regionId}', [AdvertController::class, 'getAreas'])->name('areas');
             Route::get('/villages/{areaId}', [AdvertController::class, 'getVillages'])->name('villages');
@@ -68,7 +68,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     });
 
-    Route::prefix('admin')->name('admin.')->group(function () {
+    Route::prefix('/admin')->name('admin.')->group(function () {
         Route::get('/', [AdminIndexController::class, 'index'])->name('index');
         Route::get('/test', [AdminIndexController::class, 'test'])->name('test');
 
@@ -93,6 +93,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
 
         Route::prefix('/adverts')->name('adverts.')->group(function () {
+
+            Route::get('/moderation', [AdvertsController::class, 'moderation'])->name('actions.moderation');
+            Route::post('/moderation/{advert}/active', [AdvertsController::class, 'active'])->name('actions.moderation.active');
 
             Route::get('/category/{category}/attributes/create', [AttributeController::class, 'create'])->name('category.attributes.create');
             Route::post('/category/{category}/attributes/store', [AttributeController::class, 'store'])->name('category.attributes.store');

@@ -86,9 +86,9 @@ class Advert extends Model
         if (!$this->isDraft()) {
             throw new \DomainException('Advert is not draft.');
         }
-        if (!\count($this->photo)) {
-            throw new \DomainException('Upload photos.');
-        }
+//        if (!\count($this->photo)) {
+//            throw new \DomainException('Upload photos.');
+//        }
         $this->update([
             'status' => self::STATUS_MODERATION,
         ]);
@@ -113,11 +113,22 @@ class Advert extends Model
             'reject_reason' => $reason,
         ]);
     }
-
+    public function backToDraft(): void
+    {
+        $this->update([
+            'status' => self::STATUS_DRAFT,
+        ]);
+    }
     public function expire(): void
     {
         $this->update([
             'status' => self::STATUS_CLOSED,
+        ]);
+    }
+    public function active(): void
+    {
+        $this->update([
+            'status' => self::STATUS_ACTIVE,
         ]);
     }
 
