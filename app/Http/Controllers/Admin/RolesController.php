@@ -24,8 +24,9 @@ class RolesController extends Controller
 
     public function index(): Response
     {
+        $roles = Role::orderByDesc('created_at')->paginate(self::PER_PAGE);
         return Inertia::render('Admin/Roles/Index', [
-            'roles' => $this->roleService->getAllRoles(),
+            'roles' => $roles,
         ]);
     }
 

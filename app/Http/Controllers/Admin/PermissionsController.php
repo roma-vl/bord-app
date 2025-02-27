@@ -14,6 +14,7 @@ use App\Models\Permission;
 
 class PermissionsController extends Controller
 {
+
     private PermissionService $permissionService;
 
     public function __construct(PermissionService $permissionService)
@@ -26,9 +27,11 @@ class PermissionsController extends Controller
 
     public function index(): Response
     {
-        $permissions = $this->permissionService->getAll();
+        $permissions = Permission::orderByDesc('created_at')->paginate(self::PER_PAGE);
+//        $permissions = $this->permissionService->getAll();
 
-        return Inertia::render('Admin/Permissions/Index', compact('permissions'));
+        return Inertia::render('Admin/Permissions/Index',
+            compact('permissions'));
     }
 
     public function create(): JsonResponse

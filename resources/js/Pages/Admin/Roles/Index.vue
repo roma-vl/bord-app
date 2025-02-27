@@ -6,21 +6,18 @@ import Modal from "@/Components/Modal.vue";
 import {computed, ref} from "vue";
 import Create from "@/Pages/Admin/Roles/Create.vue";
 import Edit from "@/Pages/Admin/Roles/Edit.vue";
-import {useAcl} from "@/composables/useAcl.js";
 import TrashIcon from "@/Components/Icon/TrashIcon.vue";
 import PencilIcon from "@/Components/Icon/PencilIcon.vue";
 import Grid from "@/Components/Grid.vue";
 import RefreshIcon from "@/Components/Icon/RefreshIcon.vue";
 
-const { can } = useAcl();
-
 const flash = computed(() => usePage().props.flash);
 const roles = computed(() => usePage().props.roles.data);
+const pagination = computed(() => usePage().props.roles);
 
 const isCreateModalOpen = ref(false);
 const isEditModalOpen = ref(false);
 const selectedRole = ref(null);
-const pagination = computed(() => usePage().props.roles);
 
 const headings = [
     { key: "id", value: "ID", sortable: true, disabled: true},
@@ -109,7 +106,6 @@ const deleteRole = (id) => {
                         </div>
                     </template>
                     <template #column-actions="{ row }">
-                        {{console.log(row, 'row')}}
                         <div class="flex gap-2">
                             <div class="flex justify-end gap-4">
                                 <a v-if="!row.deleted_at" @click.prevent="openEditModal(row.id)" class="text-blue-600 hover:text-blue-900 cursor-pointer">
