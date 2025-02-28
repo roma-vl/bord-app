@@ -2,10 +2,7 @@
 
 namespace App\Models\Adverts;
 
-use App\Models\LocatedArea;
-use App\Models\LocatedCountry;
-use App\Models\LocatedRegion;
-use App\Models\LocatedVillage;
+use App\Models\Location;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -53,23 +50,9 @@ class Advert extends Model implements Auditable
     {
         return $this->hasMany(Photo::class, 'advert_id', 'id');
     }
-    public function country()
-    {
-        return $this->belongsTo(LocatedCountry::class, 'country_id');
-    }
     public function region()
     {
-        return $this->belongsTo(LocatedRegion::class, 'region_id');
-    }
-
-    public function area()
-    {
-        return $this->belongsTo(LocatedArea::class, 'area_id');
-    }
-
-    public function village()
-    {
-        return $this->belongsTo(LocatedVillage::class, 'village_id');
+        return $this->belongsTo(Location::class, 'region_id');
     }
 
     public function isDraft(): bool

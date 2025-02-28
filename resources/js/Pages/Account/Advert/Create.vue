@@ -1,7 +1,7 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head, useForm, usePage } from "@inertiajs/vue3";
-import {computed, ref, watch} from "vue";
+import {computed, onBeforeUnmount, onMounted, ref, watch} from "vue";
 import axios from "axios";
 import InputError from "@/Components/InputError.vue";
 import AdvertFileUpload from "@/Pages/Account/Advert/Partials/AdvertFileUpload.vue";
@@ -12,54 +12,36 @@ const props = defineProps({
     categories: Array,
     regions: Array,
 });
-// const categories = usePage().props.categories;
-console.log(props.categories, "categories");
-
-const areas = ref([]);
-const villages = ref([]);
+const showLocationDropdown = ref(false);
+const loadingCities = ref(false);
+const citySearchQuery = ref("");
+const filteredCities = ref([]);
 const attributes = ref([]);
 const form = useForm({
     category_id: '',
-    country_id: '',
     region_id: '',
-    area_id: '',
-    village_id: '',
     title: '',
     price: '',
     address: '',
     content: '',
     attributes: {},
-    images: []
 });
 
-watch(() => form.region_id, async (newRegionId) => {
-    form.area_id = '';
-    form.village_id = '';
-    areas.value = [];
+// watch(() => form.region_id, async (newRegionId) => {
+//     form.area_id = '';
+//     form.village_id = '';
+//     areas.value = [];
+//
+//     if (!newRegionId) return;
+//
+//     try {
+//         const response = await axios.get(route("account.adverts.areas", { regionId: newRegionId }));
+//         areas.value = response.data;
+//     } catch (error) {
+//         console.error("Помилка завантаження районів", error);
+//     }
+// });
 
-    if (!newRegionId) return;
-
-    try {
-        const response = await axios.get(route("account.adverts.areas", { regionId: newRegionId }));
-        areas.value = response.data;
-    } catch (error) {
-        console.error("Помилка завантаження районів", error);
-    }
-});
-
-watch(() => form.area_id, async (newVillagesId) => {
-    form.village_id = '';
-    villages.value = [];
-
-    if (!newVillagesId) return;
-
-    try {
-        const response = await axios.get(route("account.adverts.villages", { areaId: newVillagesId }));
-        villages.value = response.data;
-    } catch (error) {
-        console.error("Помилка завантаження сіл", error);
-    }
-});
 
 watch(() => form.category_id, async (newCategoryId) => {
     attributes.value = []; // Спочатку очищаємо
@@ -86,37 +68,6 @@ const submit = () => {
     });
 };
 
-// const submit = () => {
-//     const formData = new FormData();
-//
-//     // Додаємо всі поля форми
-//     Object.keys(form).forEach((key) => {
-//         if (key !== 'images') {
-//             formData.append(key, form[key]);
-//         }
-//     });
-//
-//     // Додаємо зображення
-//     form.images.forEach((image) => {
-//         formData.append('images[]', image);
-//     });
-//
-//     // Відправляємо запит з FormData
-//     axios.post(route("account.adverts.store"), formData, {
-//         headers: {
-//             "Content-Type": "multipart/form-data",
-//         },
-//     })
-//         .then(() => {
-//             console.log("Оголошення створено");
-//             form.reset();
-//         })
-//         .catch((error) => {
-//             console.error("Помилка при відправці форми", error);
-//         });
-// };
-
-
 const getCategoryOptions = (categories, prefix = "") => {
     let options = [];
     categories.forEach((category) => {
@@ -140,9 +91,41 @@ const addFile = (file) => {
     // Додаємо файл до форми
     form.images.push(file);
 };
+const selectCity = (city) => {
+    citySearchQuery.value = city.name;
+    form.region_id = city.id;
+    showLocationDropdown.value = false;
+}
+const searchCities = async () => {
+    if (citySearchQuery.value.length < 2) {
+        filteredCities.value = [];
+        return;
+    }
 
+    loadingCities.value = true;
+    try {
+        const response = await axios.get(route("adverts.regions.search", { region: citySearchQuery.value }));
+        filteredCities.value = response.data.regions;
+        if (response.data.regions.length) {
+            showLocationDropdown.value = true;
+        }
+    } finally {
+        loadingCities.value = false;
+    }
+};
+watch(citySearchQuery, searchCities);
+const handleClickOutside = (event) => {
+    if (!event.target.closest(".search-container")) {
+        showLocationDropdown.value = false;
+    }
+};
+onMounted(() => {
+    document.addEventListener("click", handleClickOutside);
+});
 
-
+onBeforeUnmount(() => {
+    document.removeEventListener("click", handleClickOutside);
+});
 </script>
 
 <template>
@@ -177,38 +160,21 @@ const addFile = (file) => {
                             <InputError class="mt-2" :message="form.errors.category_id"/>
 
                             <div class="mb-4">
-                                <label class="block text-sm font-medium mb-2">Фото</label>
-                                <AdvertFileUpload  @file-added="addFile"/>
-                            </div>
+                                <label class="block text-sm font-medium mb-2">Місцезнаходження</label>
+                                <div class="relative search-container">
+                                    <input v-model="citySearchQuery" type="text"
+                                           class="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-green-600 transition duration-200"
+                                           placeholder="Почніть вводити адресу" />
 
-
-
-
-                            <div class="mb-4">
-                                <label class="block text-sm font-medium mb-2">Область</label>
-                                <select v-model="form.region_id" :disabled="props.regions.length === 0" class="w-full border-gray-300 p-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                                    <option v-for="region in props.regions" :key="region.id" :value="region.id">
-                                        {{ region.region }}
-                                    </option>
-                                </select>
-                            </div>
-
-                            <div class="mb-4">
-                                <label class="block text-sm font-medium mb-2">Регіон</label>
-                                <select v-model="form.area_id" :disabled="areas.length === 0" class="w-full border-gray-300 p-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                                    <option v-for="area in areas" :key="area.id" :value="area.id">
-                                        {{ area.area }}
-                                    </option>
-                                </select>
-                            </div>
-
-                            <div class="mb-4">
-                                <label class="block text-sm font-medium mb-2">Село</label>
-                                <select v-model="form.village_id" :disabled="villages.length === 0" class="w-full border-gray-300 p-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                                    <option v-for="village in villages" :key="village.id" :value="village.id">
-                                        {{ village.village }}
-                                    </option>
-                                </select>
+                                    <div v-if="showLocationDropdown" class="absolute left-0 w-full bg-white border mt-1 rounded-lg shadow-lg z-10 h-[400px] overflow-y-auto">
+                                        <ul v-if="filteredCities.length">
+                                            <li v-for="city in filteredCities" :key="city.id" @click="selectCity(city)"
+                                                class="px-4 py-2 cursor-pointer hover:bg-gray-200 transition duration-200">
+                                                {{ city.name }}
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="mb-4">

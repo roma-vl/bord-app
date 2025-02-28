@@ -10,32 +10,23 @@ use App\Http\Requests\Cabinet\Adverts\PhotosRequest;
 use App\Http\Requests\Cabinet\Adverts\RejectRequest;
 use App\Models\Adverts\Advert;
 use App\Models\Adverts\Category;
-use App\Models\LocatedArea;
-use App\Models\LocatedCountry;
-use App\Models\LocatedRegion;
-use App\Models\LocatedVillage;
+use App\Models\Location;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class AdvertService
 {
-    const int COUNTRY_ID = 1;
     public function create($userId, CreateRequest $request): Advert
     {
         $categoryId = $request->input('category_id');
         $regionId = $request->input('region_id');
-        $areaId = $request->input('area_id');
-        $villagesId = $request->input('villages_id');
 
         $user = User::findOrFail($userId);
         $category = Category::findOrFail($categoryId);
-        $country = LocatedCountry::findOrFail(self::COUNTRY_ID) ?: null;
-        $region = $regionId ? LocatedRegion::findOrFail($regionId) : null;
-        $area = $areaId ? LocatedArea::findOrFail($areaId) : null;
-        $villages = $villagesId ? LocatedVillage::findOrFail($villagesId) : null;
+        $region = $regionId ? Location::findOrFail($regionId) : null;
 
-        return DB::transaction(function () use ($user, $category, $country, $region, $area, $villages, $request) {
+        return DB::transaction(function () use ($user, $category, $region,$request) {
             $advert = Advert::make([
                 'title' => $request->input('title'),
                 'content' => $request->input('content'),
@@ -46,10 +37,7 @@ class AdvertService
 
             $advert->user()->associate($user);
             $advert->category()->associate($category);
-            $advert->country()->associate($country);
             $advert->region()->associate($region);
-            $advert->area()->associate($area);
-            $advert->village()->associate($villages);
             $advert->saveOrFail();
 
             foreach ($category->allArrayAttributes() as $attribute) {

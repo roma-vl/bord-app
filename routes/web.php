@@ -59,10 +59,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('/publish/{advert}', [AdvertController::class, 'publish'])->name('actions.publish');
             Route::post('/draft/{advert}', [AdvertController::class, 'draft'])->name('actions.draft');
             Route::get('/create', [AdvertController::class, 'create'])->name('create');
+            Route::post('/store', [AdvertController::class, 'store'])->name('store');
             Route::get('/areas/{regionId}', [AdvertController::class, 'getAreas'])->name('areas');
             Route::get('/villages/{areaId}', [AdvertController::class, 'getVillages'])->name('villages');
             Route::get('/attributes/{categoryId}', [AdvertController::class, 'getAttributes'])->name('attributes');
-            Route::post('/store', [AdvertController::class, 'store'])->name('store');
+
         });
         Route::prefix('/chats')->name('chats.')->group(function () {
             Route::get('/', [ChatController::class, 'index'])->name('index');

@@ -15,11 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->integer('category_id')->references('id')->on('advert_categories')->onDelete('cascade');
-
-            $table->foreignId('country_id')->constrained('located_countrys')->onDelete('cascade');
-            $table->foreignId('region_id')->constrained('located_region')->onDelete('cascade');
-            $table->foreignId('area_id')->nullable()->constrained('located_area')->onDelete('cascade');
-            $table->foreignId('village_id')->nullable()->constrained('located_village')->onDelete('cascade');
+            $table->foreignId('region_id')->constrained('locations')->onDelete('cascade');
 
 
             $table->string('title');
