@@ -142,7 +142,7 @@ class IndexController extends Controller
         $childCategory = $currentCategory
             ? $currentCategory->descendants()->orderBy('name')->get(['id', 'name', 'slug'])
             : collect();
-        $filteredCategory = $parentCategory->push($currentCategory);
+        $filteredCategory = $currentCategory ? $parentCategory->push($currentCategory) : collect();
 
         return Inertia::render('Advert/Category',[
             'locations' => $filteredLocations,
