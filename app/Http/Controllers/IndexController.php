@@ -116,32 +116,38 @@ class IndexController extends Controller
         $categories = [];
 
         foreach ($slugs as $slug) {
-            $location = Location::where('slug', $slug)->first();
-
-            if ($location) {
+            if ($location = Location::where('slug', $slug)->first()) {
                 $locations[] = $location;
             } else {
                 $categories[] = $slug;
             }
         }
 
-        $currentLocation = $locations? $locations[0] : null;
+        $currentLocation = $locations ? $locations[0] : null;
         $parentLocations = $currentLocation ? $currentLocation->ancestors()->orderBy('name')->get(['id', 'name', 'slug']) : collect();
         $selectedLocation = $parentLocations->count() >= 2 ? $parentLocations->get(1) : null;
 
-        $filteredLocations = collect([$selectedLocation, $currentLocation])->filter();
+        $filteredLocations = $selectedLocation
+            ? collect([$selectedLocation, $currentLocation])->filter()
+            : collect([$selectedLocation])->filter();
 
         $currentCategory = $categories ? $categories[0] : null;
         if ($currentCategory) {
             $currentCategory = Category::where('slug', $categories[0])->first();
         }
 
-        $parentCategory = $currentCategory ? $currentCategory->ancestors()->orderBy('name')->get(['id', 'name', 'slug']) : collect();
-        $filteredCategory = collect([$currentCategory, $parentCategory])->filter();
+        $parentCategory = $currentCategory
+            ? $currentCategory->ancestors()->orderBy('name')->get(['id', 'name', 'slug'])
+            : collect();
+        $childCategory = $currentCategory
+            ? $currentCategory->descendants()->orderBy('name')->get(['id', 'name', 'slug'])
+            : collect();
+        $filteredCategory = $parentCategory->push($currentCategory);
 
         return Inertia::render('Advert/Category',[
             'locations' => $filteredLocations,
             'categories' => $filteredCategory,
+            'childCategories' => $childCategory,
         ]);
     }
 
