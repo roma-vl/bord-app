@@ -10,7 +10,9 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -87,7 +89,7 @@ class IndexController extends Controller
     public function show(Advert $advert)
     {
 
-        $advert->load(['category.ancestors', 'value.attribute', 'photo', 'user', 'region', 'area', 'village']);
+        $advert->load(['category.ancestors', 'value.attribute', 'photo', 'user', 'region']);
 
         $categoryAttributes = $advert->category->allArrayAttributes();
 
@@ -110,45 +112,52 @@ class IndexController extends Controller
     }
     public function showCategory($urlPath = null)
     {
-        $slugs = $urlPath ? array_reverse(explode('/', $urlPath)) : [];
+        $cacheKey = 'showCategory_' . md5($urlPath);
 
-        $locations = [];
-        $categories = [];
+        $data = Cache::tags([Location::class, Category::class])->rememberForever($cacheKey, function () use ($urlPath) {
+            $slugs = $urlPath ? array_reverse(explode('/', $urlPath)) : [];
 
-        foreach ($slugs as $slug) {
-            if ($location = Location::where('slug', $slug)->first()) {
-                $locations[] = $location;
-            } else {
-                $categories[] = $slug;
+            $locations = [];
+            $categories = [];
+
+            foreach ($slugs as $slug) {
+                if ($location = Location::where('slug', $slug)->first()) {
+                    $locations[] = $location;
+                } else {
+                    $categories[] = $slug;
+                }
             }
-        }
 
-        $currentLocation = $locations ? $locations[0] : null;
-        $parentLocations = $currentLocation ? $currentLocation->ancestors()->orderBy('name')->get(['id', 'name', 'slug']) : collect();
-        $selectedLocation = $parentLocations->count() >= 2 ? $parentLocations->get(1) : null;
+            $currentLocation = $locations ? $locations[0] : null;
+            $parentLocations = $currentLocation ? $currentLocation->ancestors()->orderBy('name')->get(['id', 'name', 'slug']) : collect();
+            $selectedLocation = $parentLocations->count() >= 2 ? $parentLocations->get(1) : null;
 
-        $filteredLocations = $selectedLocation
-            ? collect([$selectedLocation, $currentLocation])->filter()
-            : collect([$selectedLocation])->filter();
+            $filteredLocations = $selectedLocation
+                ? collect([$selectedLocation, $currentLocation])->filter()
+                : collect([$selectedLocation])->filter();
 
-        $currentCategory = $categories ? $categories[0] : null;
-        if ($currentCategory) {
-            $currentCategory = Category::where('slug', $categories[0])->first();
-        }
+            $currentCategory = $categories ? $categories[0] : null;
+            if ($currentCategory) {
+                $currentCategory = Category::where('slug', $categories[0])->first();
+            }
 
-        $parentCategory = $currentCategory
-            ? $currentCategory->ancestors()->orderBy('name')->get(['id', 'name', 'slug'])
-            : collect();
-        $childCategory = $currentCategory
-            ? $currentCategory->descendants()->orderBy('name')->get(['id', 'name', 'slug'])
-            : collect();
-        $filteredCategory = $currentCategory ? $parentCategory->push($currentCategory) : collect();
+            $parentCategory = $currentCategory
+                ? $currentCategory->ancestors()->orderBy('name')->get(['id', 'name', 'slug'])
+                : collect();
+            $childCategory = $currentCategory
+                ? $currentCategory->descendants()->orderBy('name')->get(['id', 'name', 'slug'])
+                : collect();
+            $filteredCategory = $currentCategory ? $parentCategory->push($currentCategory) : collect();
 
-        return Inertia::render('Advert/Category',[
-            'locations' => $filteredLocations,
-            'categories' => $filteredCategory,
-            'childCategories' => $childCategory,
-        ]);
+            return [
+                'locations' => $filteredLocations,
+                'categories' => $filteredCategory,
+                'childCategories' => $childCategory,
+            ];
+        });
+
+//        Cache::tags(['locations'])->flush();
+        return Inertia::render('Advert/Category', $data);
     }
 
     public function phone(Advert $advert): string
