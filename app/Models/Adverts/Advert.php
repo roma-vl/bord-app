@@ -163,6 +163,11 @@ class Advert extends Model implements Auditable
         return $this->belongsToMany(User::class, 'advert_advert_favorites', 'advert_id', 'user_id');
     }
 
+    public function values()
+    {
+        return $this->hasMany(Value::class,  'advert_id', 'id');
+    }
+
     public function toElasticsearchDocumentArray(): array
     {
         return $this->toArray();

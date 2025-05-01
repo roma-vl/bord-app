@@ -52,13 +52,37 @@ class AdvertController extends Controller
     public function edit(Advert $advert): Response
     {
         $categories = $this->categoryService->getCategories();
+        $activeAttributes = $advert->values()->get();
+        $category = Category::findOrFail($advert->category_id);
+//        $attributes = array_merge($category->getParentAttributes()->toArray(),
+//            $category->attributes()->orderBy('sort')->get()->toArray());
+        $ff = $category->getParentAttributes();
+        $dd = $category->attributes();
+        $attributes = array_merge($category->getParentAttributes()->toArray(),
+            $category->attributes()->orderBy('sort')->get()->toArray());
         $regions = $this->locationService->getRegions(self::COUNTRY_ID);
         return Inertia::render('Account/Advert/Edit', [
             'advert' => $advert,
             'categories' => $categories,
+            'attributes' => $attributes,
+            'activeAttributes' => $activeAttributes,
             'regions' => $regions
         ]);
 
+    }
+
+    public function update(CreateRequest $request): RedirectResponse|JsonResponse
+    {
+        $ff  = $request->all();
+        try {
+            $advert = $this->advertService->create(
+                Auth::id(),
+                $request
+            );
+        } catch (DomainException $e) {
+            return response()->json(['error' => $e->getMessage()], 422);
+        }
+        return redirect()->route('account.adverts.index')->with('success', 'Оголошення створено!');
     }
 
     public function publish(Advert $advert): RedirectResponse

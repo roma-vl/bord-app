@@ -1,24 +1,22 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head, useForm, usePage } from "@inertiajs/vue3";
-import {computed, ref, watch} from "vue";
+import {computed, onBeforeUnmount, onMounted, ref, watch} from "vue";
 import axios from "axios";
 import InputError from "@/Components/InputError.vue";
 import AdvertFileUpload from "@/Pages/Account/Advert/Partials/AdvertFileUpload.vue";
 
-const user = usePage().props.auth.user;
-
 const props = defineProps({
     categories: Array,
+    attributes: Array,
+    activeAttributes: Array,
     regions: Array,
     advert: Object,
 });
-// const categories = usePage().props.categories;
-console.log(props.advert, "categories");
-
-const areas = ref([]);
-const villages = ref([]);
-const attributes = ref([]);
+const showLocationDropdown = ref(false);
+const loadingCities = ref(false);
+const citySearchQuery = ref("");
+const filteredCities = ref([]);
 const form = useForm({
     category_id: props.advert.category_id,
     country_id: props.advert.country_id,
@@ -29,75 +27,42 @@ const form = useForm({
     price: props.advert.price,
     address: props.advert.address,
     content: props.advert.content,
-    attributes: props.advert.attributes,
+    attributes: {},
     images: []
 });
 
-watch(() => form.region_id, async (newRegionId) => {
-    form.area_id = '';
-    form.village_id = '';
-    areas.value = [];
-
-    if (!newRegionId) return;
-
-    try {
-        const response = await axios.get(route("account.adverts.areas", { regionId: newRegionId }));
-        areas.value = response.data;
-    } catch (error) {
-        console.error("Помилка завантаження районів", error);
-    }
-});
-
-watch(() => form.area_id, async (newVillagesId) => {
-    form.village_id = '';
-    villages.value = [];
-
-    if (!newVillagesId) return;
-
-    try {
-        const response = await axios.get(route("account.adverts.villages", { areaId: newVillagesId }));
-        villages.value = response.data;
-    } catch (error) {
-        console.error("Помилка завантаження сіл", error);
-    }
-});
-
 watch(() => form.category_id, async (newCategoryId) => {
-    attributes.value = []; // Спочатку очищаємо
-
     if (!newCategoryId) return;
 
     try {
         const response = await axios.get(route("account.adverts.attributes", { categoryId: newCategoryId }));
-        attributes.value = response.data ?? []; // Переконуємося, що це масив
-        console.log("Завантажені атрибути:", attributes.value);
+        attributes.value = response.data ?? [];
+
+        // Скидаємо значення атрибутів
+        form.attributes = {};
+        for (const attr of attributes.value) {
+            form.attributes[attr.id] = ""; // або null
+        }
     } catch (error) {
         console.error("Помилка завантаження атрибутів", error);
     }
 });
 
-
-
-// const submit = () => {
-//     form.post(route("account.adverts.store"), {
-//         onSuccess: () => {
-//             console.log("Оголошення створено");
-//             form.reset();
-//         },
-//     });
-// };
+const attributes = ref(props.attributes || []);
+// Якщо це сторінка редагування, заповни значення
+for (const attr of attributes.value) {
+    form.attributes[attr.id] = props.activeAttributes?.[attr.id] ?? "";
+}
 
 const submit = () => {
     const formData = new FormData();
 
-    // Додаємо всі поля форми
     Object.keys(form).forEach((key) => {
         if (key !== 'images') {
             formData.append(key, form[key]);
         }
     });
 
-    // Додаємо зображення
     form.images.forEach((image) => {
         formData.append('images[]', image);
     });
@@ -138,11 +103,44 @@ const addFile = (file) => {
         isImage: file.type.startsWith("image/"),
     };
 
-    // Додаємо файл до форми
     form.images.push(file);
 };
 
+const selectCity = (city) => {
+    citySearchQuery.value = city.name;
+    form.region_id = city.id;
+    showLocationDropdown.value = false;
+}
+const searchCities = async () => {
+    if (citySearchQuery.value.length < 2) {
+        filteredCities.value = [];
+        return;
+    }
 
+    loadingCities.value = true;
+    try {
+        const response = await axios.get(route("adverts.regions.search", { region: citySearchQuery.value }));
+        filteredCities.value = response.data.regions;
+        if (response.data.regions.length) {
+            showLocationDropdown.value = true;
+        }
+    } finally {
+        loadingCities.value = false;
+    }
+};
+watch(citySearchQuery, searchCities);
+const handleClickOutside = (event) => {
+    if (!event.target.closest(".search-container")) {
+        showLocationDropdown.value = false;
+    }
+};
+onMounted(() => {
+    document.addEventListener("click", handleClickOutside);
+});
+
+onBeforeUnmount(() => {
+    document.removeEventListener("click", handleClickOutside);
+});
 
 </script>
 
@@ -183,34 +181,22 @@ const addFile = (file) => {
                                 <AdvertFileUpload  @file-added="addFile"/>
                             </div>
 
-
-
-
                             <div class="mb-4">
-                                <label class="block text-sm font-medium mb-2">Область</label>
-                                <select v-model="form.region_id" :disabled="props.regions.length === 0" class="w-full border-gray-300 p-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                                    <option v-for="region in props.regions" :key="region.id" :value="region.id">
-                                        {{ region.region }}
-                                    </option>
-                                </select>
-                            </div>
+                                <label class="block text-sm font-medium mb-2">Місцезнаходження</label>
+                                <div class="relative search-container">
+                                    <input v-model="citySearchQuery" type="text"
+                                           class="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-green-600 transition duration-200"
+                                           placeholder="Почніть вводити адресу" />
 
-                            <div class="mb-4">
-                                <label class="block text-sm font-medium mb-2">Регіон</label>
-                                <select v-model="form.area_id" :disabled="areas.length === 0" class="w-full border-gray-300 p-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                                    <option v-for="area in areas" :key="area.id" :value="area.id">
-                                        {{ area.area }}
-                                    </option>
-                                </select>
-                            </div>
-
-                            <div class="mb-4">
-                                <label class="block text-sm font-medium mb-2">Село</label>
-                                <select v-model="form.village_id" :disabled="villages.length === 0" class="w-full border-gray-300 p-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                                    <option v-for="village in villages" :key="village.id" :value="village.id">
-                                        {{ village.village }}
-                                    </option>
-                                </select>
+                                    <div v-if="showLocationDropdown" class="absolute left-0 w-full bg-white border mt-1 rounded-lg shadow-lg z-10 h-[400px] overflow-y-auto">
+                                        <ul v-if="filteredCities.length">
+                                            <li v-for="city in filteredCities" :key="city.id" @click="selectCity(city)"
+                                                class="px-4 py-2 cursor-pointer hover:bg-gray-200 transition duration-200">
+                                                {{ city.name }}
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="mb-4">
@@ -224,19 +210,17 @@ const addFile = (file) => {
                             </div>
                             <InputError class="mt-2" :message="form.errors.content"/>
 
+                            {{console.log(form.attributes, 'form.attributes')}}
                             <div v-if="attributes && attributes.length > 0">
                                 <h3 class="text-lg font-medium">Атрибути</h3>
-                                <div v-for="attribute in attributes" :key="attribute.id" class="mb-4">
-                                    <label :for="'attribute_' + attribute.id" class="block text-sm font-medium mb-2">
+                                <div v-for="attribute in attributes"  class="mb-4">
+                                    <label :for="'attributes.' + attribute.id" class="block text-sm font-medium mb-2">
                                         {{ attribute.name }}
                                     </label>
 
                                     <template v-if="attribute.variants && attribute.variants.length">
-                                        <select
-                                            :id="'attribute_' + attribute.id"
-                                            v-model="form.attributes[attribute.id]"
-                                            class="w-full border-gray-300 p-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                                        >
+                                        <select :id="'attributes.' + attribute.id" v-model="form.attributes[attribute.id]"
+                                            class="w-full border-gray-300 p-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                                             <option value=""></option>
                                             <option v-for="variant in attribute.variants" :key="variant" :value="variant">
                                                 {{ variant }}
@@ -245,21 +229,13 @@ const addFile = (file) => {
                                     </template>
 
                                     <template v-else-if="attribute.type === 'integer' || attribute.type === 'float'">
-                                        <input
-                                            :id="'attribute_' + attribute.id"
-                                            type="number"
-                                            v-model="form.attributes[attribute.id]"
-                                            class="w-full border-gray-300 p-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                                        />
+                                        <input :id="'attribute.' + attribute.id" type="number" v-model="form.attributes[attribute.id]"
+                                            class="w-full border-gray-300 p-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"/>
                                     </template>
 
                                     <template v-else>
-                                        <input
-                                            :id="'attribute_' + attribute.id"
-                                            type="text"
-                                            v-model="form.attributes[attribute.id]"
-                                            class="w-full border-gray-300 p-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                                        />
+                                        <input :id="'attribute.' + attribute.id" type="text" v-model="form.attributes[attribute.id]"
+                                            class="w-full border-gray-300 p-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"/>
                                     </template>
                                 </div>
                             </div>
