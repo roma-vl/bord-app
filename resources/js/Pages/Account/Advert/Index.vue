@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { Head, usePage } from "@inertiajs/vue3";
+import {Head, Link, usePage} from "@inertiajs/vue3";
 import ProfileMenu from "@/Pages/Account/Profile/Partials/ProfileMenu.vue";
 import {computed} from "vue";
 import FlashMessage from "@/Components/FlashMessage.vue";
@@ -50,7 +50,7 @@ const formatDate = (dateString) => {
                                      class="p-8 hover:bg-gray-100 transition duration-150 ease-in-out">
                                     <div class="flex justify-between items-start gap-8">
                                         <div class="flex-grow space-y-3">
-                                            <a href="#" class="block group">
+                                            <a :href="route('adverts.show', advert.id)" class="block group">
                                                 <h3 class="text-2xl font-semibold text-gray-800 group-hover:text-violet-600 transition-colors duration-200">{{ advert.title }}</h3>
                                             </a>
                                             <p class="text-xl font-medium text-violet-600">{{ advert.price }} ₴</p>

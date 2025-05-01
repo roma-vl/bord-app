@@ -4,6 +4,7 @@ namespace App\Models\Adverts;
 
 use App\Models\Location;
 use App\Models\User;
+use App\Traits\Searchable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,7 +15,7 @@ use OwenIt\Auditing\Auditable as AuditableTrait;
 
 class Advert extends Model implements Auditable
 {
-    use HasFactory, SoftDeletes, AuditableTrait;
+    use HasFactory, SoftDeletes, AuditableTrait, Searchable;
 
     public const string STATUS_DRAFT = 'draft';
     public const string STATUS_MODERATION = 'moderation';
@@ -148,5 +149,33 @@ class Advert extends Model implements Auditable
             [$category->id],
             $category->descendants()->pluck('id')->toArray()
         ));
+    }
+
+    public function scopeFavoriteByUser(Builder $query, User $user)
+    {
+        return $query->whereHas('favorites', function (Builder $query) use ($user) {
+            $query->where('user_id', $user->id);
+        });
+    }
+
+    public function favorites()
+    {
+        return $this->belongsToMany(User::class, 'advert_advert_favorites', 'advert_id', 'user_id');
+    }
+
+    public function toElasticsearchDocumentArray(): array
+    {
+        return $this->toArray();
+    }
+
+    public function getSearchableFields(): array
+    {
+        return [
+            'title',
+            'price',
+            'address',
+            'content',
+            'status',
+        ];
     }
 }

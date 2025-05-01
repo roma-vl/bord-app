@@ -216,7 +216,7 @@ onBeforeUnmount(() => {
                                         <div class="bg-white shadow-md rounded p-4 mt-2">
                                             <p class="pb-3">
                                                 <span class="font-bold text-sm"> > Переглянути всі оголошення в </span>
-                                                <a :href="selectedCategory.slug" class="text-sm hover:underline cursor-pointer">{{ selectedCategory.name }}</a>
+                                                <a :href="'adverts/' + selectedCategory.slug" class="text-sm hover:underline cursor-pointer">{{ selectedCategory.name }}</a>
                                             </p><hr>
 
                                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-3">

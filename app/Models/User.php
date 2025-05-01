@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Adverts\Advert;
 use App\Notifications\CustomVerifyEmail;
 use App\Notifications\ResetPasswordNotification;
 use Carbon\Carbon;
@@ -118,5 +119,30 @@ class User extends Authenticatable implements MustVerifyEmail, Auditable
         $this->phone_verify_token = null;
         $this->phone_verify_token_expire = null;
         $this->saveOrFail();
+    }
+
+    public function addToFavorites($id): void
+    {
+        if ($this->hasIsFavorites($id)) {
+            throw new \DomainException('This advert is already in favorites.');
+        }
+        $this->favorites()->attach($id);
+    }
+
+    public function removeFromFavorites($id): void
+    {
+        if (!$this->hasIsFavorites($id)) {
+            throw new \DomainException('This advert is not in favorites.');
+        }
+        $this->favorites()->detach($id);
+    }
+
+    public function hasIsFavorites($id): bool
+    {
+        return $this->favorites()->where('id', $id)->exists();
+    }
+    public function favorites()
+    {
+        return $this->belongsToMany(User::class, 'advert_advert_favorites', 'user_id','advert_id');
     }
 }

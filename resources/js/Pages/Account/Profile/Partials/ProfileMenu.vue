@@ -9,6 +9,7 @@ const menuItems = [
     { name: "Оголошення", route: "account.adverts.index" },
     { name: "Чат", route: "account.chats.index" },
     { name: "Профіль", route: "account.profile.index" },
+    { name: "Збережені", route: "account.favorites.index" },
     { name: "Налаштування", route: "account.profile.settings" },
 ];
 

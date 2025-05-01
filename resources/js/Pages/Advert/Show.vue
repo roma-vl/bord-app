@@ -21,6 +21,11 @@ const userPhone = ref(false);
 const isRejectModalOpen = ref(false);
 const advertId = ref(null);
 const toggleLike = () => {
+    if (isLiked.value === true) {
+        router.delete(route("account.favorites.remove", {advert: props.advert.id}));
+    } else {
+        router.post(route("account.favorites.add", {advert: props.advert.id}));
+    }
     isLiked.value = !isLiked.value;
 };
 

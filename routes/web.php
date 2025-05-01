@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\PermissionsController as AdminPermissionsControll
 use App\Http\Controllers\Admin\RolesController as AdminRolesController;
 use App\Http\Controllers\Admin\UsersController as AdminUsersController;
 use App\Http\Controllers\Cabinet\Adverts\AdvertController;
+use App\Http\Controllers\Cabinet\Adverts\FavoriteController;
 use App\Http\Controllers\Cabinet\Chat\ChatController;
 use App\Http\Controllers\Cabinet\Profile\PhoneController;
 use App\Http\Controllers\Cabinet\Profile\ProfileController;
@@ -24,17 +25,8 @@ Route::prefix('/adverts')->name('adverts.')->group(function () {
     Route::get('/regions', [IndexController::class, 'regions'])->name('regions');
     Route::get('/regions/{region}/cities', [IndexController::class, 'cities'])->name('cities');
     Route::get('/regions-search/{region}', [IndexController::class, 'search'])->name('regions.search');
-//    Route::get('{categorySlug}/{subCategorySlug?}/{sub2CategorySlug?}/{citySlug?}', [IndexController::class, 'showCategory'])->name('category.show')
-//        ->where([
-//            'categorySlug' => '[a-z0-9-]+',
-//            'subCategorySlug' => '[a-z0-9-]+',
-//            'sub2CategorySlug' => '[a-z0-9-]+',
-//            'citySlug' => '[a-z0-9-]+'
-//        ]);
     Route::get('{urlPath?}', [IndexController::class, 'showCategory'])
-        ->where('urlPath', '[a-z0-9-\/]+') // Дозволяємо передавати категорії через `/`
-//        ->where('citySlug', '[a-z0-9-]+')
-        ->name('category.show');
+        ->where('urlPath', '[a-z0-9-\/]+')->name('category.show');
 
 });
 Route::get('/greeting/{locale}', [IndexController::class, 'changeLocale'])->name('greeting');
@@ -54,6 +46,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::patch('/', [ProfileController::class, 'update'])->name('update');
             Route::delete('/', [ProfileController::class, 'destroy'])->name('destroy');
         });
+
+        Route::get('favorites', [FavoriteController::class, 'index'])->name('favorites.index');
+        Route::post('favorites/{advert}', [FavoriteController::class, 'add'])->name('favorites.add');
+        Route::delete('favorites/{advert}', [FavoriteController::class, 'remove'])->name('favorites.remove');
 
         Route::prefix('/adverts')->name('adverts.')->group(function () {
             Route::get('/', [AdvertController::class, 'index'])->name('index');

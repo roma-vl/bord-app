@@ -57,12 +57,19 @@ class AdvertService
     public function edit($id, EditRequest $request): void
     {
         $advert = $this->getAdvert($id);
+        $oldPrice = $advert->price;
         $advert->update($request->only([
             'title',
             'content',
             'price',
             'address',
         ]));
+
+//        if ($oldPrice != $advert->price) {
+//            foreach ($advert->favorites()->create() as $user) {
+//                \Mail::to($user->email)->queue(new AdvertPriceChanged($user, $advert, $oldPrice));
+//            }
+//        }
     }
 
     public function editAttributes($id, AttributesRequest $request): void
