@@ -8,6 +8,7 @@ use App\Http\Requests\Cabinet\Adverts\CreateRequest;
 use App\Http\Requests\Cabinet\Adverts\EditRequest;
 use App\Http\Requests\Cabinet\Adverts\PhotosRequest;
 use App\Http\Requests\Cabinet\Adverts\RejectRequest;
+use App\Http\Requests\Cabinet\Adverts\UpdateRequest;
 use App\Models\Adverts\Advert;
 use App\Models\Adverts\Category;
 use App\Models\Location;
@@ -71,6 +72,56 @@ class AdvertService
 //            }
 //        }
     }
+
+    public function update($id, UpdateRequest $request, ?PhotosRequest $photosRequest = null): void
+    {
+        $advert = $this->getAdvert($id);
+
+        $categoryId = $request->input('category_id');
+        $regionId = $request->input('region_id');
+
+        $category = Category::findOrFail($categoryId);
+        $region = $regionId ? Location::findOrFail($regionId) : null;
+
+        DB::transaction(function () use ($advert, $request, $category, $region,  $photosRequest) {
+            // Оновлення базових полів
+            $advert->update($request->only([
+                'title',
+                'content',
+                'price',
+                'address',
+                'category_id',
+                'region_id',
+            ]));
+
+//            $advert->category()->associate($category);
+//            $advert->region()->associate($region);
+//            $advert->saveOrFail();
+            // Видаляємо старі атрибути
+            $advert->value()->delete();
+
+            // Додаємо нові атрибути
+            foreach ($advert->category->allArrayAttributes() as $attribute) {
+                $value = $request['attributes_' . $attribute['id']] ?? null;
+                if ($value !== null) {
+                    $advert->value()->create([
+                        'attribute_id' => $attribute['id'],
+                        'value' => $value,
+                    ]);
+                }
+            }
+
+            // Якщо передали нові фотки — додаємо їх
+            if ($photosRequest && $photosRequest->hasFile('photos')) {
+                foreach ($photosRequest->file('photos') as $photo) {
+                    $advert->photo()->create([
+                        'file' => $photo->store('adverts/' . $advert->id, 'public'),
+                    ]);
+                }
+            }
+        });
+    }
+
 
     public function editAttributes($id, AttributesRequest $request): void
     {

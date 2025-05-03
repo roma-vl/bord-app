@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cabinet\Adverts;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cabinet\Adverts\CreateRequest;
+use App\Http\Requests\Cabinet\Adverts\UpdateRequest;
 use App\Http\Services\Adverts\AdvertService;
 use App\Http\Services\CategoryService;
 use App\Http\Services\LocationService;
@@ -13,6 +14,7 @@ use DomainException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -52,12 +54,12 @@ class AdvertController extends Controller
     public function edit(Advert $advert): Response
     {
         $categories = $this->categoryService->getCategories();
-        $activeAttributes = $advert->values()->get();
+        $active = $advert->values()->get();
+        foreach ($active as $activeAttribute) {
+            $activeAttributes[$activeAttribute->attribute_id] = $activeAttribute->value;
+        }
+        $advert->region = $advert->region()->get();
         $category = Category::findOrFail($advert->category_id);
-//        $attributes = array_merge($category->getParentAttributes()->toArray(),
-//            $category->attributes()->orderBy('sort')->get()->toArray());
-        $ff = $category->getParentAttributes();
-        $dd = $category->attributes();
         $attributes = array_merge($category->getParentAttributes()->toArray(),
             $category->attributes()->orderBy('sort')->get()->toArray());
         $regions = $this->locationService->getRegions(self::COUNTRY_ID);
@@ -71,14 +73,10 @@ class AdvertController extends Controller
 
     }
 
-    public function update(CreateRequest $request): RedirectResponse|JsonResponse
+    public function update(UpdateRequest $request): RedirectResponse|JsonResponse
     {
-        $ff  = $request->all();
         try {
-            $advert = $this->advertService->create(
-                Auth::id(),
-                $request
-            );
+            $this->advertService->update(Auth::id(), $request);
         } catch (DomainException $e) {
             return response()->json(['error' => $e->getMessage()], 422);
         }
@@ -98,12 +96,8 @@ class AdvertController extends Controller
 
     public function store(CreateRequest $request): RedirectResponse|JsonResponse
     {
-        $ff  = $request->all();
         try {
-            $advert = $this->advertService->create(
-                Auth::id(),
-                $request
-            );
+            $this->advertService->create(Auth::id(), $request);
         } catch (DomainException $e) {
             return response()->json(['error' => $e->getMessage()], 422);
         }

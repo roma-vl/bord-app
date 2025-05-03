@@ -55,7 +55,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/', [AdvertController::class, 'index'])->name('index');
             Route::get('/show/{advert}', [IndexController::class, 'show'])->name('show');
             Route::get('/edit/{advert}', [AdvertController::class, 'edit'])->name('edit');
-            Route::get('/update/{advert}', [AdvertController::class, 'update'])->name('update');
+            Route::post('/update/{advert}', [AdvertController::class, 'update'])->name('update');
             Route::delete('/destroy/{advert}', [AdvertController::class, 'destroy'])->name('destroy');
             Route::get('/edit/{advert}/photos', [AdvertController::class, 'photos'])->name('edit.photos');
             Route::post('/publish/{advert}', [AdvertController::class, 'publish'])->name('actions.publish');

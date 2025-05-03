@@ -15,7 +15,7 @@ const props = defineProps({
 });
 const showLocationDropdown = ref(false);
 const loadingCities = ref(false);
-const citySearchQuery = ref("");
+const citySearchQuery = ref(props.advert.region[0].name);
 const filteredCities = ref([]);
 const form = useForm({
     category_id: props.advert.category_id,
@@ -38,10 +38,9 @@ watch(() => form.category_id, async (newCategoryId) => {
         const response = await axios.get(route("account.adverts.attributes", { categoryId: newCategoryId }));
         attributes.value = response.data ?? [];
 
-        // Скидаємо значення атрибутів
         form.attributes = {};
         for (const attr of attributes.value) {
-            form.attributes[attr.id] = ""; // або null
+            form.attributes[attr.id] = "";
         }
     } catch (error) {
         console.error("Помилка завантаження атрибутів", error);
@@ -49,7 +48,7 @@ watch(() => form.category_id, async (newCategoryId) => {
 });
 
 const attributes = ref(props.attributes || []);
-// Якщо це сторінка редагування, заповни значення
+
 for (const attr of attributes.value) {
     form.attributes[attr.id] = props.activeAttributes?.[attr.id] ?? "";
 }
@@ -58,23 +57,26 @@ const submit = () => {
     const formData = new FormData();
 
     Object.keys(form).forEach((key) => {
-        if (key !== 'images') {
+        if (key !== 'images' || key !== 'attributes') {
             formData.append(key, form[key]);
         }
+    });
+
+    Object.entries(form.attributes).forEach((attribute) => {
+        formData.append('attributes.' + attribute[0], attribute[1]);
     });
 
     form.images.forEach((image) => {
         formData.append('images[]', image);
     });
 
-    // Відправляємо запит з FormData
-    axios.post(route("account.adverts.store"), formData, {
+    axios.post(route("account.adverts.update", props.advert.id), formData, {
         headers: {
             "Content-Type": "multipart/form-data",
         },
     })
         .then(() => {
-            console.log("Оголошення створено");
+            console.log("Оголошення оновлено");
             form.reset();
         })
         .catch((error) => {
@@ -210,7 +212,6 @@ onBeforeUnmount(() => {
                             </div>
                             <InputError class="mt-2" :message="form.errors.content"/>
 
-                            {{console.log(form.attributes, 'form.attributes')}}
                             <div v-if="attributes && attributes.length > 0">
                                 <h3 class="text-lg font-medium">Атрибути</h3>
                                 <div v-for="attribute in attributes"  class="mb-4">
@@ -229,12 +230,12 @@ onBeforeUnmount(() => {
                                     </template>
 
                                     <template v-else-if="attribute.type === 'integer' || attribute.type === 'float'">
-                                        <input :id="'attribute.' + attribute.id" type="number" v-model="form.attributes[attribute.id]"
+                                        <input :id="'attributes.' + attribute.id" type="number" v-model="form.attributes[attribute.id]"
                                             class="w-full border-gray-300 p-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"/>
                                     </template>
 
                                     <template v-else>
-                                        <input :id="'attribute.' + attribute.id" type="text" v-model="form.attributes[attribute.id]"
+                                        <input :id="'attributes.' + attribute.id" type="text" v-model="form.attributes[attribute.id]"
                                             class="w-full border-gray-300 p-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"/>
                                     </template>
                                 </div>
