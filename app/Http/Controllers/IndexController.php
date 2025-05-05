@@ -106,7 +106,7 @@ class IndexController extends Controller
             'categoryAttributes' => $categoryAttributes,
             'values' => $values,
             'user' => $advert->values,
-            'region' => $advert->region . $advert->area . $advert->village,
+            'region' => $advert->region,
             'photos' => $advert->photo,
         ]);
     }

@@ -46,6 +46,7 @@ class UpdateRequest extends FormRequest
             'content' => 'required|string',
             'price' => 'required|integer',
             'address' => 'required|string',
+            'images' => 'nullable|array',
         ], $items);
     }
 

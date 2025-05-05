@@ -74,15 +74,11 @@ class AdvertService
 //        }
     }
 
-    public function update(UpdateRequest $request, Advert $advert, ?PhotosRequest $photosRequest = null): void
+    public function update(UpdateRequest $request, Advert $advert): void
     {
         $whoEdit = Auth::id();
-//        $advert = $this->getAdvert($request->input('id'));
 
-        $categoryId = $request->input('category_id');
-        $regionId = $request->input('region_id');
-
-        DB::transaction(function () use ($advert, $request, $photosRequest) {
+        DB::transaction(function () use ($advert, $request) {
             // Оновлення базових полів
             $advert->update($request->only([
                 'title',
@@ -105,13 +101,15 @@ class AdvertService
                 }
             }
 
-            if ($photosRequest && $photosRequest->hasFile('photos')) {
-                foreach ($photosRequest->file('photos') as $photo) {
+
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $image) {
                     $advert->photo()->create([
-                        'file' => $photo->store('adverts/' . $advert->id, 'public'),
+                        'file' => $image->store('adverts/' . $advert->id, 'public'),
                     ]);
                 }
             }
+
         });
     }
 

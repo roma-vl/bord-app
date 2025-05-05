@@ -28,7 +28,7 @@ const form = useForm({
     address: props.advert.address,
     content: props.advert.content,
     attributes: {},
-    images: []
+    images: props.advert.images.map(img => ({ type: 'existing', file: img.file, id: img.id }))
 });
 
 watch(() => form.category_id, async (newCategoryId) => {
@@ -55,7 +55,6 @@ for (const attr of attributes.value) {
 
 const submit = () => {
     const payload = {};
-
     Object.keys(form).forEach((key) => {
         if (key !== 'images' && key !== 'attributes') {
             payload[key] = form[key];
@@ -96,16 +95,6 @@ const getCategoryOptions = (categories, prefix = "") => {
     return options;
 };
 const formattedCategories = computed(() => getCategoryOptions(props.categories));
-const addFile = (file) => {
-    const objectURL = URL.createObjectURL(file);
-    files.value[objectURL] = {
-        name: file.name,
-        size: file.size,
-        isImage: file.type.startsWith("image/"),
-    };
-
-    form.images.push(file);
-};
 
 const selectCity = (city) => {
     citySearchQuery.value = city.name;
@@ -179,7 +168,7 @@ onBeforeUnmount(() => {
 
                             <div class="mb-4">
                                 <label class="block text-sm font-medium mb-2">Фото</label>
-                                <AdvertFileUpload  @file-added="addFile"/>
+                                <AdvertFileUpload v-model="form.images"/>
                             </div>
 
                             <div class="mb-4">

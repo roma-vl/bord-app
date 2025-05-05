@@ -60,6 +60,7 @@ class AdvertController extends Controller
             $activeAttributes[$activeAttribute->attribute_id] = $activeAttribute->value;
         }
         $advert->region = $advert->region()->get();
+        $advert->images = $advert->photo()->get();
         $category = Category::findOrFail($advert->category_id);
         $attributes = array_merge($category->getParentAttributes()->toArray(),
             $category->attributes()->orderBy('sort')->get()->toArray());

@@ -7,6 +7,7 @@ import HeartSolidIcon from "@/Components/Icon/HeartSolidIcon.vue";
 import Reject from "@/Pages/Admin/Advert/Actions/Reject.vue";
 import Modal from "@/Components/Modal.vue";
 import FlashMessage from "@/Components/FlashMessage.vue";
+import {getFullPathForImage} from "@/helpers.js";
 
 const props = defineProps({
     advert: Object,
@@ -29,27 +30,27 @@ const toggleLike = () => {
     isLiked.value = !isLiked.value;
 };
 
-const photos = [
-    {
-        id: 1,
-        file: "https://img.freepik.com/free-photo/funny-duck-3d-illustration_183364-80316.jpg?t=st=1739995450~exp=1739999050~hmac=ff47a4a1fc83795e58a4f89455cb048ca2ec288e1daef9ce6dfdabc6d3d83c17&w=740"
-    },
-    {
-        id: 2,
-        file: "https://img.freepik.com/premium-vector/happy-turkey-cartoon-running_49499-219.jpg?w=996"},
-    {
-        id: 3,
-        file: "https://img.freepik.com/premium-vector/cute-frog-cartoon-character-cowboy-style_1639-50300.jpg?w=826"
-    },
-    {
-        id: 4,
-        file: "https://img.freepik.com/free-vector/cartoon-fish-with-big-fangs-cartoon-sticker_1308-78081.jpg?t=st=1739995609~exp=1739999209~hmac=9bfdcb21ac2064741ee81dcc13c969de3587d638580f54cde8988feccefe46dd&w=1380"
-    },
-    {
-        id: 5,
-        file: "https://img.freepik.com/free-photo/fun-horse_183364-80091.jpg?t=st=1739995631~exp=1739999231~hmac=7802289d2705e7a371830f773f35677a0902b774c5a7ea8214ec4a1d0e3dad59&w=996"
-    }
-];
+// const photos = [
+//     {
+//         id: 1,
+//         file: "https://img.freepik.com/free-photo/funny-duck-3d-illustration_183364-80316.jpg?t=st=1739995450~exp=1739999050~hmac=ff47a4a1fc83795e58a4f89455cb048ca2ec288e1daef9ce6dfdabc6d3d83c17&w=740"
+//     },
+//     {
+//         id: 2,
+//         file: "https://img.freepik.com/premium-vector/happy-turkey-cartoon-running_49499-219.jpg?w=996"},
+//     {
+//         id: 3,
+//         file: "https://img.freepik.com/premium-vector/cute-frog-cartoon-character-cowboy-style_1639-50300.jpg?w=826"
+//     },
+//     {
+//         id: 4,
+//         file: "https://img.freepik.com/free-vector/cartoon-fish-with-big-fangs-cartoon-sticker_1308-78081.jpg?t=st=1739995609~exp=1739999209~hmac=9bfdcb21ac2064741ee81dcc13c969de3587d638580f54cde8988feccefe46dd&w=1380"
+//     },
+//     {
+//         id: 5,
+//         file: "https://img.freepik.com/free-photo/fun-horse_183364-80091.jpg?t=st=1739995631~exp=1739999231~hmac=7802289d2705e7a371830f773f35677a0902b774c5a7ea8214ec4a1d0e3dad59&w=996"
+//     }
+// ];
 
 const form = useForm({});
 const isDraft = computed(() => props.advert.status === "draft");
@@ -65,7 +66,7 @@ const getValue = (attributeName) => {
     return valueObj ? valueObj.value : "-";
 };
 
-const mainPhoto = ref(photos.length ? photos[0].file : "");
+const mainPhoto = ref(props.photos.length ? getFullPathForImage(props.photos[0].file) : "");
 
 const setMainPhoto = (photo) => {
     mainPhoto.value = photo;
@@ -165,17 +166,18 @@ const deleteAdvert = () => {
                             </div>
 
                             <div class="flex gap-2 mt-3 overflow-x-auto">
-                                <img v-for="photo in photos" :key="photo.id" :src="photo.file"
+                                {{console.log(photos, 'attribute')}}
+                                <img v-for="photo in props.photos" :key="photo.id" :src="getFullPathForImage(photo.file)"
                                      class="w-24 h-24 object-cover rounded-lg cursor-pointer border-2 border-transparent hover:border-blue-500 transition"
-                                     @click="setMainPhoto(photo.file)"/>
+                                     @click="setMainPhoto(getFullPathForImage(photo.file))"/>
                             </div>
                         </div>
 
                         <div class="bg-white rounded-lg shadow p-3 mt-5">
                             <div class="flex flex-wrap gap-2">
-                                <span v-for="attribute in categoryAttributes" :key="attribute.id"
+                                <span v-for="item in values" :key="item.id"
                                       class="border border-gray-700 px-4 py-1 font-medium text-gray-700 rounded-md cursor-pointer">
-                                    {{ attribute.name }} : {{ getValue(attribute.name) }}
+                                    {{ item.attribute }} : {{ getValue(item.attribute) }}
                                 </span>
                             </div>
 

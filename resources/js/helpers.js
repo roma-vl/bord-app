@@ -17,3 +17,6 @@ export const useLocalStorageFn = (key, defaultValue) => {
     }, { deep: true });
     return value;
 };
+
+export const getFullPathForImage = (path) =>
+    import.meta.env.VITE_APP_STORAGE_URL + "/" + path;
