@@ -14,6 +14,7 @@ use App\Models\Adverts\Category;
 use App\Models\Location;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class AdvertService
@@ -73,17 +74,15 @@ class AdvertService
 //        }
     }
 
-    public function update($id, UpdateRequest $request, ?PhotosRequest $photosRequest = null): void
+    public function update(UpdateRequest $request, Advert $advert, ?PhotosRequest $photosRequest = null): void
     {
-        $advert = $this->getAdvert($id);
+        $whoEdit = Auth::id();
+//        $advert = $this->getAdvert($request->input('id'));
 
         $categoryId = $request->input('category_id');
         $regionId = $request->input('region_id');
 
-        $category = Category::findOrFail($categoryId);
-        $region = $regionId ? Location::findOrFail($regionId) : null;
-
-        DB::transaction(function () use ($advert, $request, $category, $region,  $photosRequest) {
+        DB::transaction(function () use ($advert, $request, $photosRequest) {
             // Оновлення базових полів
             $advert->update($request->only([
                 'title',
@@ -94,15 +93,10 @@ class AdvertService
                 'region_id',
             ]));
 
-//            $advert->category()->associate($category);
-//            $advert->region()->associate($region);
-//            $advert->saveOrFail();
-            // Видаляємо старі атрибути
             $advert->value()->delete();
 
-            // Додаємо нові атрибути
             foreach ($advert->category->allArrayAttributes() as $attribute) {
-                $value = $request['attributes_' . $attribute['id']] ?? null;
+                $value = $request['attributes'][$attribute['id']] ?? null;
                 if ($value !== null) {
                     $advert->value()->create([
                         'attribute_id' => $attribute['id'],
@@ -111,7 +105,6 @@ class AdvertService
                 }
             }
 
-            // Якщо передали нові фотки — додаємо їх
             if ($photosRequest && $photosRequest->hasFile('photos')) {
                 foreach ($photosRequest->file('photos') as $photo) {
                     $advert->photo()->create([

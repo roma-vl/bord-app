@@ -14,7 +14,8 @@ class StoreAttributeRequest extends FormRequest
             'name' => 'required|string|max:255',
             'type' => ['required', 'string', 'max:255', Rule::in(Attribute::typesList())],
             'is_required' => 'nullable|boolean',
-            'variant' => 'nullable|string',
+            'variants' => ['nullable', 'array'],
+            'variants.*' => ['required', 'string', 'max:255'],
             'sort' => 'required|integer',
         ];
     }

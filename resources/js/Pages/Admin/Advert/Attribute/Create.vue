@@ -1,6 +1,7 @@
 <script setup>
 import { useForm } from "@inertiajs/vue3";
 import { defineProps, defineEmits } from "vue";
+import TagInput from "@/Components/TagInput.vue";
 
 const props = defineProps({
     data: Object,
@@ -57,7 +58,7 @@ const submit = () => {
 
             <div class="mb-4">
                 <label class="block text-gray-700">Варіанти (по одному на рядок)</label>
-                <textarea v-model="form.variants" class="w-full p-2 border rounded"></textarea>
+                <TagInput v-model="form.variants" />
             </div>
 
             <div class="mb-4">

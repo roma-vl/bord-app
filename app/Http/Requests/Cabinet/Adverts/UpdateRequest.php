@@ -35,7 +35,7 @@ class UpdateRequest extends FormRequest
                 if (!empty($attribute['variants'])) {
                     $rules[] = Rule::in($attribute['variants']);
                 }
-                $items['attributes_' . $attribute['id']] = $rules;
+                $items['attributes'][$attribute['id']] = $rules;
             }
 
         }

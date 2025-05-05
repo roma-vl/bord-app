@@ -53,6 +53,7 @@ class AdvertController extends Controller
 
     public function edit(Advert $advert): Response
     {
+        $activeAttributes = [];
         $categories = $this->categoryService->getCategories();
         $active = $advert->values()->get();
         foreach ($active as $activeAttribute) {
@@ -73,10 +74,10 @@ class AdvertController extends Controller
 
     }
 
-    public function update(UpdateRequest $request): RedirectResponse|JsonResponse
+    public function update(UpdateRequest $request, Advert $advert): RedirectResponse|JsonResponse
     {
         try {
-            $this->advertService->update(Auth::id(), $request);
+            $this->advertService->update($request, $advert);
         } catch (DomainException $e) {
             return response()->json(['error' => $e->getMessage()], 422);
         }

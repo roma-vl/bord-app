@@ -14,7 +14,8 @@ class UpdateAttributeRequest extends FormRequest
             'name' => 'required|string|max:255',
             'type' => ['required', 'string', 'max:255'],
             'is_required' => 'nullable|boolean',
-            'variant' => 'nullable|string',
+            'variants' => ['nullable', 'array'],
+            'variants.*' => ['required', 'string', 'max:255'],
             'sort' => 'required|integer',
         ];
     }

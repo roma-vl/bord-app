@@ -11,28 +11,28 @@ class AttributeService
 {
     public function create(Category $category, array $data): Attribute
     {
-        $data['is_required'] = (bool) ($data['is_required'] ?? false);
-        $data['variants'] = $this->processVariant($data['variants'] ?? '');
-
-        return $category->attributes()->create($data);
+        return $category->attributes()->create($this->processAttributeData($data));
     }
 
     public function update(Attribute $attribute, array $data): Attribute
     {
-        $data['is_required'] = (bool) ($data['is_required'] ?? false);
-        $data['variants'] = $this->processVariant($data['variants'] ?? '');
-
-        $attribute->update($data);
+        $attribute->update( $this->processAttributeData($data));
         return $attribute;
     }
+
 
     public function delete(Attribute $attribute): void
     {
         $attribute->delete();
     }
 
-    private function processVariant(string $variant): array
+    public function processAttributeData(array $data): array
     {
-        return array_filter(array_map('trim', preg_split('#[\r\n]+#', $variant)));
+        $data['is_required'] = (bool)($data['is_required'] ?? false);
+
+        if (isset($data['variants']) && is_array($data['variants'])) {
+            $data['variants'] = array_values(array_filter(array_map('trim', $data['variants'])));
+        }
+        return $data;
     }
 }

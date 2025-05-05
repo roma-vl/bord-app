@@ -54,34 +54,33 @@ for (const attr of attributes.value) {
 }
 
 const submit = () => {
-    const formData = new FormData();
+    const payload = {};
 
     Object.keys(form).forEach((key) => {
-        if (key !== 'images' || key !== 'attributes') {
-            formData.append(key, form[key]);
+        if (key !== 'images' && key !== 'attributes') {
+            payload[key] = form[key];
         }
     });
 
-    Object.entries(form.attributes).forEach((attribute) => {
-        formData.append('attributes.' + attribute[0], attribute[1]);
+    Object.entries(form.attributes).forEach(([key, value]) => {
+        payload[`attributes${key}`] = value;
     });
 
-    form.images.forEach((image) => {
-        formData.append('images[]', image);
+    form.images.forEach((image, index) => {
+        payload[`images[${index}]`] = image;
     });
 
-    axios.post(route("account.adverts.update", props.advert.id), formData, {
-        headers: {
-            "Content-Type": "multipart/form-data",
-        },
-    })
-        .then(() => {
+    form.post(route("account.adverts.update", props.advert.id), {
+        data: payload,
+        forceFormData: true,
+        onSuccess: () => {
             console.log("Оголошення оновлено");
-            form.reset();
-        })
-        .catch((error) => {
-            console.error("Помилка при відправці форми", error);
-        });
+        },
+        onError: (errors) => {
+            console.error("Помилка при відправці форми", errors);
+        }
+    });
+
 };
 
 
