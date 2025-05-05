@@ -88,11 +88,7 @@ class IndexController extends Controller
 
     public function show(Advert $advert)
     {
-
-        $advert->load(['category.ancestors', 'value.attribute', 'photo', 'user', 'region']);
-
-        $categoryAttributes = $advert->category->allArrayAttributes();
-
+        $advert->load(['category.ancestors', 'value.attribute', 'photo', 'user', 'region','favorites']);
         $values = $advert->value->map(function ($value) {
             return [
                 'attribute' => $value->attribute->name ?? null,
@@ -100,14 +96,16 @@ class IndexController extends Controller
             ];
         });
 
+        $isFavorited = $advert->favorites->contains(Auth::id());
+
         return Inertia::render('Advert/Show', [
             'advert' => $advert,
             'category' => $advert->category,
-            'categoryAttributes' => $categoryAttributes,
             'values' => $values,
             'user' => $advert->values,
             'region' => $advert->region,
             'photos' => $advert->photo,
+            'isFavorited' => $isFavorited,
         ]);
     }
     public function showCategory($urlPath = null)

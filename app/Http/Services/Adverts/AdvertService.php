@@ -52,6 +52,14 @@ class AdvertService
                 }
             }
 
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $image) {
+                    $advert->photo()->create([
+                        'file' => $image->store('adverts/' . $advert->id, 'public'),
+                    ]);
+                }
+            }
+
             return $advert;
         });
     }

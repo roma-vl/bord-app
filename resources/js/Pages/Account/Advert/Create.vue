@@ -25,22 +25,23 @@ const form = useForm({
     address: '',
     content: '',
     attributes: {},
+    images: []
 });
 
-// watch(() => form.region_id, async (newRegionId) => {
-//     form.area_id = '';
-//     form.village_id = '';
-//     areas.value = [];
-//
-//     if (!newRegionId) return;
-//
-//     try {
-//         const response = await axios.get(route("account.adverts.areas", { regionId: newRegionId }));
-//         areas.value = response.data;
-//     } catch (error) {
-//         console.error("Помилка завантаження районів", error);
-//     }
-// });
+watch(() => form.region_id, async (newRegionId) => {
+    form.area_id = '';
+    form.village_id = '';
+    areas.value = [];
+
+    if (!newRegionId) return;
+
+    try {
+        const response = await axios.get(route("account.adverts.areas", { regionId: newRegionId }));
+        areas.value = response.data;
+    } catch (error) {
+        console.error("Помилка завантаження районів", error);
+    }
+});
 
 
 watch(() => form.category_id, async (newCategoryId) => {
@@ -158,6 +159,12 @@ onBeforeUnmount(() => {
                                 </select>
                             </div>
                             <InputError class="mt-2" :message="form.errors.category_id"/>
+
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium mb-2">Фото</label>
+                                <AdvertFileUpload v-model="form.images"/>
+                            </div>
+
 
                             <div class="mb-4">
                                 <label class="block text-sm font-medium mb-2">Місцезнаходження</label>

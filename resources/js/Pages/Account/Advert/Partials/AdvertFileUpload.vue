@@ -110,12 +110,7 @@ watch(() => props.modelValue, (newVal) => {
          @dragenter="dragEnterHandler"
          @dragleave="dragLeaveHandler"
          @drop="dropHandler">
-        <div class="text-center cursor-pointer" @click="triggerFileInput">
-            <p>Перетягніть файли сюди або <span class="text-blue-600 underline">натисніть для вибору</span></p>
-            <input ref="fileInput" type="file" class="hidden" multiple @change="handleFileInput" />
-        </div>
-
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 ">
             <div v-for="(file, key) in files" :key="key" class="relative border rounded overflow-hidden">
                 <img v-if="file.isImage" :src="file.previewUrl" alt="Image" class="w-full h-32 object-cover" />
                 <div v-else class="p-2 text-sm">
@@ -126,6 +121,11 @@ watch(() => props.modelValue, (newVal) => {
                 </div>
                 <div v-if="file.size" class="text-xs p-1">{{ formatFileSize(file.size) }}</div>
             </div>
+        </div>
+
+        <div class="text-center cursor-pointer mt-4 mb-6" @click="triggerFileInput">
+            <p>Перетягніть файли сюди або <span class="text-blue-600 underline">натисніть для вибору</span></p>
+            <input ref="fileInput" type="file" class="hidden" multiple @change="handleFileInput" />
         </div>
     </div>
 </template>

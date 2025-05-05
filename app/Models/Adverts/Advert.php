@@ -51,6 +51,12 @@ class Advert extends Model implements Auditable
     {
         return $this->hasMany(Photo::class, 'advert_id', 'id');
     }
+
+    public function firstPhoto()
+    {
+        return $this->hasOne(Photo::class, 'advert_id', 'id')->orderBy('id');
+    }
+
     public function region()
     {
         return $this->belongsTo(Location::class, 'region_id');

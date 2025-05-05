@@ -4,10 +4,12 @@ import {Head, Link, usePage} from "@inertiajs/vue3";
 import ProfileMenu from "@/Pages/Account/Profile/Partials/ProfileMenu.vue";
 import {computed} from "vue";
 import FlashMessage from "@/Components/FlashMessage.vue";
+import {getFullPathForImage} from "@/helpers.js";
 
 const user = usePage().props.auth.user;
 
 const adverts = usePage().props.adverts;
+console.log(adverts,'adverts')
 const flash = computed(() => usePage().props.flash);
 
 console.log(adverts, "adverts");
@@ -47,8 +49,12 @@ const formatDate = (dateString) => {
                         <div class="bg-white rounded shadow overflow-hidden mb-4">
                             <div v-if="adverts.data.length" class="divide-y divide-gray-100">
                                 <div v-for="advert in adverts.data" :key="advert.id"
-                                     class="p-8 hover:bg-gray-100 transition duration-150 ease-in-out">
-                                    <div class="flex justify-between items-start gap-8">
+                                     class="p-4 hover:bg-gray-100 transition duration-150 ease-in-out">
+
+                                    <div class="flex justify-between items-start gap-8 min-h-36">
+                                        <div class="w-40">
+                                            <img :src="getFullPathForImage(advert.first_photo?.file)" :alt="advert.title">
+                                        </div>
                                         <div class="flex-grow space-y-3">
                                             <a :href="route('adverts.show', advert.id)" class="block group">
                                                 <h3 class="text-2xl font-semibold text-gray-800 group-hover:text-violet-600 transition-colors duration-200">{{ advert.title }}</h3>

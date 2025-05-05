@@ -34,12 +34,18 @@ class AdvertController extends Controller
         $this->categoryService = $categoryService;
         $this->advertService = $advertService;
     }
-    public function index(): Response    {
-        $adverts = Advert::forUser( Auth::user())->orderByDesc('id')->paginate(10);
+    public function index(): Response
+    {
+        $adverts = Advert::forUser(Auth::user())
+            ->with('firstPhoto')
+            ->orderByDesc('id')
+            ->paginate(10);
+
         return Inertia::render('Account/Advert/Index', [
             'adverts' => $adverts
         ]);
     }
+
 
     public function create(): Response
     {

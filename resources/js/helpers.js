@@ -20,3 +20,18 @@ export const useLocalStorageFn = (key, defaultValue) => {
 
 export const getFullPathForImage = (path) =>
     import.meta.env.VITE_APP_STORAGE_URL + "/" + path;
+
+
+export function getDateFormatFromLocale(date) {
+    const parsedDate = new Date(date);
+    if (isNaN(parsedDate)) return "-";
+
+    return parsedDate.toLocaleDateString("uk-UA", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+    });
+}
+
