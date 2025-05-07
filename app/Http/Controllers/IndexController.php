@@ -46,14 +46,12 @@ class IndexController extends Controller
             ->orderBy('name')
             ->get();
 
-        // Отримуємо останні 4 оголошення (новини)
         $news = Advert::where('status', 'active')
             ->with(['firstPhoto', 'favorites'])
             ->orderByDesc('id')
             ->limit(4)
             ->get();
 
-        // Отримуємо VIP оголошення
         $vip = Advert::where('status', 'active')
             ->where('premium', 1)
             ->with(['firstPhoto', 'favorites'])
@@ -88,7 +86,7 @@ class IndexController extends Controller
     {
 
     if (strlen($region) < 2) {
-        return response()->json(['regions' => []]); // Мінімум 2 символи
+        return response()->json(['regions' => []]);
     }
 
     $regions = Location::where('name', 'like', "%{$region}%")
@@ -122,7 +120,7 @@ class IndexController extends Controller
             'isFavorited' => $isFavorited,
         ]);
     }
-    public function showCategory($urlPath = null)
+    public function showAdvertsWithCategoryAndLocations($urlPath = null): Response
     {
         $cacheKey = 'showCategory_' . md5($urlPath);
 
@@ -130,13 +128,13 @@ class IndexController extends Controller
             $slugs = $urlPath ? array_reverse(explode('/', $urlPath)) : [];
 
             $locations = [];
-            $categories = [];
+            $categorySlugs = [];
 
             foreach ($slugs as $slug) {
                 if ($location = Location::where('slug', $slug)->first()) {
                     $locations[] = $location;
                 } else {
-                    $categories[] = $slug;
+                    $categorySlugs[] = $slug;
                 }
             }
 
@@ -148,29 +146,59 @@ class IndexController extends Controller
                 ? collect([$selectedLocation, $currentLocation])->filter()
                 : collect([$selectedLocation])->filter();
 
-            $currentCategory = $categories ? $categories[0] : null;
-            if ($currentCategory) {
-                $currentCategory = Category::where('slug', $categories[0])->first();
+            $categories = collect();
+
+            foreach (array_reverse($categorySlugs) as $slug) {
+                $query = Category::where('slug', $slug);
+
+                $category = $query->first();
+                if (!$category) {
+                    abort(404);
+                }
+
+                $categories->push($category);
             }
 
-            $parentCategory = $currentCategory
-                ? $currentCategory->ancestors()->orderBy('name')->get(['id', 'name', 'slug'])
-                : collect();
+            $currentCategory = $categories->last();
             $childCategory = $currentCategory
                 ? $currentCategory->descendants()->orderBy('name')->get(['id', 'name', 'slug'])
                 : collect();
-            $filteredCategory = $currentCategory ? $parentCategory->push($currentCategory) : collect();
 
             return [
                 'locations' => $filteredLocations,
-                'categories' => $filteredCategory,
+                'categories' => $categories,
                 'childCategories' => $childCategory,
             ];
         });
 
-//        Cache::tags(['locations'])->flush();
-        return Inertia::render('Advert/Category', $data);
+        $query = Advert::query()
+            ->where('status', 'active')
+            ->with(['firstPhoto', 'favorites'])
+            ->orderByDesc('id');
+
+        $region = $data['locations']->last();
+        $category = $data['categories']->last();
+
+        if ($region) {
+            $query->where('region_id', $region->id);
+        }
+
+        if ($category) {
+            $childIds = $data['childCategories']->pluck('id')->toArray();
+            $allCategoryIds = array_merge([$category->id], $childIds);
+
+            $query->whereIn('category_id', $allCategoryIds)
+                ->orderByRaw("FIELD(category_id, " . implode(',', $allCategoryIds) . ")");
+        }
+
+        $adverts = $query->paginate(3)->withQueryString();
+
+        return Inertia::render('Advert/Category', [
+            ...$data,
+            'adverts' => $adverts,
+        ]);
     }
+
 
     public function phone(Advert $advert): string
     {

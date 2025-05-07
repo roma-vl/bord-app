@@ -17,6 +17,9 @@ use App\Http\Controllers\Cabinet\Profile\ProfileController;
 use App\Http\Controllers\IndexController;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/test-404', function () {
+    abort(404);
+});
 
 Route::get('/', [IndexController::class, 'index'])->middleware([])->name('main');
 Route::prefix('/adverts')->name('adverts.')->group(function () {
@@ -25,7 +28,7 @@ Route::prefix('/adverts')->name('adverts.')->group(function () {
     Route::get('/regions', [IndexController::class, 'regions'])->name('regions');
     Route::get('/regions/{region}/cities', [IndexController::class, 'cities'])->name('cities');
     Route::get('/regions-search/{region}', [IndexController::class, 'search'])->name('regions.search');
-    Route::get('{urlPath?}', [IndexController::class, 'showCategory'])
+    Route::get('{urlPath?}', [IndexController::class, 'showAdvertsWithCategoryAndLocations'])
         ->where('urlPath', '[a-z0-9-\/]+')->name('category.show');
 
 });

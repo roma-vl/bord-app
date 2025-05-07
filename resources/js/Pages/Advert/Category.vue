@@ -3,14 +3,17 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import Breadcrumbs from "@/Components/Breadcrumbs.vue";
 import { Head, Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
-import {getDateFormatFromLocale} from "@/helpers.js";
+import {getDateFormatFromLocale, getFullPathForImage} from "@/helpers.js";
+import Pagination from "@/Components/Pagination.vue";
 
 const props = defineProps({
     categories: Object,
     locations: Object,
-    childCategories: Object
+    childCategories: Object,
+    adverts: Object
 });
 
+console.log(props.adverts, 'dad')
 const viewMode = ref('grid');
 
 
@@ -120,11 +123,11 @@ const toggleViewMode = () => {
                             </div>
                         </div>
 
-                        <div v-if="testData?.adverts?.data?.length" class="space-y-6">
+                        <div v-if="props.adverts.data.length" class="space-y-6">
                             <div class="flex justify-between items-center mb-6">
                                 <div class="flex items-center gap-4">
                                     <h2 class="text-xl font-semibold text-gray-800">
-                                        Знайдено {{ testData?.adverts?.meta?.total }} оголошень
+                                        Знайдено {{ props.adverts.total }} оголошень
                                     </h2>
                                     <div class="flex items-center gap-2 ml-4">
                                         <button
@@ -155,14 +158,14 @@ const toggleViewMode = () => {
                                     </div>
                                 </div>
                                 <div class="text-sm text-gray-500">
-                                    Сторінка {{ testData?.adverts?.meta?.current_page }} з {{ testData?.adverts?.meta?.last_page }}
+                                    Сторінка {{ props?.adverts.current_page }} з {{ props?.adverts.last_page }}
                                 </div>
                             </div>
 
                             <div v-if="viewMode === 'grid'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                <div v-for="advert in testData?.adverts?.data" :key="advert.id"
+                                <div v-for="advert in props.adverts.data" :key="advert.id"
                                      class="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow duration-200">
-                                    <img :src="advert.image" :alt="advert.title" class="w-full h-48 object-cover" />
+                                    <img :src="getFullPathForImage(advert.first_photo?.file)" :alt="advert.title" class="w-full h-48 object-cover" />
 
                                     <div class="p-4">
                                         <div class="flex justify-between items-start mb-2">
@@ -178,14 +181,14 @@ const toggleViewMode = () => {
 
                                         <div class="grid grid-cols-3 gap-2 mb-3">
                                             <div class="text-sm text-gray-500">
-                                                <span class="font-medium">Рік:</span> {{ advert.attributes.year }}
+                                                <span class="font-medium">Рік:</span> ddddd
                                             </div>
-                                            <div class="text-sm text-gray-500">
-                                                <span class="font-medium">Пробіг:</span> {{ advert.attributes.mileage }} км
-                                            </div>
-                                            <div class="text-sm text-gray-500">
-                                                <span class="font-medium">Паливо:</span> {{ advert.attributes.fuel }}
-                                            </div>
+<!--                                            <div class="text-sm text-gray-500">-->
+<!--                                                <span class="font-medium">Пробіг:</span> {{ advert.attributes.mileage }} км-->
+<!--                                            </div>-->
+<!--                                            <div class="text-sm text-gray-500">-->
+<!--                                                <span class="font-medium">Паливо:</span> {{ advert.attributes.fuel }}-->
+<!--                                            </div>-->
                                         </div>
 
                                         <div class="flex justify-between items-center text-sm text-gray-500">
@@ -197,7 +200,7 @@ const toggleViewMode = () => {
                             </div>
 
                             <div v-else class="space-y-4">
-                                <div v-for="advert in testData?.adverts?.data" :key="advert.id"
+                                <div v-for="advert in props.adverts?.data" :key="advert.id"
                                      class="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow duration-200">
                                     <div class="flex">
                                         <img :src="advert.image" :alt="advert.title" class="w-48 h-48 object-cover" />
@@ -216,14 +219,14 @@ const toggleViewMode = () => {
 
                                             <div class="grid grid-cols-3 gap-4 mb-4">
                                                 <div class="text-sm text-gray-500">
-                                                    <span class="font-medium">Рік:</span> {{ advert.attributes.year }}
+                                                    <span class="font-medium">Рік:</span>sdfsdf
                                                 </div>
-                                                <div class="text-sm text-gray-500">
-                                                    <span class="font-medium">Пробіг:</span> {{ advert.attributes.mileage }} км
-                                                </div>
-                                                <div class="text-sm text-gray-500">
-                                                    <span class="font-medium">Паливо:</span> {{ advert.attributes.fuel }}
-                                                </div>
+<!--                                                <div class="text-sm text-gray-500">-->
+<!--                                                    <span class="font-medium">Пробіг:</span> {{ advert.attributes.mileage }} км-->
+<!--                                                </div>-->
+<!--                                                <div class="text-sm text-gray-500">-->
+<!--                                                    <span class="font-medium">Паливо:</span> {{ advert.attributes.fuel }}-->
+<!--                                                </div>-->
                                             </div>
 
                                             <div class="flex justify-between items-center text-sm text-gray-500">
@@ -235,21 +238,8 @@ const toggleViewMode = () => {
                                 </div>
                             </div>
 
-                            <div v-if="testData?.adverts.meta.last_page > 1" class="flex justify-center mt-8">
-                                <nav class="flex space-x-2">
-                                    <Link v-for="page in testData?.adverts?.meta?.last_page"
-                                          :key="page"
-                                          :href="`?page=${page}`"
-                                          :class="[
-                                              'px-4 py-2 rounded-md',
-                                              page === testData?.adverts?.meta?.current_page
-                                                  ? 'bg-blue-600 text-white'
-                                                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                                          ]"
-                                    > {{ page }}
-                                    </Link>
-                                </nav>
-                            </div>
+                            <Pagination :pagination="props.adverts"  />
+
                         </div>
                     </div>
                 </div>
