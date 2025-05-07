@@ -14,7 +14,7 @@ use App\Models\Adverts\Category;
 use App\Models\Location;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class AdvertService
@@ -84,10 +84,7 @@ class AdvertService
 
     public function update(UpdateRequest $request, Advert $advert): void
     {
-        $whoEdit = Auth::id();
-
         DB::transaction(function () use ($advert, $request) {
-            // Оновлення базових полів
             $advert->update($request->only([
                 'title',
                 'content',
@@ -109,7 +106,6 @@ class AdvertService
                 }
             }
 
-
             if ($request->hasFile('images')) {
                 foreach ($request->file('images') as $image) {
                     $advert->photo()->create([
@@ -117,7 +113,6 @@ class AdvertService
                     ]);
                 }
             }
-
         });
     }
 
@@ -196,4 +191,45 @@ class AdvertService
     {
         return Advert::findOrFail($id);
     }
+
+    public function getLatest(): Collection
+    {
+        return Advert::query()
+            ->where('status', 'active')
+            ->with(['firstPhoto', 'favorites'])
+            ->latest()
+            ->take(4)
+            ->get();
+    }
+
+    public function getVip(): Collection
+    {
+        return Advert::query()
+            ->where('status', 'active')
+            ->where('premium', 1)
+            ->with(['firstPhoto', 'favorites'])
+            ->latest()
+            ->take(4)
+            ->get();
+    }
+
+    public function getAdvertsByCategoryAndLocation(?Category $category, Collection $childCategories, ?Location $region)
+    {
+        $query = Advert::query()
+            ->where('status', 'active')
+            ->with(['firstPhoto', 'favorites'])
+            ->latest();
+
+        if ($region) {
+            $query->where('region_id', $region->id);
+        }
+
+        if ($category) {
+            $ids = array_merge([$category->id], $childCategories->pluck('id')->toArray());
+            $query->whereIn('category_id', $ids)->orderByRaw("FIELD(category_id, " . implode(',', $ids) . ")");
+        }
+
+        return $query->paginate(3)->withQueryString();
+    }
+
 }

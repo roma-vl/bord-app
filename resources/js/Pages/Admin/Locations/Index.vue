@@ -12,46 +12,21 @@ const areas = ref({});
 const villages = ref({});
 
 const expanded = ref({
-    country: null,
     region: null,
-    area: null,
 });
 
 const modalOpen = ref(false);
-const modalType = ref("");
 const modalData = ref(null);
 
-const openModal = async (parent, located, locatedId = null) => {
-    modalType.value = located;
+const openModal = async (located, parentId = null) => {
     form.type = located;
-
-    if (locatedId) {
-        try {
-            const response = await axios.get(route('admin.locations.show', { type: parent, id: locatedId }));
-            modalData.value = response.data;
-            form.name = response.data.name;
-            const locationData = {
-                country: () => { form.country_id = response.data.id; },
-                region: () => { form.region_id = response.data.id; form.country_id = response.data.country; },
-                area: () => { form.area_id = response.data.id; form.region_id = response.data.region; form.country_id = response.data.country; },
-            };
-            locationData[parent]?.();
-        } catch (error) {
-            console.error("Помилка завантаження даних:", error);
-        }
-    } else {
-        form.name = "";
-    }
-
+    form.parent_id = parentId
     modalOpen.value = true;
 };
 
 const form = useForm({
-    type: "",
     name: "",
-    country_id: null,
-    region_id: null,
-    area_id: null,
+    parent_id: null,
 });
 
 const closeModal = () => {
@@ -61,7 +36,6 @@ const closeModal = () => {
 };
 
 const submitForm = () => {
-    console.log(form, 'form')
     router.post(route("admin.locations.store"), form, {
         onSuccess: () => {
             closeModal();
@@ -133,19 +107,17 @@ const deleteLocation = (id, type) => {
     }
 };
 
-
 const modalInfo = computed(() => {
-    if (modalData.value?.area) {
-        return `Додати село в район ${modalData.value.area}`;
-    } else if (modalData.value?.region) {
-        return `Додати район в область ${modalData.value.region}`;
-    } else if (modalData.value?.country) {
-        return `Додати область в країну ${modalData.value.country}`;
+    if (form.type === 'village') {
+        return `Додати село`;
+    } else if (form.type === 'area') {
+        return `Додати район`;
+    } else if (form.type === 'region') {
+        return 'Додати область';
     } else {
         return "Додати країну";
     }
 });
-
 
 loadCountries();
 </script>
@@ -157,26 +129,21 @@ loadCountries();
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8 ">
                 <FlashMessage v-if="flash" :flash="flash" />
                 <div class="mb-4 flex justify-end">
-                    <button
-                        @click="openModal( 'country', 'country')"
+                    <button @click="openModal( 'country', null)"
                         type="submit" class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-500">
                         + Додати Країну
                     </button>
                 </div>
                 <div class="min-w-full bg-white rounded-lg shadow p-6 min-h-[700px]">
                     <ul class="space-y-2">
-                        <!-- Країни -->
                         <li v-for="country in countries" :key="country.id">
-                            <div
-                                class="flex justify-between items-center bg-white-100 hover:bg-gray-100 p-4 mb-2 rounded cursor-pointer shadow-md"
-                                @click="loadRegions(country.id)"
-                            >
+                            <div class="flex justify-between items-center bg-white-100 hover:bg-gray-100 p-4 mb-2 rounded cursor-pointer shadow-md"
+                                @click="loadRegions(country.id)">
                                 <span class="font-semibold ml-3">
-                                    {{ country.country }}
+                                    {{ country.name }}
                                 </span>
                             <div class="flex items-right">
-                                <button @click.stop="openModal('country', 'region', country.id)"
-                                        class="text-green-500 pr-2"> Додати область</button>
+                                <button @click.stop="openModal( 'region', country.id)" class="text-green-500 pr-2"> Додати область</button>
                                 <button v-if="country.id !== 1"
                                         @click.stop="deleteLocation(country.id, 'country')" class="text-red-500 hover:underline">
                                     Видалити
@@ -184,43 +151,36 @@ loadCountries();
                             </div>
                             </div>
 
-                            <!-- Регіони -->
                             <ul v-if="expanded.country === country.id" class="ml-6">
                                 <li v-for="region in regions[country.id] || []" :key="region.id" class="pt-1">
-                                    <div
-                                        class="flex justify-between items-center bg-white-100 hover:bg-gray-100 p-3 mb-2 rounded cursor-pointer shadow-md"
-                                        @click="loadAreas(region.id)"
-                                    >
-                                        <span class="ml-3"> {{ region.region }}</span>
+                                    <div class="flex justify-between items-center bg-white-100 hover:bg-gray-100 p-3 mb-2 rounded cursor-pointer shadow-md"
+                                        @click="loadAreas(region.id)">
+                                        <span class="ml-3"> {{ region.name }}</span>
                                         <div class="flex items-right">
-                                        <button @click.stop="openModal('region','area', region.id)" class="text-green-500 pr-2">Додати район</button>
+                                        <button @click.stop="openModal('area', region.id)" class="text-green-500 pr-2">Додати район</button>
                                         <button @click.stop="deleteLocation(region.id, 'region')" class="text-red-500 hover:underline">
                                             Видалити
                                         </button>
-                                            </div>
+                                    </div>
                                     </div>
 
-                                    <!-- Райони -->
                                     <ul v-if="expanded.region === region.id" class="ml-6">
                                         <li v-for="area in areas[region.id] || []" :key="area.id"  class="pt-1">
-                                            <div
-                                                class="flex justify-between items-center bg-white-100 hover:bg-gray-100 p-2 ml-3 mb-2 rounded cursor-pointer shadow-md"
-                                                @click="loadVillages(area.id)"
-                                            >
-                                                <span class="ml-3"> {{ area.area }}</span>
+                                            <div class="flex justify-between items-center bg-white-100 hover:bg-gray-100 p-2 ml-3 mb-2 rounded cursor-pointer shadow-md"
+                                                @click="loadVillages(area.id)">
+                                                <span class="ml-3"> {{ area.name }}</span>
                                                 <div class="flex items-right">
-                                                <button @click.stop="openModal('area', 'village', area.id)" class="text-green-500 pr-2">Додати село</button>
+                                                <button @click.stop="openModal('village', area.id)" class="text-green-500 pr-2">Додати село</button>
                                                 <button @click.stop="deleteLocation(area.id, 'area')" class="text-red-500 hover:underline">
                                                     Видалити
                                                 </button>
-                                                    </div>
+                                            </div>
                                             </div>
 
-                                            <!-- Села -->
                                             <ul v-if="expanded.area === area.id" class="ml-6 ">
                                                 <li v-for="village in villages[area.id] || []" :key="village.id"  class="pt-1">
                                                     <div class="flex justify-between items-center bg-white-100 hover:bg-gray-100 p-2 pl-3 mb-2 rounded cursor-pointer shadow-md">
-                                                        <span class="ml-3"> {{ village.village }}</span>
+                                                        <span class="ml-3"> {{ village.name }}</span>
                                                         <button @click.stop="deleteLocation(village.id, 'village')" class="text-red-500 hover:underline">
                                                             Видалити
                                                         </button>
@@ -234,7 +194,6 @@ loadCountries();
                         </li>
                     </ul>
 
-                    <!-- Модальне вікно -->
                     <div v-if="modalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
                         <div class="bg-white p-6 rounded shadow-lg">
                             <h2 class="text-xl font-bold mb-4">{{ modalInfo }}</h2>

@@ -2,78 +2,71 @@
 
 namespace App\Http\Services;
 
-use App\Models\LocatedCountry;
-use App\Models\LocatedRegion;
-use App\Models\LocatedArea;
-use App\Models\LocatedVillage;
+use App\Models\Location;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 class LocationService
 {
+    public function getCities(Location $region): Collection
+    {
+        return $region->descendants()
+            ->whereDepth(3)
+            ->orderBy('name')
+            ->take(300)
+            ->get(['name', 'slug', 'id']);
+    }
+
+    public function search(string $query): Collection
+    {
+        if (strlen($query) < 2) {
+            return collect();
+        }
+
+        return Location::where('name', 'like', "%{$query}%")
+            ->orderBy('name')
+            ->limit(10)
+            ->get(['id', 'name', 'slug']);
+    }
+
+
     public function getCountries(): Collection
     {
-        return LocatedCountry::select('id', 'country')->get();
+        return Location::whereDepth(0)->get();
     }
 
-    public function getRegions(int $countryId): Collection
+    public function getRegions(Location $region): Collection
     {
-        return LocatedRegion::where('country', $countryId)->select('id', 'region')->get();
+        return $region->children()->where('depth', 1)->get();
     }
 
-    public function getAreas(int $regionId): Collection
+    public function getAreas(Location $region): Collection
     {
-        return LocatedArea::where('region', $regionId)->select('id', 'area')->get();
+        return $region->children()->where('depth', 2)->get();
     }
 
-    public function getVillages(int $areaId): Collection
+    public function getVillages(Location $area): Collection
     {
-        return LocatedVillage::where('area', $areaId)->select('id', 'village')->get();
-    }
-
-    public function getLocation(string $type, int $id): ?Model
-    {
-        $model = $this->getModel($type);
-        return $model ? $model::findOrFail($id) : null;
+        return $area->children()->where('depth', 3)->get();
     }
 
     public function createLocation(array $data): Model
     {
-        $model = $this->getModel($data['type']);
+        $parent = Location::findOrFail($data['parent_id']);
 
-        if (!$model) {
-            throw new \InvalidArgumentException("Невірний тип локації");
-        }
+        $location = new Location([
+            'name' => $data['name'],
+            'slug' => \Str::slug($data['name']),
+        ]);
 
-        $locationData = ['slug' => \Str::slug($data['name'])];
-
-        match ($data['type']) {
-            'country' => $locationData['country'] = $data['name'],
-            'region'  => $locationData = [...$locationData, 'country' => $data['country_id'], 'region' => $data['name']],
-            'area'    => $locationData = [...$locationData, 'country' => $data['country_id'], 'region' => $data['region_id'], 'area' => $data['name']],
-            'village' => $locationData = [...$locationData, 'country' => $data['country_id'], 'region' => $data['region_id'], 'area' => $data['area_id'], 'village' => $data['name']],
-        };
-
-        return $model::create($locationData);
+        $location->appendToNode($parent)->save();
+        return $location;
     }
 
-    public function deleteLocation(int $id, string $type): void
+    public function deleteLocation(int $id): void
     {
-        $model = $this->getModel($type);
-        if ($model) {
-            $location = $model::findOrFail($id);
-            $location->delete();
-        }
+        $location = Location::findOrFail($id);
+        $location->delete();
     }
 
-    private function getModel(string $type): ?string
-    {
-        return match ($type) {
-            'country' => LocatedCountry::class,
-            'region' => LocatedRegion::class,
-            'area' => LocatedArea::class,
-            'village' => LocatedVillage::class,
-            default => null,
-        };
-    }
 }

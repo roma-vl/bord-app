@@ -77,7 +77,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('/admin')->name('admin.')->group(function () {
         Route::get('/', [AdminIndexController::class, 'index'])->name('index');
-        Route::get('/test', [AdminIndexController::class, 'test'])->name('test');
 
         Route::controller(AdminUsersController::class)->prefix('users')->name('users.')->group(function () {
             Route::get('/search', 'search')->name('search');

@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\LocationRequest;
 use App\Http\Services\LocationService;
+use App\Models\Location;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
@@ -24,22 +25,26 @@ class LocationController extends Controller
 
     public function getCountries(): JsonResponse
     {
+        $ff =$this->locationService->getCountries();
         return response()->json($this->locationService->getCountries());
     }
 
     public function getRegions(int $countryId): JsonResponse
     {
-        return response()->json($this->locationService->getRegions($countryId));
+        $country = Location::findOrFail($countryId);
+        return response()->json($this->locationService->getRegions($country));
     }
 
     public function getAreas(int $regionId): JsonResponse
     {
-        return response()->json($this->locationService->getAreas($regionId));
+        $region = Location::findOrFail($regionId);
+        return response()->json($this->locationService->getAreas($region));
     }
 
     public function getVillages(int $areaId): JsonResponse
     {
-        return response()->json($this->locationService->getVillages($areaId));
+        $area = Location::findOrFail($areaId);
+        return response()->json($this->locationService->getVillages($area));
     }
 
     public function store(LocationRequest $request): RedirectResponse

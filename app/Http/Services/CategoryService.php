@@ -3,10 +3,60 @@
 namespace App\Http\Services;
 
 use App\Models\Adverts\Category;
+use App\Models\Location;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class CategoryService
 {
+    public function getRootCategoriesWithChildren(): Collection
+    {
+        return Category::whereNull('parent_id')
+            ->with(['rootWithOneChildren' => fn($q) => $q->orderBy('name')])
+            ->orderBy('name')
+            ->get();
+    }
+
+    public function parseCategoryAndLocationFromUrl(?string $urlPath): array
+    {
+        $cacheKey = 'showCategory_' . md5($urlPath);
+
+        return Cache::tags([Location::class, Category::class])->rememberForever($cacheKey, function () use ($urlPath) {
+            $slugs = $urlPath ? array_reverse(explode('/', $urlPath)) : [];
+
+            $locations = collect();
+            $categorySlugs = [];
+
+            foreach ($slugs as $slug) {
+                if ($location = Location::where('slug', $slug)->first()) {
+                    $locations->push($location);
+                } else {
+                    $categorySlugs[] = $slug;
+                }
+            }
+
+            $currentLocation = $locations->first();
+            $parentLocations = $currentLocation?->ancestors()->orderBy('name')->get(['id', 'name', 'slug']) ?? collect();
+            $selectedLocation = $parentLocations->count() >= 2 ? $parentLocations[1] : null;
+
+            $locations = collect([$selectedLocation, $currentLocation])->filter();
+
+            $categories = collect();
+            foreach (array_reverse($categorySlugs) as $slug) {
+                $category = Category::where('slug', $slug)->first();
+                if (!$category) abort(404);
+                $categories->push($category);
+            }
+
+            $currentCategory = $categories->last();
+            $childCategories = $currentCategory?->descendants()->orderBy('name')->get(['id', 'name', 'slug']) ?? collect();
+
+            return compact('locations', 'categories', 'childCategories');
+        });
+    }
+
+
     public function getCategories()
     {
         return Category::whereNull('parent_id')
