@@ -39,17 +39,31 @@ class IndexController extends Controller
 
     public function index(): Response
     {
-
         $categories = Category::whereNull('parent_id')
             ->with(['rootWithOneChildren' => function ($query) {
                 $query->orderBy('name');
-            }])->orderBy('name')->get();
+            }])
+            ->orderBy('name')
+            ->get();
 
-        $news = Advert::where('status', 'active')->orderByDesc('id')->limit(4)->get();
-        $vip = Advert::where('status', 'active')->where('premium', 1)->orderByDesc('id')->limit(4)->get();
+        // Отримуємо останні 4 оголошення (новини)
+        $news = Advert::where('status', 'active')
+            ->with(['firstPhoto', 'favorites'])
+            ->orderByDesc('id')
+            ->limit(4)
+            ->get();
+
+        // Отримуємо VIP оголошення
+        $vip = Advert::where('status', 'active')
+            ->where('premium', 1)
+            ->with(['firstPhoto', 'favorites'])
+            ->orderByDesc('id')
+            ->limit(4)
+            ->get();
 
         return Inertia::render('Index', compact('categories', 'vip', 'news'));
     }
+
 
     public function regions(): JsonResponse
     {

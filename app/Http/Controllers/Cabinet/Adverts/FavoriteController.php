@@ -18,7 +18,9 @@ class FavoriteController
         $this->favoriteService = $favoriteService;
     }
     public function index(): Response    {
-        $favoriteAdverts = Advert::favoriteByUser(Auth::user())->orderByDesc('id')->paginate(10);
+        $favoriteAdverts = Advert::favoriteByUser(Auth::user())
+            ->with(['firstPhoto'])
+            ->orderByDesc('id')->paginate(10);
         return Inertia::render('Account/Favorites/Index', [
             'favoriteAdverts' => $favoriteAdverts
         ]);
@@ -30,7 +32,7 @@ class FavoriteController
         } catch (\DomainException $e) {
             return back()->with('error', $e->getMessage());
         }
-        return redirect()->route('adverts.show', $advert)->with('success', 'Оголошення додано до обраних');
+        return redirect()->back()->with('success', 'Оголошення додано до обраних');
     }
     public function remove(Advert $advert)
     {
@@ -39,6 +41,6 @@ class FavoriteController
         } catch (\DomainException $e) {
             return back()->with('error', $e->getMessage());
         }
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Оголошення видалено з обраних');
     }
 }

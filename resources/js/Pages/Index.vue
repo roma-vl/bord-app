@@ -1,13 +1,16 @@
 <script setup>
 import {computed, onBeforeUnmount, onMounted, ref, watch} from "vue";
-import {Head, Link, usePage} from "@inertiajs/vue3";
+import {Head, Link, router, usePage} from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import axios from "axios";
+import {getFullPathForImage} from "@/helpers.js";
+import HeartIcon from "@/Components/Icon/HeartIcon.vue";
+import HeartSolidIcon from "@/Components/Icon/HeartSolidIcon.vue";
+import FlashMessage from "@/Components/FlashMessage.vue";
 
 const categories = usePage().props.categories;
 const news = usePage().props.news;
 const vip = usePage().props.vip;
-
 
 const selectedRegion = ref(null);
 const selectedCity = ref(null);
@@ -24,6 +27,15 @@ const loadingCities = ref(false);
 const citySearchQuery = ref("");
 const cityIdSearchQuery = ref("");
 const filteredCities = ref([]);
+const flash = computed(() => usePage().props.flash);
+const toggleLike = (advert) => {
+    if (advert.is_favorited === true) {
+        router.delete(route("account.favorites.remove", {advert: advert.id}));
+    } else {
+        router.post(route("account.favorites.add", {advert: advert.id}));
+    }
+    advert.is_favorited = !advert.is_favorited;
+};
 
 const searchCities = async () => {
     if (citySearchQuery.value.length < 2) {
@@ -126,6 +138,7 @@ onBeforeUnmount(() => {
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg p-3">
                     <div class="container mx-auto p-4">
+                        <FlashMessage :flash="flash" />
                         <div class="flex items-center gap-4 bg-gray-100 p-4 rounded-lg shadow-md search-container">
                             <div class="relative w-full">
                                 <input v-model="searchQuery" type="text" placeholder="Що шукаєте?"
@@ -228,10 +241,15 @@ onBeforeUnmount(() => {
                         <section class="bg-gray-100 p-6 rounded">
                             <h2 class="text-xl font-semibold mb-4">VIP-оголошення</h2>
                             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                <div v-for="listing in vip" :key="listing.id" class="border p-4 rounded shadow">
-                                    <img src="/storage/images/adverts/info/empty.jpg" alt="Фото" class="w-full  object-cover rounded" />
+                                <div v-for="listing in vip" :key="listing.id" class="border p-2 rounded shadow">
+                                    <img :src="getFullPathForImage(listing.first_photo?.file)" alt="Фото" class="w-full  object-cover rounded  h-48" />
                                     <h3 class="mt-2 text-lg font-semibold">{{ listing.title }}</h3>
                                     <p class="text-green-600 font-bold">{{ listing.price }}</p>
+                                    <button @click="toggleLike(listing)"
+                                            class="px-4 py-2 rounded text-gray-500 hover:text-red-500 transition">
+                                        <HeartIcon v-if="!listing.is_favorited" class="w-6 h-6"/>
+                                        <HeartSolidIcon v-else class="w-6 h-6 text-red-500"/>
+                                    </button>
                                     <Link :href="route('adverts.show', listing.id)"  class="text-blue-500 hover:underline">
                                         Детальніше
                                     </Link>
@@ -242,10 +260,15 @@ onBeforeUnmount(() => {
                         <section class="p-6 rounded mt-6">
                             <h2 class="text-xl font-semibold mb-4">Останні оголошення</h2>
                             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                <div v-for="listing in news" :key="listing.id" class="border p-4 rounded shadow">
-                                    <img src="/storage/images/adverts/info/empty.jpg" alt="Фото" class="w-full  object-cover rounded" />
+                                <div v-for="listing in news" :key="listing.id" class="border p-2 rounded shadow">
+                                    <img :src="getFullPathForImage(listing.first_photo?.file)" alt="Фото" class="w-full  object-cover rounded  h-48" />
                                     <h3 class="mt-2 text-lg font-semibold">{{ listing.title }}</h3>
                                     <p class="text-green-600 font-bold">{{ listing.price }}</p>
+                                    <button @click="toggleLike(listing)"
+                                            class="px-4 py-2 rounded text-gray-500 hover:text-red-500 transition">
+                                        <HeartIcon v-if="!listing.is_favorited" class="w-6 h-6"/>
+                                        <HeartSolidIcon v-else class="w-6 h-6 text-red-500"/>
+                                    </button>
                                     <Link :href="route('adverts.show', listing.id)" class="text-blue-500 hover:underline">
                                         Детальніше
                                     </Link>
@@ -256,10 +279,15 @@ onBeforeUnmount(() => {
                         <section class="p-6 rounded mt-6">
                             <h2 class="text-xl font-semibold mb-4">Ви переглядали</h2>
                             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                <div v-for="listing in news" :key="listing.id" class="border p-4 rounded shadow">
-                                    <img src="/storage/images/adverts/info/empty.jpg" alt="Фото" class="w-full  object-cover rounded" />
+                                <div v-for="listing in news" :key="listing.id" class="border p-2 rounded shadow">
+                                    <img :src="getFullPathForImage(listing.first_photo?.file)" alt="Фото" class="w-full  object-cover rounded h-48" />
                                     <h3 class="mt-2 text-lg font-semibold">{{ listing.title }}</h3>
                                     <p class="text-green-600 font-bold">{{ listing.price }}</p>
+                                    <button @click="toggleLike(listing)"
+                                            class="px-4 py-2 rounded text-gray-500 hover:text-red-500 transition">
+                                        <HeartIcon v-if="!listing.is_favorited" class="w-6 h-6"/>
+                                        <HeartSolidIcon v-else class="w-6 h-6 text-red-500"/>
+                                    </button>
                                     <Link :href="route('adverts.show', listing.id)" class="text-blue-500 hover:underline">
                                         Детальніше
                                     </Link>

@@ -32,6 +32,8 @@ class Advert extends Model implements Auditable
         'published_at' => 'datetime',
         'expires_at'   => 'datetime',
     ];
+    protected $appends = ['is_favorited'];
+
 
     public function user()
     {
@@ -168,6 +170,16 @@ class Advert extends Model implements Auditable
     {
         return $this->belongsToMany(User::class, 'advert_advert_favorites', 'advert_id', 'user_id');
     }
+
+    public function getIsFavoritedAttribute()
+    {
+        $user = auth()->user();
+        if (!$user) {
+            return false;
+        }
+        return $this->favorites->contains('id', $user->id);
+    }
+
 
     public function values()
     {
