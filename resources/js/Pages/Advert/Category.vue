@@ -3,8 +3,17 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import Breadcrumbs from "@/Components/Breadcrumbs.vue";
 import { Head, Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import {getDateFormatFromLocale} from "@/helpers.js";
 
-// Тестові дані
+const props = defineProps({
+    categories: Object,
+    locations: Object,
+    childCategories: Object
+});
+
+const viewMode = ref('grid');
+
+
 const testData = {
     categories: [
         { id: 1, name: 'Транспорт', slug: 'transport' },
@@ -67,34 +76,17 @@ const testData = {
             }
         ],
         meta: {
-            total: 150,
+            total: 50,
             per_page: 10,
             current_page: 1,
-            last_page: 15
+            last_page: 5
         }
     }
 };
 
-const props = defineProps({
-    categories: Object,
-    locations: Object,
-    childCategories: Object
-});
-
-// Стан відображення (grid/list)
-const viewMode = ref('grid'); // 'grid' або 'list'
-
 const generateChildCategoriesLink = (slug) => {
     const path = props.categories.map(c => c.slug).join("/");
     return `/adverts/${path}/${slug}`;
-};
-
-const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('uk-UA', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric'
-    });
 };
 
 const toggleViewMode = () => {
@@ -103,32 +95,24 @@ const toggleViewMode = () => {
 </script>
 
 <template>
-    <Head title="Категорії оголошень" />
+    <Head title="Категорії оголошень 2 " />
 
     <AuthenticatedLayout>
         <div class="py-2">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 bg-white">
-                        <!-- Хлібні крихти -->
-                        <Breadcrumbs
-                            :categories="categories"
-                            :locations="locations"
-                            class="mb-6"
-                        />
 
-                        <!-- Підкатегорії -->
+                        <Breadcrumbs :categories="categories" :locations="locations" class="mb-6"/>
+
                         <div v-if="childCategories?.length" class="space-y-2 mb-8">
                             <h2 class="text-xl font-semibold text-gray-800 mb-4">
                                 Підкатегорії
                             </h2>
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                <Link
-                                    v-for="category in childCategories"
-                                    :key="category.id"
+                                <Link v-for="category in childCategories" :key="category.id"
                                     :href="generateChildCategoriesLink(category.slug)"
-                                    class="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors duration-200"
-                                >
+                                    class="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors duration-200">
                                     <span class="text-blue-600 hover:text-blue-800">
                                         {{ category.name }}
                                     </span>
@@ -136,39 +120,34 @@ const toggleViewMode = () => {
                             </div>
                         </div>
 
-                        <!-- Оголошення -->
                         <div v-if="testData?.adverts?.data?.length" class="space-y-6">
                             <div class="flex justify-between items-center mb-6">
                                 <div class="flex items-center gap-4">
                                     <h2 class="text-xl font-semibold text-gray-800">
                                         Знайдено {{ testData?.adverts?.meta?.total }} оголошень
                                     </h2>
-                                    <!-- Переключалка відображення -->
                                     <div class="flex items-center gap-2 ml-4">
-                                        <button 
+                                        <button
                                             @click="toggleViewMode"
                                             :class="[
                                                 'p-2 rounded-md transition-colors duration-200',
-                                                viewMode === 'grid' 
-                                                    ? 'bg-blue-600 text-white' 
+                                                viewMode === 'grid'
+                                                    ? 'bg-blue-600 text-white'
                                                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                                            ]"
-                                            title="Сітка"
-                                        >
+                                            ]" title="Сітка">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                                             </svg>
                                         </button>
-                                        <button 
+                                        <button
                                             @click="toggleViewMode"
                                             :class="[
                                                 'p-2 rounded-md transition-colors duration-200',
-                                                viewMode === 'list' 
-                                                    ? 'bg-blue-600 text-white' 
+                                                viewMode === 'list'
+                                                    ? 'bg-blue-600 text-white'
                                                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                                             ]"
-                                            title="Список"
-                                        >
+                                            title="Список">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                                             </svg>
@@ -180,15 +159,11 @@ const toggleViewMode = () => {
                                 </div>
                             </div>
 
-                            <!-- Сітка -->
                             <div v-if="viewMode === 'grid'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                <div v-for="advert in testData?.adverts?.data" 
-                                     :key="advert.id"
+                                <div v-for="advert in testData?.adverts?.data" :key="advert.id"
                                      class="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow duration-200">
-                                    <img :src="advert.image" 
-                                         :alt="advert.title"
-                                         class="w-full h-48 object-cover" />
-                                    
+                                    <img :src="advert.image" :alt="advert.title" class="w-full h-48 object-cover" />
+
                                     <div class="p-4">
                                         <div class="flex justify-between items-start mb-2">
                                             <h3 class="text-lg font-medium text-gray-900 hover:text-blue-600">
@@ -215,22 +190,18 @@ const toggleViewMode = () => {
 
                                         <div class="flex justify-between items-center text-sm text-gray-500">
                                             <span>{{ advert.location }}</span>
-                                            <span>{{ formatDate(advert.created_at) }}</span>
+                                            <span>{{ getDateFormatFromLocale(advert.created_at) }}</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Список -->
                             <div v-else class="space-y-4">
-                                <div v-for="advert in testData?.adverts?.data" 
-                                     :key="advert.id"
+                                <div v-for="advert in testData?.adverts?.data" :key="advert.id"
                                      class="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow duration-200">
                                     <div class="flex">
-                                        <img :src="advert.image" 
-                                             :alt="advert.title"
-                                             class="w-48 h-48 object-cover" />
-                                        
+                                        <img :src="advert.image" :alt="advert.title" class="w-48 h-48 object-cover" />
+
                                         <div class="flex-1 p-4">
                                             <div class="flex justify-between items-start mb-2">
                                                 <h3 class="text-xl font-medium text-gray-900 hover:text-blue-600">
@@ -257,14 +228,13 @@ const toggleViewMode = () => {
 
                                             <div class="flex justify-between items-center text-sm text-gray-500">
                                                 <span>{{ advert.location }}</span>
-                                                <span>{{ formatDate(advert.created_at) }}</span>
+                                                <span>{{ getDateFormatFromLocale(advert.created_at) }}</span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Пагінація -->
                             <div v-if="testData?.adverts.meta.last_page > 1" class="flex justify-center mt-8">
                                 <nav class="flex space-x-2">
                                     <Link v-for="page in testData?.adverts?.meta?.last_page"
@@ -276,8 +246,7 @@ const toggleViewMode = () => {
                                                   ? 'bg-blue-600 text-white'
                                                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                                           ]"
-                                    >
-                                        {{ page }}
+                                    > {{ page }}
                                     </Link>
                                 </nav>
                             </div>

@@ -8,29 +8,16 @@ defineProps({
     },
 
 });
-
-
 </script>
 
 <template>
-    <!-- Responsive Navigation Menu -->
     <div
         :class="{
-                        block: showingNavigationDropdown,
-                        hidden: !showingNavigationDropdown,
-                    }"
+            block: showingNavigationDropdown,
+            hidden: !showingNavigationDropdown,
+        }"
         class="sm:hidden"
     >
-        <div class="space-y-1 pb-3 pt-2">
-            <ResponsiveNavLink
-                :href="route('account.dashboard')"
-                :active="route().current('account.dashboard')"
-            >
-                Dashboard
-            </ResponsiveNavLink>
-        </div>
-
-        <!-- Responsive Settings Options -->
         <div class="border-t border-gray-200 pb-1 pt-4">
             <div class="px-4">
                 <div class="text-base font-medium text-gray-800">

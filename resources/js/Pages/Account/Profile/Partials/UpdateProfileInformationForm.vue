@@ -142,5 +142,23 @@ const form = useForm({
                 </Transition>
             </div>
         </form>
+
+        <div class="flex flex-col items-center">
+            <div class="flex items-center gap-2">
+                <input id="switch-link" type="checkbox"
+                       class="appearance-none relative inline-block rounded-full w-12 h-6 cursor-pointer before:inline-block
+                                 before:absolute before:top-0 before:left-0 before:w-full before:h-full before:rounded-full
+                                 before:bg-stone-200 before:transition-colors before:duration-200 before:ease-in after:absolute
+                                 after:top-2/4 after:left-0 after:-translate-y-2/4 after:w-6 after:h-6 after:border after:border-stone-200
+                                  after:bg-white after:rounded-full checked:after:translate-x-full after:transition-all after:duration-200
+                                  after:ease-in disabled:opacity-50 disabled:cursor-not-allowed dark:after:bg-white
+                                  checked:before:bg-stone-800 checked:after:border-stone-800"
+                />
+                <label for="switch-link" class="font-sans antialiased text-base cursor-pointer text-stone-600">
+                    I agree with the
+                    <a href="#" class="font-sans antialiased text-base text-stone-500 inline"> terms and conditions</a>
+                </label>
+            </div>
+        </div>
     </section>
 </template>

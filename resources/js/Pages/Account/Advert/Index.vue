@@ -1,25 +1,14 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import {Head, Link, usePage} from "@inertiajs/vue3";
+import {Head, usePage} from "@inertiajs/vue3";
 import ProfileMenu from "@/Pages/Account/Profile/Partials/ProfileMenu.vue";
 import {computed} from "vue";
 import FlashMessage from "@/Components/FlashMessage.vue";
-import {getFullPathForImage} from "@/helpers.js";
-
-const user = usePage().props.auth.user;
+import {getDateFormatFromLocale, getFullPathForImage} from "@/helpers.js";
 
 const adverts = usePage().props.adverts;
-console.log(adverts,'adverts')
 const flash = computed(() => usePage().props.flash);
 
-console.log(adverts, "adverts");
-const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('uk-UA', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric'
-    });
-};
 </script>
 
 <template>
@@ -74,7 +63,7 @@ const formatDate = (dateString) => {
                                                     </svg>
                                                     2 в закладках
                                                 </span>
-                                                <p class="text-sm text-gray-500">Опубліковано: {{ formatDate(advert.created_at )}}</p>
+                                                <p class="text-sm text-gray-500">Опубліковано: {{ getDateFormatFromLocale(advert.created_at )}}</p>
                                             </div>
                                         </div>
 

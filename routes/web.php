@@ -34,7 +34,6 @@ Route::get('/greeting/{locale}', [IndexController::class, 'changeLocale'])->name
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('/account')->name('account.')->group(function () {
-        Route::get('/dashboard', [ProfileController::class, 'dashboard'])->name('dashboard'); //прибрати потім
         Route::prefix('/profile')->name('profile.')->group(function () {
             Route::get('/phone', [PhoneController::class, 'request'])->name('phone.request');
             Route::get('/edit/phone', [PhoneController::class, 'form'])->name('phone.form');

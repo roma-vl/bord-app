@@ -10,7 +10,7 @@ const props = defineProps({
 });
 const emit = defineEmits(["update:modelValue"]);
 
-const files = ref({}); // об'єкт з ключами — унікальні ID або URL
+const files = ref({});
 const isDraggedOver = ref(false);
 const fileInput = ref(null);
 

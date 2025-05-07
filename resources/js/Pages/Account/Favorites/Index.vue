@@ -4,20 +4,10 @@ import {Head, router, usePage} from "@inertiajs/vue3";
 import ProfileMenu from "@/Pages/Account/Profile/Partials/ProfileMenu.vue";
 import {computed} from "vue";
 import FlashMessage from "@/Components/FlashMessage.vue";
-
-const user = usePage().props.auth.user;
+import {getDateFormatFromLocale} from "@/helpers.js";
 
 const favoriteAdverts =computed(() => usePage().props.favoriteAdverts);
 const flash = computed(() => usePage().props.flash);
-
-console.log(favoriteAdverts, "favoriteAdverts");
-const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('uk-UA', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric'
-    });
-};
 const removeFavoriteAdvert = (advertId) => {
     router.delete(route("account.favorites.remove", {advert: advertId}));
 }
@@ -54,7 +44,7 @@ const removeFavoriteAdvert = (advertId) => {
                                                     </svg>
                                                     6 переглядів
                                                 </span>
-                                                <p class="text-sm text-gray-500">Опубліковано: {{ formatDate(advert.created_at )}}</p>
+                                                <p class="text-sm text-gray-500">Опубліковано: {{ getDateFormatFromLocale(advert.created_at )}}</p>
                                             </div>
                                         </div>
 

@@ -1,12 +1,10 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { Head, useForm, usePage } from "@inertiajs/vue3";
+import { Head, useForm } from "@inertiajs/vue3";
 import {computed, onBeforeUnmount, onMounted, ref, watch} from "vue";
 import axios from "axios";
 import InputError from "@/Components/InputError.vue";
 import AdvertFileUpload from "@/Pages/Account/Advert/Partials/AdvertFileUpload.vue";
-
-const user = usePage().props.auth.user;
 
 const props = defineProps({
     categories: Array,
@@ -27,38 +25,6 @@ const form = useForm({
     attributes: {},
     images: []
 });
-
-watch(() => form.region_id, async (newRegionId) => {
-    form.area_id = '';
-    form.village_id = '';
-    areas.value = [];
-
-    if (!newRegionId) return;
-
-    try {
-        const response = await axios.get(route("account.adverts.areas", { regionId: newRegionId }));
-        areas.value = response.data;
-    } catch (error) {
-        console.error("Помилка завантаження районів", error);
-    }
-});
-
-
-watch(() => form.category_id, async (newCategoryId) => {
-    attributes.value = []; // Спочатку очищаємо
-
-    if (!newCategoryId) return;
-
-    try {
-        const response = await axios.get(route("account.adverts.attributes", { categoryId: newCategoryId }));
-        attributes.value = response.data ?? []; // Переконуємося, що це масив
-        console.log("Завантажені атрибути:", attributes.value);
-    } catch (error) {
-        console.error("Помилка завантаження атрибутів", error);
-    }
-});
-
-
 
 const submit = () => {
     form.post(route("account.adverts.store"), {
@@ -81,17 +47,6 @@ const getCategoryOptions = (categories, prefix = "") => {
     return options;
 };
 const formattedCategories = computed(() => getCategoryOptions(props.categories));
-const addFile = (file) => {
-    const objectURL = URL.createObjectURL(file);
-    files.value[objectURL] = {
-        name: file.name,
-        size: file.size,
-        isImage: file.type.startsWith("image/"),
-    };
-
-    // Додаємо файл до форми
-    form.images.push(file);
-};
 const selectCity = (city) => {
     citySearchQuery.value = city.name;
     form.region_id = city.id;
@@ -114,12 +69,41 @@ const searchCities = async () => {
         loadingCities.value = false;
     }
 };
-watch(citySearchQuery, searchCities);
+
 const handleClickOutside = (event) => {
     if (!event.target.closest(".search-container")) {
         showLocationDropdown.value = false;
     }
 };
+watch(citySearchQuery, searchCities);
+
+watch(() => form.region_id, async (newRegionId) => {
+    form.area_id = '';
+    form.village_id = '';
+    areas.value = [];
+
+    if (!newRegionId) return;
+
+    try {
+        const response = await axios.get(route("account.adverts.areas", { regionId: newRegionId }));
+        areas.value = response.data;
+    } catch (error) {
+        console.error("Помилка завантаження районів", error);
+    }
+});
+
+watch(() => form.category_id, async (newCategoryId) => {
+    attributes.value = [];
+    if (!newCategoryId) return;
+
+    try {
+        const response = await axios.get(route("account.adverts.attributes", { categoryId: newCategoryId }));
+        attributes.value = response.data ?? [];
+    } catch (error) {
+        console.error("Помилка завантаження атрибутів", error);
+    }
+});
+
 onMounted(() => {
     document.addEventListener("click", handleClickOutside);
 });

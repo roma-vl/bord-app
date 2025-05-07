@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { Head, useForm, usePage } from "@inertiajs/vue3";
+import { Head, useForm } from "@inertiajs/vue3";
 import {computed, onBeforeUnmount, onMounted, ref, watch} from "vue";
 import axios from "axios";
 import InputError from "@/Components/InputError.vue";

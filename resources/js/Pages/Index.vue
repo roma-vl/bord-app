@@ -26,7 +26,6 @@ const cityIdSearchQuery = ref("");
 const filteredCities = ref([]);
 
 const searchCities = async () => {
-
     if (citySearchQuery.value.length < 2) {
         filteredCities.value = [];
         return;
@@ -96,13 +95,10 @@ const toggleCategory = (categoryId) => {
     }
 };
 
-
 const selectedCategory = computed(() => {
     const category = categories.find((c) => c.id === openCategory.value);
     return category ? category : "";
 });
-
-
 
 const subCategories = computed(() => {
     const category = categories.find(c => c.id === openCategory.value);
@@ -172,8 +168,7 @@ onBeforeUnmount(() => {
 
                                         <ul v-if="(regions && cities.length === 0)">
                                             <li v-if="loadingRegions" class="px-4 py-2 text-gray-400">Завантаження...</li>
-                                            <li v-for="region in regions" :key="region.id"
-                                                @click="fetchCities(region.id)"
+                                            <li v-for="region in regions" :key="region.id" @click="fetchCities(region.id)"
                                                 class="px-4 py-2 cursor-pointer hover:bg-gray-200 transition duration-200">
                                                 {{ region.name }}
                                             </li>
@@ -181,8 +176,7 @@ onBeforeUnmount(() => {
 
                                         <ul v-else>
                                             <li v-if="loadingCities" class="px-4 py-2 text-gray-400">Завантаження міст...</li>
-                                            <li v-for="city in cities" :key="city.id"
-                                                @click="selectCity(city)"
+                                            <li v-for="city in cities" :key="city.id" @click="selectCity(city)"
                                                 class="px-4 py-2 cursor-pointer hover:bg-gray-200 transition duration-200">
                                                 {{ city.name }}
                                             </li>
@@ -190,8 +184,7 @@ onBeforeUnmount(() => {
                                     </div>
                                 </div>
 
-                                <button
-                                    @click="search"
+                                <button @click="search"
                                     class="bg-green-600 text-white px-8 py-3 rounded-lg text-lg focus:outline-none hover:bg-green-700 transition duration-300">
                                     Пошук
                                 </button>

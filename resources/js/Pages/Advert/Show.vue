@@ -17,7 +17,6 @@ const props = defineProps({
     isFavorited: Boolean
 });
 
-console.log(props.isFavorited,'advert')
 const flash = computed(() => usePage().props.flash);
 const isLiked = ref(false);
 const userPhone = ref(false);
@@ -165,15 +164,14 @@ const deleteAdvert = () => {
                             <p class="mt-4 text-gray-800">{{ advert.content }}</p>
                             <div class="my-4 border border-b-1 mx-3"></div>
                             <div class="flex justify-end">
-                                <button class=" hover:underline hover:text-red-600 text-red-400 px-4 py-2 rounded">Поскаржитися
+                                <button class=" hover:underline hover:text-red-600 text-red-400 px-4 py-2 rounded">
+                                    Поскаржитися
                                 </button>
                             </div>
                         </div>
 
                     </div>
 
-
-                    <!-- Інформація -->
                     <div class="w-1/3">
                         <div class="rounded-lg shadow p-3 bg-white">
                             <p class="mt-4 text-gray-800 text-sm">
@@ -216,13 +214,7 @@ const deleteAdvert = () => {
                                 <div class="mt-4 ">
                                     <p class="text-gray-600 mt-1 text-lg font-bold">
                                         {{ advert.user.name + ' ' + advert.user?.first_name }}</p>
-                                    <p class="text-gray-600 mt-1">на сайті з {{
-                                            new Date(advert.user?.created_at).toLocaleDateString("uk-UA", {
-                                                year: "numeric",
-                                                month: "long",
-                                                day: "numeric"
-                                            })
-                                        }}</p>
+                                    <p class="text-gray-600 mt-1">на сайті з {{getDateFormatFromLocale(advert.user?.created_at) }}</p>
                                 </div>
                             </div>
                             <div class="my-4 border border-b-1 mx-3"></div>

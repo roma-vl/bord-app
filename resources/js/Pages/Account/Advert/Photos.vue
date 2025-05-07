@@ -26,11 +26,10 @@ const photosAdvert = [
         file: "https://img.freepik.com/free-photo/fun-horse_183364-80091.jpg?t=st=1739995631~exp=1739999231~hmac=7802289d2705e7a371830f773f35677a0902b774c5a7ea8214ec4a1d0e3dad59&w=996"
     }
 ];
-// Фото оголошення
+
 const photos = ref(photosAdvert || []);
 const mainPhoto = ref(advert.main_photo || null);
 
-// Додавання фото
 const addPhoto = (event) => {
     const files = event.target.files;
     for (let file of files) {
@@ -64,13 +63,11 @@ const setMainPhoto = (photo) => {
                 <div class="bg-white shadow-sm sm:rounded-lg p-5">
                     <h2 class="text-xl font-semibold mb-4">Редагувати Фото Оголошення</h2>
 
-                    <!-- Головне фото -->
                     <div v-if="mainPhoto" class="mb-4">
                         <h3 class="text-lg font-medium">Головне фото</h3>
                         <img :src="mainPhoto" alt="Головне фото" class="w-full max-w-sm rounded-lg shadow-md">
                     </div>
 
-                    <!-- Список фото -->
                     <div class="grid grid-cols-3 gap-3 mb-4">
                         <div v-for="photo in photos" :key="photo.id" class="relative group">
                             <img :src="photo.file" alt="Фото" class="w-full h-40 object-cover rounded-md shadow-md">
@@ -85,7 +82,6 @@ const setMainPhoto = (photo) => {
                         </div>
                     </div>
 
-                    <!-- Додавання фото -->
                     <div class="p-4 border-dashed border-2 border-gray-300 rounded-md text-center cursor-pointer hover:bg-gray-100">
                         <input type="file" multiple @change="addPhoto" class="hidden" id="photoUpload">
                         <label for="photoUpload" class="text-blue-500 cursor-pointer">Додати фото</label>

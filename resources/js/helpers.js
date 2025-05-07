@@ -18,8 +18,12 @@ export const useLocalStorageFn = (key, defaultValue) => {
     return value;
 };
 
-export const getFullPathForImage = (path) =>
-    import.meta.env.VITE_APP_STORAGE_URL + "/" + path;
+export const getFullPathForImage = (path) => {
+    if (path === '' || path === undefined) {
+        return import.meta.env.VITE_APP_STORAGE_URL + "images/adverts/info/empty.jpg"
+    }
+    return import.meta.env.VITE_APP_STORAGE_URL + "/" + path;
+}
 
 
 export function getDateFormatFromLocale(date) {
