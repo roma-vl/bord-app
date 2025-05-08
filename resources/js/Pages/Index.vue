@@ -199,7 +199,7 @@ onBeforeUnmount(() => {
                                 </div>
 
                                 <button @click="search"
-                                    class="bg-green-600 text-white px-8 py-3 rounded-lg text-lg focus:outline-none hover:bg-green-700 transition duration-300">
+                                    class="px-8 focus:outline-none hover:bg-green-700 transition duration-300 py-2 my-8 text-lg bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl text-white hover:shadow-2xl">
                                     Пошук
                                 </button>
                             </div>
@@ -241,7 +241,7 @@ onBeforeUnmount(() => {
 
                         <section class="bg-gray-100 p-6 rounded">
                             <h2 class="text-xl font-semibold mb-4">VIP-оголошення</h2>
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                                 <div v-for="listing in vip" :key="listing.id" class="border p-2 rounded shadow">
                                     <img :src="getFullPathForImage(listing.first_photo?.file)" alt="Фото" class="w-full  object-cover rounded  h-48" />
                                     <h3 class="mt-2 text-lg font-semibold">{{ listing.title }}</h3>
@@ -260,7 +260,7 @@ onBeforeUnmount(() => {
 
                         <section class="p-6 rounded mt-6">
                             <h2 class="text-xl font-semibold mb-4">Останні оголошення</h2>
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                                 <div v-for="listing in news" :key="listing.id" class="border p-2 rounded shadow">
                                     <img :src="getFullPathForImage(listing.first_photo?.file)" alt="Фото" class="w-full  object-cover rounded  h-48" />
                                     <h3 class="mt-2 text-lg font-semibold">{{ listing.title }}</h3>
@@ -279,7 +279,7 @@ onBeforeUnmount(() => {
 
                         <section class="p-6 rounded mt-6">
                             <h2 class="text-xl font-semibold mb-4">Ви переглядали</h2>
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                                 <div v-for="listing in news" :key="listing.id" class="border p-2 rounded shadow">
                                     <img :src="getFullPathForImage(listing.first_photo?.file)" alt="Фото" class="w-full  object-cover rounded h-48" />
                                     <h3 class="mt-2 text-lg font-semibold">{{ listing.title }}</h3>

@@ -1,8 +1,8 @@
 <script setup>
 import {ref} from 'vue';
 import Pagination from "@/Components/Pagination.vue";
-import CategoryAdvertGrid from "@/Components/CategoryAdvertGrid.vue";
-import CategoryAdvertList from "@/Components/CategoryAdvertList.vue";
+import AdvertGrid from "@/Components/Advert/Category/AdvertGrid.vue";
+import AdvertList from "@/Components/Advert/Category/AdvertList.vue";
 
 const props = defineProps({
     adverts: Object
@@ -59,10 +59,10 @@ const toggleViewMode = () => {
         </div>
 
         <div v-if="viewMode === 'grid'">
-            <CategoryAdvertGrid :adverts="adverts.data" />
+            <AdvertGrid :adverts="adverts.data" />
         </div>
         <div v-else>
-            <CategoryAdvertList :adverts="adverts.data" />
+            <AdvertList :adverts="adverts.data" />
         </div>
 
         <Pagination :pagination="adverts"/>

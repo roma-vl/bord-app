@@ -1,5 +1,6 @@
 <script setup>
-import CategoryAdvertGridItem from "@/Components/CategoryAdvertGridItem.vue";
+
+import AdvertListItem from "@/Components/Advert/Category/AdvertListItem.vue";
 
 const props = defineProps({
     adverts: Array
@@ -7,12 +8,11 @@ const props = defineProps({
 </script>
 
 <template>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <CategoryAdvertGridItem
+    <div class="space-y-4">
+        <AdvertListItem
             v-for="advert in adverts"
             :key="advert.id"
             :advert="advert"
         />
     </div>
 </template>
-

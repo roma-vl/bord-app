@@ -25,6 +25,10 @@ export const getFullPathForImage = (path) => {
     return import.meta.env.VITE_APP_STORAGE_URL + "/" + path;
 }
 
+export const getFullPathForStaticImage = (path) => {
+        return import.meta.env.VITE_APP_STORAGE_URL + "static/" + path
+}
+
 
 export function getDateFormatFromLocale(date) {
     const parsedDate = new Date(date);

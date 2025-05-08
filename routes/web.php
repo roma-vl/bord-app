@@ -15,6 +15,7 @@ use App\Http\Controllers\Cabinet\Chat\ChatController;
 use App\Http\Controllers\Cabinet\Profile\PhoneController;
 use App\Http\Controllers\Cabinet\Profile\ProfileController;
 use App\Http\Controllers\IndexController;
+use App\Http\Controllers\StaticController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/test-404', function () {
@@ -33,6 +34,7 @@ Route::prefix('/adverts')->name('adverts.')->group(function () {
 
 });
 Route::get('/greeting/{locale}', [IndexController::class, 'changeLocale'])->name('greeting');
+Route::get('/contact', [StaticController::class, 'contact'])->name('contact');
 
 
 Route::middleware(['auth', 'verified'])->group(function () {

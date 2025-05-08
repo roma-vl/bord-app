@@ -2,8 +2,8 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import Breadcrumbs from "@/Components/Breadcrumbs.vue";
 import { Head } from '@inertiajs/vue3';
-import CategoryChildCategories from "@/Components/CategoryChildCategories.vue";
-import CategoryAdvert from "@/Components/CategoryAdvert.vue";
+import ChildCategories from "@/Components/Advert/Category/ChildCategories.vue";
+import CategoryAdvert from "@/Components/Advert/Category/CategoryAdvert.vue";
 
 const props = defineProps({
     categories: Object,
@@ -27,7 +27,7 @@ const props = defineProps({
                             :locations="locations"
                         />
 
-                        <CategoryChildCategories
+                        <ChildCategories
                             :childCategories="childCategories"
                             :categories="categories"
                         />

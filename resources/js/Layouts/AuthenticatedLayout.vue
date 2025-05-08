@@ -414,13 +414,10 @@ onMounted(() => {
                                         <h3 class="text-sm font-semibold leading-6 text-gray-900">Company</h3>
                                         <ul role="list" class="mt-6 space-y-4">
                                             <li>
-                                                <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">About</a>
+                                                <a :href="route('contact')" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Contact</a>
                                             </li>
                                             <li>
                                                 <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Blog</a>
-                                            </li>
-                                            <li>
-                                                <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Jobs</a>
                                             </li>
                                         </ul>
                                     </div>

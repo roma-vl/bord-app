@@ -8,7 +8,6 @@ const props = defineProps({
 
 <template>
     <div class="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow duration-200">
-        asd
         <img
             :src="getFullPathForImage(advert.first_photo?.file)"
             :alt="advert.title"
