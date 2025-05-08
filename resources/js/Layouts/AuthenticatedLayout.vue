@@ -34,7 +34,7 @@ const viewMode = ref('grid');
 onMounted(() => {
     setTimeout(() => {
         showRatingPopup.value = true;
-    }, 3000);
+    }, 30000);
 });
 
 </script>
