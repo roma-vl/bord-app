@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import {onMounted, ref} from 'vue';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
@@ -15,6 +15,8 @@ import SettingsIcon from "@/Components/Icon/SettingsIcon.vue";
 import HelperCenterIcon from "@/Components/Icon/HelperCenterIcon.vue";
 import UpDownIcon from "@/Components/Icon/UpDownIcon.vue";
 import CommandLineIcon from "@/Components/Icon/CommandLineIcon.vue";
+import Pagination from "@/Components/Pagination.vue";
+import RattingPopup from "@/Components/RattingPopup.vue";
 
 const showingNavigationDropdown = ref(false);
 const isMessagesVisible = ref(false);
@@ -23,6 +25,17 @@ const messages = () => {
     isMessagesVisible.value = !isMessagesVisible.value;
 };
 
+const showRatingPopup = ref(false);
+const handleSubmit = (message) => {
+    console.log('Rated with message:', message);
+    showRatingPopup.value = false;
+};
+const viewMode = ref('grid');
+onMounted(() => {
+    setTimeout(() => {
+        showRatingPopup.value = true;
+    }, 3000);
+});
 
 </script>
 
@@ -436,4 +449,5 @@ const messages = () => {
             </footer>
         </div>
     </div>
+    <RattingPopup v-model:visible="showRatingPopup" @submit="handleSubmit"/>
 </template>

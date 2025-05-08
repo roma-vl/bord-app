@@ -1,3 +1,63 @@
+
+<script setup>
+import { ref, onMounted } from 'vue'
+
+const showBanner = ref(false)
+const modalRef = ref(null)
+
+const settings = ref({
+    necessary: true, // завжди true
+    preferences: false,
+    analytics: false,
+    marketing: false,
+})
+
+onMounted(() => {
+    const accepted = localStorage.getItem('cookiesAccepted')
+    if (!accepted) {
+        showBanner.value = true
+    }
+    const stored = localStorage.getItem('cookieSettings')
+    if (stored) {
+        settings.value = { ...settings.value, ...JSON.parse(stored) }
+    }
+})
+
+function openModal() {
+    modalRef.value?.showModal()
+}
+
+function closeModal() {
+    modalRef.value?.close()
+}
+
+function acceptAll() {
+    settings.value.preferences = true
+    settings.value.analytics = true
+    settings.value.marketing = true
+    submitSettings()
+}
+
+async function submitSettings() {
+    localStorage.setItem('cookiesAccepted', 'true')
+    localStorage.setItem('cookieSettings', JSON.stringify(settings.value))
+    try {
+        await fetch('/api/cookie-preferences', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(settings.value),
+        })
+    } catch (error) {
+        console.error('Помилка надсилання cookie налаштувань:', error)
+    }
+
+    closeModal()
+    showBanner.value = false
+}
+</script>
+
 <template>
     <div v-if="showBanner" class="fixed bottom-0 left-0 w-full bg-gray-600 z-50 p-5">
         <div class="md:flex items-center -mx-3">
@@ -22,7 +82,6 @@
             </div>
         </div>
 
-        <!-- Cookie Settings Modal -->
         <dialog ref="modalRef" class="w-11/12 md:w-1/2 rounded-md bg-white shadow-lg p-0">
             <form @submit.prevent="submitSettings" class="flex flex-col w-full">
                 <div class="flex justify-between items-center px-5 py-3 border-b">
@@ -78,7 +137,6 @@
                     </label>
                 </div>
 
-
                 <div class="flex justify-end px-5 py-3 border-t">
                     <button type="submit"
                         class="py-2 px-6 bg-gray-800 hover:bg-gray-900 text-white rounded font-bold text-sm shadow">
@@ -89,67 +147,6 @@
         </dialog>
     </div>
 </template>
-
-<script setup>
-import { ref, onMounted } from 'vue'
-
-const showBanner = ref(false)
-const modalRef = ref(null)
-
-const settings = ref({
-    necessary: true, // завжди true
-    preferences: false,
-    analytics: false,
-    marketing: false,
-})
-
-onMounted(() => {
-    const accepted = localStorage.getItem('cookiesAccepted')
-    if (!accepted) {
-        showBanner.value = true
-    }
-    const stored = localStorage.getItem('cookieSettings')
-    if (stored) {
-        settings.value = { ...settings.value, ...JSON.parse(stored) }
-    }
-})
-
-function openModal() {
-    modalRef.value?.showModal()
-}
-
-function closeModal() {
-    modalRef.value?.close()
-}
-
-function acceptAll() {
-    settings.value.preferences = true
-    settings.value.analytics = true
-    settings.value.marketing = true
-    submitSettings()
-}
-
-async function submitSettings() {
-    localStorage.setItem('cookiesAccepted', 'true')
-    localStorage.setItem('cookieSettings', JSON.stringify(settings.value))
-
-    // 👇 Відправка POST-запиту на бекенд (заміни URL)
-    try {
-        await fetch('/api/cookie-preferences', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(settings.value),
-        })
-    } catch (error) {
-        console.error('Помилка надсилання cookie налаштувань:', error)
-    }
-
-    closeModal()
-    showBanner.value = false
-}
-</script>
 
 <style scoped>
 dialog::backdrop {

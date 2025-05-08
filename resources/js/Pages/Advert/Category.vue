@@ -12,81 +12,7 @@ const props = defineProps({
     childCategories: Object,
     adverts: Object
 });
-
-console.log(props.adverts, 'dad')
 const viewMode = ref('grid');
-
-
-const testData = {
-    categories: [
-        { id: 1, name: 'Транспорт', slug: 'transport' },
-        { id: 2, name: 'Автомобілі', slug: 'cars' }
-    ],
-    locations: [
-        { id: 1, name: 'Київ', slug: 'kyiv' },
-        { id: 2, name: 'Львів', slug: 'lviv' }
-    ],
-    childCategories: [
-        { id: 3, name: 'Легкові автомобілі', slug: 'cars' },
-        { id: 4, name: 'Мотоцикли', slug: 'motorcycles' }
-    ],
-    adverts: {
-        data: [
-            {
-                id: 1,
-                title: 'Volkswagen Golf 7 2.0 TDI',
-                price: 15000,
-                currency: 'USD',
-                location: 'Київ',
-                created_at: '2024-03-15',
-                image: 'https://picsum.photos/400/300',
-                description: 'Відмінний стан, повна комплектація, один власник',
-                attributes: {
-                    year: '2019',
-                    mileage: '75000',
-                    fuel: 'Дизель'
-                }
-            },
-            {
-                id: 2,
-                title: 'Toyota Camry 2.5 Hybrid',
-                price: 25000,
-                currency: 'USD',
-                location: 'Львів',
-                created_at: '2024-03-14',
-                image: 'https://picsum.photos/400/300',
-                description: 'Гібрид, максимальна комплектація, без пробігу по Україні',
-                attributes: {
-                    year: '2020',
-                    mileage: '45000',
-                    fuel: 'Гібрид'
-                }
-            },
-            {
-                id: 3,
-                title: 'BMW X5 3.0d',
-                price: 35000,
-                currency: 'USD',
-                location: 'Одеса',
-                created_at: '2024-03-13',
-                image: 'https://picsum.photos/400/300',
-                description: 'M-пакет, панорама, максимальна комплектація',
-                attributes: {
-                    year: '2021',
-                    mileage: '35000',
-                    fuel: 'Дизель'
-                }
-            }
-        ],
-        meta: {
-            total: 50,
-            per_page: 10,
-            current_page: 1,
-            last_page: 5
-        }
-    }
-};
-
 const generateChildCategoriesLink = (slug) => {
     const path = props.categories.map(c => c.slug).join("/");
     return `/adverts/${path}/${slug}`;
@@ -181,14 +107,8 @@ const toggleViewMode = () => {
 
                                         <div class="grid grid-cols-3 gap-2 mb-3">
                                             <div class="text-sm text-gray-500">
-                                                <span class="font-medium">Рік:</span> ddddd
+                                                <span class="font-medium">Рік:</span>
                                             </div>
-<!--                                            <div class="text-sm text-gray-500">-->
-<!--                                                <span class="font-medium">Пробіг:</span> {{ advert.attributes.mileage }} км-->
-<!--                                            </div>-->
-<!--                                            <div class="text-sm text-gray-500">-->
-<!--                                                <span class="font-medium">Паливо:</span> {{ advert.attributes.fuel }}-->
-<!--                                            </div>-->
                                         </div>
 
                                         <div class="flex justify-between items-center text-sm text-gray-500">
@@ -203,7 +123,7 @@ const toggleViewMode = () => {
                                 <div v-for="advert in props.adverts?.data" :key="advert.id"
                                      class="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow duration-200">
                                     <div class="flex">
-                                        <img :src="advert.image" :alt="advert.title" class="w-48 h-48 object-cover" />
+                                        <img :src="getFullPathForImage(advert.first_photo?.file)" :alt="advert.title" class="w-48 h-48 object-cover" />
 
                                         <div class="flex-1 p-4">
                                             <div class="flex justify-between items-start mb-2">
@@ -219,14 +139,8 @@ const toggleViewMode = () => {
 
                                             <div class="grid grid-cols-3 gap-4 mb-4">
                                                 <div class="text-sm text-gray-500">
-                                                    <span class="font-medium">Рік:</span>sdfsdf
+                                                    <span class="font-medium">Рік:</span>
                                                 </div>
-<!--                                                <div class="text-sm text-gray-500">-->
-<!--                                                    <span class="font-medium">Пробіг:</span> {{ advert.attributes.mileage }} км-->
-<!--                                                </div>-->
-<!--                                                <div class="text-sm text-gray-500">-->
-<!--                                                    <span class="font-medium">Паливо:</span> {{ advert.attributes.fuel }}-->
-<!--                                                </div>-->
                                             </div>
 
                                             <div class="flex justify-between items-center text-sm text-gray-500">
