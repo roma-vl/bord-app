@@ -19,6 +19,7 @@ services:
             XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
             XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
             IGNITION_LOCAL_SITES_PATH: '${PWD}'
+            ELASTICSEARCH_HOSTS: elasticsearch:9200
         volumes:
             - '.:/var/www/html'
         networks:
@@ -28,7 +29,7 @@ services:
             - redis
             - meilisearch
             - mailpit
-#            - selenium
+            - elasticsearch
     mysql:
         image: 'mysql/mysql-server:8.0'
         restart: always
@@ -96,6 +97,10 @@ services:
             - discovery.type=single-node
             - xpack.security.enabled=false
             - ES_JAVA_OPTS=-Xms512m -Xmx512m
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
         volumes:
             - elasticsearch:/usr/share/elasticsearch/data
         networks:

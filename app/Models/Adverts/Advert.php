@@ -159,6 +159,11 @@ class Advert extends Model implements Auditable
         ));
     }
 
+    public function scopeActive(Builder $query)
+    {
+        return $query->where('status', self::STATUS_ACTIVE);
+    }
+
     public function scopeFavoriteByUser(Builder $query, User $user)
     {
         return $query->whereHas('favorites', function (Builder $query) use ($user) {
