@@ -3,7 +3,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import Breadcrumbs from "@/Components/Breadcrumbs.vue";
 import { Head } from '@inertiajs/vue3';
 import CategoryChildCategories from "@/Components/CategoryChildCategories.vue";
-import CategoryAdvertList from "@/Components/CategoryAdvertList.vue";
+import CategoryAdvert from "@/Components/CategoryAdvert.vue";
 
 const props = defineProps({
     categories: Object,
@@ -32,7 +32,7 @@ const props = defineProps({
                             :categories="categories"
                         />
 
-                        <CategoryAdvertList
+                        <CategoryAdvert
                             :adverts="adverts"
                         />
 
