@@ -4,7 +4,6 @@ namespace App\Console\Commands\Search;
 
 use Elastic\Elasticsearch\Client;
 use Elastic\Elasticsearch\Exception\ClientResponseException;
-use Exception;
 use Illuminate\Console\Command;
 
 

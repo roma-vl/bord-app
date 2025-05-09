@@ -34,6 +34,7 @@ Route::prefix('/adverts')->name('adverts.')->group(function () {
 
 });
 Route::get('/greeting/{locale}', [IndexController::class, 'changeLocale'])->name('greeting');
+Route::get('/search', [IndexController::class, 'searchAdvert'])->name('search.advert');
 Route::get('/contact', [StaticController::class, 'contact'])->name('contact');
 
 

@@ -12,6 +12,7 @@ const viewMode = ref('grid');
 const toggleViewMode = () => {
     viewMode.value = viewMode.value === 'grid' ? 'list' : 'grid';
 };
+console.log(props.adverts, 'adverts')
 </script>
 
 <template>

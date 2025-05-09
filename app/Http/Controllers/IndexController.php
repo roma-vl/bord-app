@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Services\Adverts\AdvertService;
+use App\Http\Services\Adverts\SearchService;
 use App\Http\Services\CategoryService;
 use App\Models\Adverts\Advert;
 use App\Models\Location;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -17,7 +19,11 @@ use Inertia\Response;
 class IndexController extends Controller
 {
 
-    public function __construct(private readonly AdvertService $advertService, private readonly CategoryService $categoryService) {}
+    public function __construct(
+        private readonly AdvertService $advertService,
+        private readonly CategoryService $categoryService,
+        private readonly SearchService $searchService,
+    ) {}
     public function changeLocale(string $locale): RedirectResponse
     {
         if (!in_array($locale, ['en', 'uk'])) {
@@ -65,7 +71,7 @@ class IndexController extends Controller
             'cities' => $cities
         ]);
     }
-    public function search( $region): JsonResponse
+    public function search($region): JsonResponse
     {
         if (strlen($region) < 2) {
             return response()->json(['regions' => []]);
@@ -79,6 +85,28 @@ class IndexController extends Controller
         return response()->json(['regions' => $regions]);
 
     }
+
+    public function searchAdvert(Request $request): Response
+    {
+        $query = $request->input('q');
+        $page = (int) $request->input('page', 1);
+
+        $results = $this->searchService->search($query, $page);
+
+        return Inertia::render('Search/Results', [
+            'adverts' => [
+                'data' => $results['items'],
+                'total' => $results['total'],
+                'page' => $results['page'],
+                'per_page' => $results['per_page'],
+                'last_page' => $results['last_page'],
+                'links' => $results['links'],
+            ],
+            'query' => $query,
+        ]);
+    }
+
+
 
     public function show(Advert $advert)
     {
