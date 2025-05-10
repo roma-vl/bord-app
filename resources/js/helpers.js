@@ -29,6 +29,10 @@ export const getFullPathForStaticImage = (path) => {
         return import.meta.env.VITE_APP_STORAGE_URL + "static/" + path
 }
 
+export const  truncateContent = (text, length = 100) => {
+    if (!text) return '';
+    return text.length > length ? text.slice(0, length) + '…' : text;
+}
 
 export function getDateFormatFromLocale(date) {
     const parsedDate = new Date(date);
@@ -38,8 +42,8 @@ export function getDateFormatFromLocale(date) {
         year: "numeric",
         month: "long",
         day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit"
+        // hour: "2-digit",
+        // minute: "2-digit"
     });
 }
 

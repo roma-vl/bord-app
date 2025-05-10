@@ -18,7 +18,7 @@ const selectedCity = ref(null);
 const regions = ref([]);
 const cities = ref([]);
 const searchQuery = ref("");
-const searchHistory = ref(["iPhone 13", "Ноутбук Dell", "Годинник Apple", "Квартира у Києві"]);
+const searchHistory = ref(["Пилосос", "Квартира", "Машина", "Квартира у Києві"]);
 const searchRecommendations = ref(["iPhone 13", "Ноутбук Dell", "Годинник Apple", "Квартира у Києві"]);
 const showSuggestions = ref(false);
 const openCategory = ref(null);
@@ -121,6 +121,7 @@ const search = () => {
     if (searchQuery.value.trim() === "") return;
     console.log(searchQuery.value, "searchQuery");
     console.log(cityIdSearchQuery.value, "citySearchQuery");
+    router.get('/search', { q: searchQuery.value })
 }
 watch(citySearchQuery, searchCities);
 onMounted(() => {
@@ -130,6 +131,7 @@ onMounted(() => {
 onBeforeUnmount(() => {
     document.removeEventListener("click", handleClickOutside);
 });
+
 </script>
 
 <template>

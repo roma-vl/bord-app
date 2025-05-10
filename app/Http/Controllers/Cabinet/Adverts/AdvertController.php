@@ -14,26 +14,17 @@ use DomainException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
 
 class AdvertController extends Controller
 {
-    const int COUNTRY_ID = 1;
-    protected LocationService $locationService;
-    private CategoryService $categoryService;
-    private AdvertService $advertService;
-
-    public function __construct(LocationService $locationService,
-                                CategoryService $categoryService,
-                                AdvertService $advertService)
-    {
-        $this->locationService = $locationService;
-        $this->categoryService = $categoryService;
-        $this->advertService = $advertService;
-    }
+    public function __construct(
+        private readonly LocationService $locationService,
+        private readonly CategoryService $categoryService,
+        private readonly AdvertService $advertService
+    ){}
     public function index(): Response
     {
         $adverts = Advert::forUser(Auth::user())
@@ -46,14 +37,11 @@ class AdvertController extends Controller
         ]);
     }
 
-
     public function create(): Response
     {
         $categories =  $this->categoryService->getCategories();
-        $regions = $this->locationService->getRegions(self::COUNTRY_ID);
         return Inertia::render('Account/Advert/Create', [
             'categories' => $categories,
-            'regions' => $regions,
         ]);
     }
 
@@ -70,13 +58,11 @@ class AdvertController extends Controller
         $category = Category::findOrFail($advert->category_id);
         $attributes = array_merge($category->getParentAttributes()->toArray(),
             $category->attributes()->orderBy('sort')->get()->toArray());
-        $regions = $this->locationService->getRegions(self::COUNTRY_ID);
         return Inertia::render('Account/Advert/Edit', [
             'advert' => $advert,
             'categories' => $categories,
             'attributes' => $attributes,
             'activeAttributes' => $activeAttributes,
-            'regions' => $regions
         ]);
 
     }

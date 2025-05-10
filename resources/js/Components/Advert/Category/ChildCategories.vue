@@ -10,12 +10,20 @@ const props = defineProps({
         type: Array,
         required: true
     },
+    categoriesCounts: {
+        type: Array,
+        required: false
+    },
 });
 
 const generateChildCategoriesLink = (slug) => {
     const path = props.categories.map(c => c.slug).join("/");
     return `/adverts/${path}/${slug}`;
 };
+
+const count = (id) => {
+    return props.categoriesCounts && props.categoriesCounts[id] ?  '(' + props.categoriesCounts[id] +  ')' : ''
+}
 </script>
 
 <template>
@@ -24,15 +32,15 @@ const generateChildCategoriesLink = (slug) => {
             Підкатегорії
         </h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <Link
-                v-for="category in childCategories"
-                :key="category.id"
+            <Link v-for="category in childCategories" :key="category.id"
                 :href="generateChildCategoriesLink(category.slug)"
-                class="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors duration-200"
-            >
-                <span class="text-blue-600 hover:text-blue-800">
+                class="p-3 border border-gray-100 rounded-lg  transition-colors duration-200 hover:shadow-md">
+                <div class="text-blue-600 hover:text-blue-800">
                     {{ category.name }}
-                </span>
+                    <span class="font-bold">
+                        {{count(category.id)}}
+                    </span>
+                </div>
             </Link>
         </div>
     </div>

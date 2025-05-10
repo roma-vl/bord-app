@@ -217,7 +217,7 @@ class AdvertService
     {
         $query = Advert::query()
             ->where('status', 'active')
-            ->with(['firstPhoto', 'favorites'])
+            ->with(['firstPhoto', 'favorites', 'region'])
             ->latest();
 
         if ($region) {

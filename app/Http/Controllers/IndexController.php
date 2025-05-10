@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Adverts\SearchRequest;
 use App\Http\Services\Adverts\AdvertService;
 use App\Http\Services\Adverts\SearchService;
 use App\Http\Services\CategoryService;
 use App\Models\Adverts\Advert;
+use App\Models\Adverts\Category;
 use App\Models\Location;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -86,31 +87,57 @@ class IndexController extends Controller
 
     }
 
-    public function searchAdvert(Request $request): Response
+    public function searchAdvert(SearchRequest $request): Response
     {
-        $query = $request->input('q');
+        $urlPath = 'elektronika/kompiuteri-ta-komplektuiuci/serveri';
+
+        $data = $this->categoryService->parseCategoryAndLocationFromUrl($urlPath);
+
         $page = (int) $request->input('page', 1);
+        $perPage = (int) $request->input('per_page', 3);
 
-        $results = $this->searchService->search($query, $page);
+        $results = $this->searchService->search($data['categories']->last(), $data['locations']->last(), $request, $page, $perPage);
 
+        $locationsCounts = $results->regionsCounts;
+        $categoriesCounts = $results->categoriesCounts;
+
+        $locations = $data['locations']->filter(function (Location $location) use ($locationsCounts) {
+            return isset($locationsCounts[$location->id]) && $locationsCounts[$location->id] > 0;
+        });
+        $childCategories = $data['childCategories']
+            ->filter(function (Category $category) use ($categoriesCounts) {
+                return isset($categoriesCounts[$category->id]) && $categoriesCounts[$category->id] > 0;
+            })
+            ->values();
+
+        $categories = $data['categories']->filter(function (Category $category) use ($categoriesCounts) {
+            return isset($categoriesCounts[$category->id]) && $categoriesCounts[$category->id] > 0;
+        });
+
+        $attributes = $data['categories']->last()->allArrayAttributes();
         return Inertia::render('Search/Results', [
             'adverts' => [
-                'data' => $results['items'],
-                'total' => $results['total'],
-                'page' => $results['page'],
-                'per_page' => $results['per_page'],
-                'last_page' => $results['last_page'],
-                'links' => $results['links'],
+                'data' => $results->adverts->items(),
+                'total' => $results->adverts->total(),
+                'page' => $results->adverts->currentPage(),
+                'per_page' => $results->adverts->perPage(),
+                'last_page' => $results->adverts->lastPage(),
+                'links' => $results->adverts->linkCollection(),
             ],
-            'query' => $query,
+            'locations' => $locations,
+            'categories' => $categories,
+            'childCategories' => $childCategories,
+            'attributes' => $attributes,
+            'regionsCounts' => $results->regionsCounts,
+            'categoriesCounts' => $results->categoriesCounts,
+            'query' => $request->query(),
         ]);
     }
 
-
-
     public function show(Advert $advert)
     {
-        $advert->load(['category.ancestors', 'value.attribute', 'photo', 'user', 'region','favorites']);
+        $advert->load(['category.ancestors', 'value.attribute',
+            'photo', 'user', 'region','favorites']);
         $values = $advert->value->map(function ($value) {
             return [
                 'attribute' => $value->attribute->name ?? null,

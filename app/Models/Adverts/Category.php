@@ -40,7 +40,7 @@ class Category extends Model
     public function allArrayAttributes(): array
     {
         $parent = $this->getParentAttributes()->toArray();
-        $attr = $this->attributes()->orderBy('sort')->getModels();
+        $attr = $this->attributes()->orderBy('sort')->get()->toArray();
         return array_merge($parent, $attr);
     }
 

@@ -30,12 +30,11 @@ const handleSubmit = (message) => {
     console.log('Rated with message:', message);
     showRatingPopup.value = false;
 };
-const viewMode = ref('grid');
-onMounted(() => {
-    setTimeout(() => {
-        showRatingPopup.value = true;
-    }, 30000);
-});
+// onMounted(() => {
+//     setTimeout(() => {
+//         showRatingPopup.value = true;
+//     }, 300000);
+// });
 
 </script>
 
