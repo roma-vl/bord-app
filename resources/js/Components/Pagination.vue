@@ -19,7 +19,7 @@ const changePage = (url) => {
     const currentPath = window.location.pathname;
     let prefix = '';
     if (currentPath.indexOf('/list') === 0) {
-        prefix = '/list'
+        prefix = 'list'
     }
     if (url) {
         router.get(fullPath()+ '/' + prefix + url + searchQuery + sortField + sortOrder);

@@ -116,7 +116,7 @@ class IndexController extends Controller
 
         $attributes = count($data['categories']) ? $data['categories']->last()->allArrayAttributes() : [];
 
-        return Inertia::render('Search/Results', [
+        return Inertia::render('Search/List', [
             'adverts' => [
                 'data' => $results->adverts->items(),
                 'total' => $results->adverts->total(),
