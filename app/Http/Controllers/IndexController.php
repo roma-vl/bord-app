@@ -146,6 +146,7 @@ class IndexController extends Controller
         return [
             'id' => $category->id,
             'name' => $category->name,
+            'slug' => $category->slug,
             'attributes' => $category->allArrayAttributes(), // або інший метод
             'children' => $category->children->map(fn ($child) => $this->formatCategoryWithAttributes($child))->values(),
         ];

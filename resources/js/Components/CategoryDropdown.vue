@@ -1,7 +1,8 @@
 <script setup>
-import { ref } from 'vue'
+import {ref, watch} from 'vue'
 
 const props = defineProps({
+    modelValue: [Number, String, null],
     categoryFilters: Array,
 })
 const emit = defineEmits(['update:modelValue'])
@@ -18,6 +19,25 @@ function selectCategory(category) {
     emit('update:modelValue', category.id)
     isOpen.value = false
 }
+
+function findCategoryById(categories, id) {
+    for (const category of categories) {
+        if (category.id === id) return category
+        if (category.children?.length) {
+            const found = findCategoryById(category.children, id)
+            if (found) return found
+        }
+    }
+    return null
+}
+
+watch(
+    () => props.modelValue,
+    (newVal) => {
+        selectedCategory.value = findCategoryById(props.categoryFilters, Number(newVal))
+    },
+    { immediate: true }
+)
 </script>
 
 <template>

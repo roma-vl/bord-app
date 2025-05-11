@@ -1,6 +1,6 @@
 
 <script setup>
-import {computed, ref} from 'vue'
+import {computed, onMounted, ref, watch} from 'vue'
 import {Head, router, usePage} from '@inertiajs/vue3'
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import CategoryAdvert from "@/Components/Advert/Category/CategoryAdvert.vue";
@@ -50,6 +50,65 @@ function findCategoryById(categories, id) {
     }
     return null;
 }
+const handleCategoryChange = (category) => {
+    const fullPathArray = getCategoryPathById(props.categoryFilters, category.id);
+    const fullPath = fullPathArray.map(c => c.slug).join('/');
+    const newPath = `/${fullPath}`;
+
+    if (window.location.pathname === newPath) return; // ⚠️ Запобігає циклу
+
+    router.visit(newPath);
+}
+
+
+
+watch(() => queryFilter.value.category_id, (newVal) => {
+    if (!newVal) return;
+    const selected = findCategoryById(props.categoryFilters, Number(newVal))
+    console.log(selected,'selected')
+    if (selected) {
+        handleCategoryChange(selected)
+    }
+})
+
+function getCategoryPathById(categories, id, path = []) {
+    for (const category of categories) {
+        const newPath = [...path, category];
+        if (category.id === id) {
+            return newPath;
+        }
+        if (category.children?.length) {
+            const result = getCategoryPathById(category.children, id, newPath);
+            if (result) {
+                return result;
+            }
+        }
+    }
+    return null;
+}
+
+onMounted(() => {
+    const pathParts = window.location.pathname.split('/').filter(Boolean);
+    if (!pathParts.length) return;
+
+    const categorySlug = pathParts[pathParts.length - 1]; // або зробити весь шлях
+    const category = findCategoryBySlug(props.categoryFilters, categorySlug);
+
+    if (category) {
+        queryFilter.value.category_id = category.id;
+    }
+});
+
+function findCategoryBySlug(categories, slug) {
+    for (const category of categories) {
+        if (category.slug === slug) return category;
+        if (category.children?.length) {
+            const found = findCategoryBySlug(category.children, slug);
+            if (found) return found;
+        }
+    }
+    return null;
+}
 
 </script>
 
@@ -71,13 +130,10 @@ function findCategoryById(categories, id) {
                         </form>
 
                         <h2 class="text-lg font-semibold text-gray-800 mb-4">Фільтри</h2>
-
                         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-4">
-
-                            <!-- Підкатегорія -->
                             <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 shadow-sm">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">
-                                    Обрати підкатегорію
+                                    Обрати категорію
                                 </label>
                                 <CategoryDropdown
                                     v-model="queryFilter.category_id"
