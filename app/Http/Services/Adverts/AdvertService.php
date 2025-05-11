@@ -213,23 +213,4 @@ class AdvertService
             ->get();
     }
 
-    public function getAdvertsByCategoryAndLocation(?Category $category, Collection $childCategories, ?Location $region)
-    {
-        $query = Advert::query()
-            ->where('status', 'active')
-            ->with(['firstPhoto', 'favorites', 'region'])
-            ->latest();
-
-        if ($region) {
-            $query->where('region_id', $region->id);
-        }
-
-        if ($category) {
-            $ids = array_merge([$category->id], $childCategories->pluck('id')->toArray());
-            $query->whereIn('category_id', $ids)->orderByRaw("FIELD(category_id, " . implode(',', $ids) . ")");
-        }
-
-        return $query->paginate(3)->withQueryString();
-    }
-
 }

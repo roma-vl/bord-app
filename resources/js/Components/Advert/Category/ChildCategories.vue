@@ -18,7 +18,8 @@ const props = defineProps({
 
 const generateChildCategoriesLink = (slug) => {
     const path = props.categories.map(c => c.slug).join("/");
-    return `/adverts/${path}/${slug}`;
+    const queryParams = window.location.search;
+    return `/${path}/${slug}${queryParams}`;
 };
 
 const count = (id) => {

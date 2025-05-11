@@ -18,26 +18,6 @@ use App\Http\Controllers\IndexController;
 use App\Http\Controllers\StaticController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/test-404', function () {
-    abort(404);
-});
-
-Route::get('/', [IndexController::class, 'index'])->middleware([])->name('main');
-Route::prefix('/adverts')->name('adverts.')->group(function () {
-    Route::get('/show/{advert}', [IndexController::class, 'show'])->name('show');
-    Route::get('/phone/{advert}', [IndexController::class, 'phone'])->name('phone');
-    Route::get('/regions', [IndexController::class, 'regions'])->name('regions');
-    Route::get('/regions/{region}/cities', [IndexController::class, 'cities'])->name('cities');
-    Route::get('/regions-search/{region}', [IndexController::class, 'search'])->name('regions.search');
-    Route::get('{urlPath?}', [IndexController::class, 'showAdvertsWithCategoryAndLocations'])
-        ->where('urlPath', '[a-z0-9-\/]+')->name('category.show');
-
-});
-Route::get('/greeting/{locale}', [IndexController::class, 'changeLocale'])->name('greeting');
-Route::get('/search', [IndexController::class, 'searchAdvert'])->name('search.advert');
-Route::get('/contact', [StaticController::class, 'contact'])->name('contact');
-
-
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('/account')->name('account.')->group(function () {
         Route::prefix('/profile')->name('profile.')->group(function () {
@@ -124,5 +104,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
 });
+
+Route::get('/', [IndexController::class, 'index'])->middleware([])->name('main');
+Route::prefix('/adverts')->name('adverts.')->group(function () {
+    Route::get('/show/{advert}', [IndexController::class, 'show'])->name('show');
+    Route::get('/phone/{advert}', [IndexController::class, 'phone'])->name('phone');
+    Route::get('/regions', [IndexController::class, 'regions'])->name('regions');
+    Route::get('/regions/{region}/cities', [IndexController::class, 'cities'])->name('cities');
+    Route::get('/regions-search/{region}', [IndexController::class, 'search'])->name('regions.search');
+});
+Route::get('/greeting/{locale}', [IndexController::class, 'changeLocale'])->name('greeting');
+Route::get('/list/{urlPath?}', [IndexController::class, 'searchAdvert'])
+    ->where('urlPath', '[a-z0-9-\/]+')
+    ->name('list.advert');
+Route::get('/{urlPath?}', [IndexController::class, 'searchAdvert'])
+    ->where('urlPath', '[a-z0-9-\/]+')
+    ->name('search.advert');
+Route::get('/contact', [StaticController::class, 'contact'])->name('contact');
+
 
 require __DIR__.'/auth.php';

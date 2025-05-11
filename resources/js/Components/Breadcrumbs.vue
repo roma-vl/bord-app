@@ -8,13 +8,13 @@ const props = defineProps({
 
 const generateCategoryLink = (index) => {
     let path = props.categories.slice(0, index + 1).map(c => c.slug).join("/");
-    return route('main') + '/adverts/' + path;
+    return route('main') + '/' + path;
 };
 
 const generateLocationLink = (index, slug = null) => {
     let path = props.locations.slice(0, index + 1).map(l => l.slug).join("/");
     if (slug) { path = slug + '/' + path; }
-    return route('main') + '/adverts/' + path;
+    return route('main') + '/' + path;
 };
 
 

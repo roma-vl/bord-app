@@ -3,7 +3,7 @@ import {computed, onBeforeUnmount, onMounted, ref, watch} from "vue";
 import {Head, Link, router, usePage} from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import axios from "axios";
-import {getFullPathForImage} from "@/helpers.js";
+import {fullPath, getFullPathForImage} from "@/helpers.js";
 import HeartIcon from "@/Components/Icon/HeartIcon.vue";
 import HeartSolidIcon from "@/Components/Icon/HeartSolidIcon.vue";
 import FlashMessage from "@/Components/FlashMessage.vue";
@@ -121,7 +121,7 @@ const search = () => {
     if (searchQuery.value.trim() === "") return;
     console.log(searchQuery.value, "searchQuery");
     console.log(cityIdSearchQuery.value, "citySearchQuery");
-    router.get('/search', { q: searchQuery.value })
+    router.get('/list', { query: searchQuery.value })
 }
 watch(citySearchQuery, searchCities);
 onMounted(() => {
@@ -225,13 +225,13 @@ onBeforeUnmount(() => {
                                         <div class="bg-white shadow-md rounded p-4 mt-2">
                                             <p class="pb-3">
                                                 <span class="font-bold text-sm"> > Переглянути всі оголошення в </span>
-                                                <a :href="'adverts/' + selectedCategory.slug" class="text-sm hover:underline cursor-pointer">{{ selectedCategory.name }}</a>
+                                                <a :href="fullPath() + '/' + selectedCategory.slug" class="text-sm hover:underline cursor-pointer">{{ selectedCategory.name }}</a>
                                             </p><hr>
 
                                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-3">
                                                 <template v-for="subCategory in subCategories" :key="subCategory.id">
                                                     <p class="text-sm hover:underline cursor-pointer">
-                                                        <a :href="'adverts/' +selectedCategory.slug + '/' + subCategory.slug">{{ subCategory.name }}</a>
+                                                        <a :href="fullPath() + '/' + selectedCategory.slug + '/' + subCategory.slug">{{ subCategory.name }}</a>
                                                     </p>
                                                 </template>
                                             </div>

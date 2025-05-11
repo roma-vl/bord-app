@@ -28,8 +28,8 @@ function submit() {
             delete filteredQuery[key];
         }
     });
-
-    router.get('/search', filteredQuery);
+    const currentPath = window.location.pathname;
+    router.get(currentPath, filteredQuery);
 }
 
 </script>

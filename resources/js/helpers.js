@@ -29,6 +29,9 @@ export const getFullPathForStaticImage = (path) => {
         return import.meta.env.VITE_APP_STORAGE_URL + "static/" + path
 }
 
+export const fullPath =  () => {
+    return import.meta.env.VITE_APP_URL ;
+}
 export const  truncateContent = (text, length = 100) => {
     if (!text) return '';
     return text.length > length ? text.slice(0, length) + '…' : text;

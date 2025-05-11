@@ -3,6 +3,7 @@ import { defineProps } from "vue";
 import { router } from "@inertiajs/vue3";
 import ArrowLeftIcon from "@/Components/Icon/ArrowLeftIcon.vue";
 import ArrowRightIcon from "@/Components/Icon/ArrowRightIcon.vue";
+import {fullPath} from "@/helpers.js";
 
 const props = defineProps({
     pagination: Object,
@@ -14,12 +15,17 @@ const props = defineProps({
 const searchQuery = props.searchQuery ? '&search=' + props.searchQuery: '';
 const sortField = props.sortField ? '&sort_by=' + props.sortField: '';
 const sortOrder = props.sortOrder ? '&sort_order=' + props.sortOrder: '';
-
 const changePage = (url) => {
+    const currentPath = window.location.pathname;
+    let prefix = '';
+    if (currentPath.indexOf('/list') === 0) {
+        prefix = '/list'
+    }
     if (url) {
-        router.get(url + searchQuery + sortField + sortOrder);
+        router.get(fullPath()+ '/' + prefix + url + searchQuery + sortField + sortOrder);
     }
 };
+
 
 </script>
 

@@ -15,10 +15,12 @@ readonly class SearchService
         private Client $client
     ) {}
 
-    public function search(?Category $category, ?Location $region, SearchRequest $request, int $page = 1, int $perPage = 1): SearchResult
+    public function search(?Category $category, ?Location $region, SearchRequest $request,
+                           ?string $urlPath, int $page = 1, int $perPage = 10
+    ): SearchResult
     {
-        $res = $request->all();
-        $values = $this->parseAttributeFilters($res);
+        $originalQueryString = request()->getQueryString();
+        $values = $this->parseAttributeFilters($request->all());
 
         $response = $this->client->search([
             'index' => 'adverts',
@@ -88,10 +90,16 @@ readonly class SearchService
                 ->orderBy(new Expression('FIELD(id,' . implode(',', $ids) . ')'))
                 ->get();
             $pagination = new LengthAwarePaginator($items, $response['hits']['total']['value'], $perPage, $page);
-            $pagination->withPath('/search')->appends($request->query());
+            $pagination->withPath($urlPath);
+            if ($originalQueryString) {
+                $pagination->setPath($urlPath . '?' . $originalQueryString);
+            }
         } else {
             $pagination = new LengthAwarePaginator([], 0, $perPage, $page);
-            $pagination->withPath('/search')->appends($request->query());
+            $pagination->withPath($urlPath);
+            if ($originalQueryString) {
+                $pagination->setPath($urlPath . '?' . $originalQueryString);
+            }
         }
 
         return new SearchResult(
@@ -122,6 +130,4 @@ readonly class SearchService
             return !empty($value['equals']) || !empty($value['from']) || !empty($value['to']);
         });
     }
-
-
 }

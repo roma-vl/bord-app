@@ -55,7 +55,7 @@ console.log(props.adverts, 'adverts')
                 </div>
             </div>
             <div class="text-sm text-gray-500">
-                Сторінка {{ adverts.current_page }} з {{ adverts.last_page }}
+                Сторінка {{ adverts.page }} з {{ adverts.last_page }}
             </div>
         </div>
 

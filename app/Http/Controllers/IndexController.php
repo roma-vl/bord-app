@@ -87,16 +87,16 @@ class IndexController extends Controller
 
     }
 
-    public function searchAdvert(SearchRequest $request): Response
+    public function searchAdvert(SearchRequest $request, ?string $urlPath = ''): Response
     {
-        $urlPath = 'elektronika/kompiuteri-ta-komplektuiuci/serveri';
-
         $data = $this->categoryService->parseCategoryAndLocationFromUrl($urlPath);
 
         $page = (int) $request->input('page', 1);
-        $perPage = (int) $request->input('per_page', 3);
+        $perPage = (int) $request->input('per_page', 1);
+        if ($perPage < 1) $perPage = 1;
+        if ($page < 1) $page = 1;
 
-        $results = $this->searchService->search($data['categories']->last(), $data['locations']->last(), $request, $page, $perPage);
+        $results = $this->searchService->search($data['categories']->last(), $data['locations']->last(), $request, $urlPath, $page, $perPage);
 
         $locationsCounts = $results->regionsCounts;
         $categoriesCounts = $results->categoriesCounts;
@@ -114,7 +114,8 @@ class IndexController extends Controller
             return isset($categoriesCounts[$category->id]) && $categoriesCounts[$category->id] > 0;
         });
 
-        $attributes = $data['categories']->last()->allArrayAttributes();
+        $attributes = count($data['categories']) ? $data['categories']->last()->allArrayAttributes() : [];
+
         return Inertia::render('Search/Results', [
             'adverts' => [
                 'data' => $results->adverts->items(),
@@ -157,21 +158,6 @@ class IndexController extends Controller
             'isFavorited' => $isFavorited,
         ]);
     }
-    public function showAdvertsWithCategoryAndLocations(string $urlPath = null): Response
-    {
-        $data = $this->categoryService->parseCategoryAndLocationFromUrl($urlPath);
-        $adverts = $this->advertService->getAdvertsByCategoryAndLocation(
-            $data['categories']->last(),
-            $data['childCategories'],
-            $data['locations']->last()
-        );
-
-        return Inertia::render('Advert/Category', [
-            ...$data,
-            'adverts' => $adverts
-        ]);
-    }
-
 
     public function phone(Advert $advert): string
     {

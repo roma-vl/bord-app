@@ -20,6 +20,7 @@ class CategoryService
 
     public function parseCategoryAndLocationFromUrl(?string $urlPath): array
     {
+//        Cache::flush();
         $cacheKey = 'showCategory_' . md5($urlPath);
 
         return Cache::tags([Location::class, Category::class])->rememberForever($cacheKey, function () use ($urlPath) {
