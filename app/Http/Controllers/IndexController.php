@@ -46,7 +46,7 @@ class IndexController extends Controller
     public function index(): Response
     {
         return Inertia::render('Index', [
-            'categories' => $this->categoryService->getRootCategoriesWithChildren(),
+            'categories' => $this->categoryService->getFirstLevelCategoriesWithChildren(),
             'news' => $this->advertService->getLatest(),
             'vip' => $this->advertService->getVip()
         ]);
@@ -114,7 +114,12 @@ class IndexController extends Controller
             return isset($categoriesCounts[$category->id]) && $categoriesCounts[$category->id] > 0;
         });
 
+//        $categoryTree = $this->categoryService->getFirstLevelCategoriesWithChildren();
         $attributes = count($data['categories']) ? $data['categories']->last()->allArrayAttributes() : [];
+        $categoryTree = $this->categoryService->getFirstLevelCategoriesWithChildren();
+
+        $categoryFilters = $categoryTree->map(fn ($category) => $this->formatCategoryWithAttributes($category));
+
 
         return Inertia::render('Search/List', [
             'adverts' => [
@@ -131,9 +136,21 @@ class IndexController extends Controller
             'attributes' => $attributes,
             'regionsCounts' => $results->regionsCounts,
             'categoriesCounts' => $results->categoriesCounts,
+            'categoryFilters' => $categoryFilters,
             'query' => $request->query(),
         ]);
     }
+
+    private function formatCategoryWithAttributes(Category $category): array
+    {
+        return [
+            'id' => $category->id,
+            'name' => $category->name,
+            'attributes' => $category->allArrayAttributes(), // або інший метод
+            'children' => $category->children->map(fn ($child) => $this->formatCategoryWithAttributes($child))->values(),
+        ];
+    }
+
 
     public function show(Advert $advert)
     {

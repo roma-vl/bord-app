@@ -10,12 +10,15 @@ use Illuminate\Support\Str;
 
 class CategoryService
 {
-    public function getRootCategoriesWithChildren(): Collection
+    public function getFirstLevelCategoriesWithChildren(): Collection
     {
-        return Category::whereNull('parent_id')
-            ->with(['rootWithOneChildren' => fn($q) => $q->orderBy('name')])
-            ->orderBy('name')
-            ->get();
+        $firstLevel = collect();
+        $rootCategories = Category::whereIsRoot()->get();
+        foreach ($rootCategories as $root) {
+            $firstLevel = $root->children()->get();
+        }
+
+        return $firstLevel;
     }
 
     public function parseCategoryAndLocationFromUrl(?string $urlPath): array

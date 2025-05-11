@@ -112,10 +112,10 @@ const selectedCategory = computed(() => {
     const category = categories.find((c) => c.id === openCategory.value);
     return category ? category : "";
 });
-
+console.log(categories, 'categories')
 const subCategories = computed(() => {
     const category = categories.find(c => c.id === openCategory.value);
-    return category ? category.root_with_one_children : [];
+    return category ? category.children : [];
 });
 const search = () => {
     if (searchQuery.value.trim() === "") return;

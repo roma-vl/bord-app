@@ -1,11 +1,12 @@
 
 <script setup>
-import {ref} from 'vue'
+import {computed, ref} from 'vue'
 import {Head, router, usePage} from '@inertiajs/vue3'
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import CategoryAdvert from "@/Components/Advert/Category/CategoryAdvert.vue";
 import Breadcrumbs from "@/Components/Breadcrumbs.vue";
 import ChildCategories from "@/Components/Advert/Category/ChildCategories.vue";
+import CategoryDropdown from "@/Components/CategoryDropdown.vue";
 const adverts = usePage().props.adverts;
 const queryFilter = ref(usePage().props.query || {});
 const props = defineProps({
@@ -14,11 +15,18 @@ const props = defineProps({
     childCategories: Object,
     regionsCounts: Object,
     categoriesCounts:Object,
-    attributes: Object
+    attributes: Object,
+    categoryFilters: Object,
 });
 
+const selectedCategoryId = computed(() => queryFilter.value.category_id)
 
+const selectedCategoryAttributes = computed(() => {
+    const selected = findCategoryById(props.categoryFilters, Number(selectedCategoryId.value));
+    return selected?.attributes ?? [];
+});
 
+console.log(props.categoryFilters, 'categoryTree')
 function submit() {
     const filteredQuery = { ...queryFilter.value };
 
@@ -30,6 +38,17 @@ function submit() {
     });
     const currentPath = window.location.pathname;
     router.get(currentPath, filteredQuery);
+}
+
+function findCategoryById(categories, id) {
+    for (const category of categories) {
+        if (category.id === id) return category;
+        if (category.children?.length) {
+            const found = findCategoryById(category.children, id);
+            if (found) return found;
+        }
+    }
+    return null;
 }
 
 </script>
@@ -53,17 +72,28 @@ function submit() {
 
                         <h2 class="text-lg font-semibold text-gray-800 mb-4">Фільтри</h2>
 
-                        <div v-if="props.attributes.length"
-                            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-4">
-                            <div v-for="(attribute, index) in props.attributes" :key="index"
-                                class="bg-gray-50 border border-gray-200 rounded-lg p-4 shadow-sm">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-4">
+
+                            <!-- Підкатегорія -->
+                            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 shadow-sm">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Обрати підкатегорію
+                                </label>
+                                <CategoryDropdown
+                                    v-model="queryFilter.category_id"
+                                    :categoryFilters="props.categoryFilters"
+                                />
+                            </div>
+
+                            <!-- Атрибути -->
+                            <div v-for="(attribute, index) in selectedCategoryAttributes" :key="index"
+                                 class="bg-gray-50 border border-gray-200 rounded-lg p-4 shadow-sm">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">
                                     {{ attribute.name }}
                                 </label>
 
-                                <select v-if="attribute.variants && attribute.variants.length"
-                                    v-model="queryFilter[attribute.id]"
-                                    class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <select v-if="attribute.variants && attribute.variants.length" v-model="queryFilter[attribute.id]"
+                                        class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                     <option value="">Обрати</option>
                                     <option v-for="(variant, i) in attribute.variants" :key="i" :value="variant">
                                         {{ variant }}
@@ -72,14 +102,15 @@ function submit() {
 
                                 <div v-else-if="attribute.type === 'integer'" class="flex gap-2">
                                     <input type="number" :placeholder="`Від`" v-model="queryFilter[`${attribute.id}_from`]"
-                                        class="w-1/2 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+                                           class="w-1/2 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"/>
                                     <input type="number" :placeholder="`До`" v-model="queryFilter[`${attribute.id}_to`]"
-                                        class="w-1/2 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+                                           class="w-1/2 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"/>
                                 </div>
 
                                 <input v-else-if="attribute.type === 'string'" type="text" v-model="queryFilter[attribute.id]"
-                                    class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+                                       class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"/>
                             </div>
+
                         </div>
 
 
