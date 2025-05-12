@@ -1,8 +1,7 @@
 <script setup>
-import { usePage } from "@inertiajs/vue3";
 
 const props = defineProps({
-    activeTab: String, // Отримує активну вкладку
+    activeTab: String,
 });
 
 const menuItems = [
@@ -11,6 +10,7 @@ const menuItems = [
     { name: "Профіль", route: "account.profile.index" },
     { name: "Збережені", route: "account.favorites.index" },
     { name: "Налаштування", route: "account.profile.settings" },
+    { name: "Реклама", route: "account.banners.index" },
 ];
 
 

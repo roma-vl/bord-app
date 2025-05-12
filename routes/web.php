@@ -11,12 +11,30 @@ use App\Http\Controllers\Admin\RolesController as AdminRolesController;
 use App\Http\Controllers\Admin\UsersController as AdminUsersController;
 use App\Http\Controllers\Cabinet\Adverts\AdvertController;
 use App\Http\Controllers\Cabinet\Adverts\FavoriteController;
+use App\Http\Controllers\Cabinet\Banner\BannerController;
+use App\Http\Controllers\BannerController as PublicBannerController;
+use App\Http\Controllers\Admin\BannerController as AdminBannerController;
+use App\Http\Controllers\Cabinet\Banner\CreateController;
 use App\Http\Controllers\Cabinet\Chat\ChatController;
 use App\Http\Controllers\Cabinet\Profile\PhoneController;
 use App\Http\Controllers\Cabinet\Profile\ProfileController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\StaticController;
 use Illuminate\Support\Facades\Route;
+
+
+Route::get('/banner/get', [PublicBannerController::class, 'get'])->name('banner.get');
+Route::get('/banner/{banner}/click', [PublicBannerController::class, 'click'])->name('banner.click');
+
+Route::get('/', [IndexController::class, 'index'])->middleware([])->name('main');
+Route::prefix('/adverts')->name('adverts.')->group(function () {
+    Route::get('/show/{advert}', [IndexController::class, 'show'])->name('show');
+    Route::get('/phone/{advert}', [IndexController::class, 'phone'])->name('phone');
+    Route::get('/regions', [IndexController::class, 'regions'])->name('regions');
+    Route::get('/regions/{region}/cities', [IndexController::class, 'cities'])->name('cities');
+    Route::get('/regions-search/{region}', [IndexController::class, 'search'])->name('regions.search');
+});
+Route::get('/greeting/{locale}', [IndexController::class, 'changeLocale'])->name('greeting');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('/account')->name('account.')->group(function () {
@@ -36,6 +54,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('favorites/{advert}', [FavoriteController::class, 'add'])->name('favorites.add');
         Route::delete('favorites/{advert}', [FavoriteController::class, 'remove'])->name('favorites.remove');
 
+//        Route::get('banners', [BannerController::class, 'index'])->name('banners.index');
         Route::prefix('/adverts')->name('adverts.')->group(function () {
             Route::get('/', [AdvertController::class, 'index'])->name('index');
             Route::get('/show/{advert}', [IndexController::class, 'show'])->name('show');
@@ -52,6 +71,27 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/attributes/{categoryId}', [AdvertController::class, 'getAttributes'])->name('attributes');
 
         });
+
+        Route::prefix('/banners')->name('banners.')->group(function () {
+            Route::get('/', [BannerController::class, 'index'])->name('index');
+            Route::get('/create', [CreateController::class, 'category'])->name('create');
+            Route::get('/regions/{category}/{region?}', [CreateController::class, 'getRegions'])->name('regions');
+            Route::get('/attributes/{category}', [CreateController::class, 'getAttributes'])->name('attributes');
+            Route::post('/store', [CreateController::class, 'store'])->name('store');
+            Route::get('/show/{banner}', [BannerController::class, 'show'])->name('show');
+            Route::get('/edit/{banner}', [BannerController::class, 'edit'])->name('edit');
+            Route::post('/update/{banner}', [BannerController::class, 'update'])->name('update');
+
+            Route::get('/edit/{banner}/file', [BannerController::class, 'fileForm'])->name('edit.file');
+            Route::post('/edit/{banner}/file', [BannerController::class, 'fileUpdate'])->name('edit.file.update');
+
+            Route::post('/publish/{banner}', [BannerController::class, 'send'])->name('actions.publish');
+            Route::post('/draft/{banner}', [BannerController::class, 'cancel'])->name('actions.draft');
+            Route::post('/order/{banner}', [BannerController::class, 'order'])->name('actions.order');
+
+            Route::delete('/destroy/{banner}', [BannerController::class, 'destroy'])->name('destroy');
+        });
+
         Route::prefix('/chats')->name('chats.')->group(function () {
             Route::get('/', [ChatController::class, 'index'])->name('index');
         });
@@ -101,19 +141,22 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 Route::post('/{category}/move-to-bottom', 'moveToBottom')->name('moveToBottom');
             });
         });
+
+        Route::group(['prefix' => 'banners', 'as' => 'banners.'], function () {
+            Route::get('/', 'AdminBannerController@index')->name('index');
+            Route::get('/{banner}/show', 'AdminBannerController@show')->name('show');
+            Route::get('/{banner}/edit', 'AdminBannerController@editForm')->name('edit');
+            Route::put('/{banner}/edit', 'AdminBannerController@edit');
+            Route::post('/{banner}/moderate', [AdminBannerController::class, 'moderate'])->name('moderate');
+            Route::get('/{banner}/reject', 'AdminBannerController@rejectForm')->name('reject');
+            Route::post('/{banner}/reject', [AdminBannerController::class, 'reject']);
+            Route::post('/{banner}/pay', 'AdminBannerController@pay')->name('pay');
+            Route::delete('/{banner}/destroy', 'AdminBannerController@destroy')->name('destroy');
+        });
     });
 
 });
 
-Route::get('/', [IndexController::class, 'index'])->middleware([])->name('main');
-Route::prefix('/adverts')->name('adverts.')->group(function () {
-    Route::get('/show/{advert}', [IndexController::class, 'show'])->name('show');
-    Route::get('/phone/{advert}', [IndexController::class, 'phone'])->name('phone');
-    Route::get('/regions', [IndexController::class, 'regions'])->name('regions');
-    Route::get('/regions/{region}/cities', [IndexController::class, 'cities'])->name('cities');
-    Route::get('/regions-search/{region}', [IndexController::class, 'search'])->name('regions.search');
-});
-Route::get('/greeting/{locale}', [IndexController::class, 'changeLocale'])->name('greeting');
 Route::get('/list/{urlPath?}', [IndexController::class, 'searchAdvert'])
     ->where('urlPath', '[a-z0-9-\/]+')
     ->name('list.advert');

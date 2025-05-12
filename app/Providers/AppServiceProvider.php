@@ -2,14 +2,14 @@
 
 namespace App\Providers;
 
+use App\Http\Services\Banner\CostCalculatorService;
 use App\Models\Adverts\Advert;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
-use Elastic\Elasticsearch\Client;
-use Elastic\Elasticsearch\ClientBuilder;
+use Illuminate\Contracts\Foundation\Application;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -18,7 +18,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-//        $this->registerSearchClient();
+        $this->registerCostCalculator();
     }
 
     /**
@@ -32,12 +32,11 @@ class AppServiceProvider extends ServiceProvider
         $this->bootSearchable();
     }
 
-    private function registerSearchClient(): void
+    private function registerCostCalculator(): void
     {
-        $this->app->bind(Client::class, function ($app) {
-            return ClientBuilder::create()
-                ->setHosts($app['config']->get('services.search.hosts'))
-                ->build();
+        $this->app->singleton(CostCalculatorService::class, function (Application $app) {
+            $config = $app->make('config')->get('banner');
+            return new CostCalculatorService($config['price']);
         });
     }
 

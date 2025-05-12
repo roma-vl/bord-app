@@ -22,6 +22,7 @@ class InitCommand extends Command
     public function handle(): bool
     {
         $this->initAdverts();
+        $this->initBanners();
 
         return true;
     }
@@ -99,6 +100,49 @@ class InitCommand extends Command
                                 'value_string' => ['type' => 'keyword'],
                                 'value_int' => ['type' => 'integer'],
                             ],
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+    }
+
+    private function initBanners(): void
+    {
+        try {
+            $this->client->indices()->delete([
+                'index' => 'banners'
+            ]);
+        } catch (ClientResponseException $e) {
+            if ($e->getCode() === 404) {
+                $this->warn('Індекс banners не існує');
+            } else {
+                $this->error('Помилка видалення індексу: ' . $e->getMessage());
+            }
+        }
+
+        $this->client->indices()->create([
+            'index' => 'banners',
+            'body' => [
+                'mappings' => [
+                    '_source' => [
+                        'enabled' => true,
+                    ],
+                    'properties' => [
+                        'id' => [
+                            'type' => 'integer',
+                        ],
+                        'status' => [
+                            'type' => 'keyword',
+                        ],
+                        'format' => [
+                            'type' => 'keyword',
+                        ],
+                        'categories' => [
+                            'type' => 'integer',
+                        ],
+                        'regions' => [
+                            'type' => 'integer',
                         ],
                     ],
                 ],

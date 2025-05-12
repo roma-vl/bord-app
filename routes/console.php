@@ -8,3 +8,4 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote')->hourly();
 
 Schedule::command('advert:expire')->hourly();
+Schedule::command('banner:expire')->hourly();
