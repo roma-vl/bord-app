@@ -8,7 +8,6 @@ import Reject from "@/Pages/Admin/Advert/Actions/Reject.vue";
 import Modal from "@/Components/Modal.vue";
 import FlashMessage from "@/Components/FlashMessage.vue";
 import {getDateFormatFromLocale, getFullPathForImage} from "@/helpers.js";
-
 const props = defineProps({
     advert: Object,
     values: Array,
@@ -113,7 +112,7 @@ const deleteAdvert = () => {
                                 class="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded">Видалити</button>
                     </div>
 
-                    <div class=" flex flex-row gap-2 items-center">
+                    <div v-can="'admin'" class=" flex flex-row gap-2 items-center">
                         <button v-if="isOnModeration" @click="activate"
                                 class="bg-green-500 hover:bg-green-600 text-white px-4 py-1 rounded">Опублікувати</button>
                         <button v-if="isOnModeration || isActive" @click="rejectAdvert"

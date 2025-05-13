@@ -172,7 +172,7 @@ const handleSubmit = (message) => {
                                                 </div>
                                                 <div aria-label="navigation" class="py-2">
                                                     <nav class="grid gap-1">
-                                                        <a :href="route('admin.index')" class="flex items-center leading-6 space-x-3 py-3 px-4 w-full text-lg text-gray-600 focus:outline-none hover:bg-gray-100 rounded-md">
+                                                        <a v-can="'admin'" :href="route('admin.index')" class="flex items-center leading-6 space-x-3 py-3 px-4 w-full text-lg text-gray-600 focus:outline-none hover:bg-gray-100 rounded-md">
                                                             <CommandLineIcon /> <span>Admin Panel</span>
                                                         </a>
                                                         <a :href="route('account.adverts.index')" class="flex items-center leading-6 space-x-3 py-3 px-4 w-full text-lg text-gray-600 focus:outline-none hover:bg-gray-100 rounded-md">
@@ -187,26 +187,26 @@ const handleSubmit = (message) => {
                                                         <a :href="route('account.profile.settings')" class="flex items-center leading-6 space-x-3 py-3 px-4 w-full text-lg text-gray-600 focus:outline-none hover:bg-gray-100 rounded-md">
                                                             <SettingsIcon /> <span>Account Settings</span>
                                                         </a>
-                                                        <a href="/" class="flex items-center leading-6 space-x-3 py-3 px-4 w-full text-lg text-gray-600 focus:outline-none hover:bg-gray-100 rounded-md">
-                                                            <HelperCenterIcon /> <span>Helper Center</span>
-                                                        </a>
+<!--                                                        <a href="/" class="flex items-center leading-6 space-x-3 py-3 px-4 w-full text-lg text-gray-600 focus:outline-none hover:bg-gray-100 rounded-md">-->
+<!--                                                            <HelperCenterIcon /> <span>Helper Center</span>-->
+<!--                                                        </a>-->
                                                     </nav>
                                                 </div>
-                                                <div aria-label="account-upgrade" class="px-4 py-6">
-                                                    <div class="flex items-center space-x-3">
-                                                        <div class="mr-auto space-y-2">
-                                                            <p class="font-medium text-xl text-gray-900 leading-none">
-                                                                Free Plan
-                                                            </p>
-                                                            <p class="font-normal text-lg text-gray-500 leading-none">
-                                                                12,000 views
-                                                            </p>
-                                                        </div>
-                                                        <button type="button" class="inline-flex px-6 leading-6 py-3 rounded-md bg-indigo-50 hover:bg-indigo-50/80 transition-colors duration-200 text-indigo-500 font-medium text-lg">
-                                                            Upgrade
-                                                        </button>
-                                                    </div>
-                                                </div>
+<!--                                                <div aria-label="account-upgrade" class="px-4 py-6">-->
+<!--                                                    <div class="flex items-center space-x-3">-->
+<!--                                                        <div class="mr-auto space-y-2">-->
+<!--                                                            <p class="font-medium text-xl text-gray-900 leading-none">-->
+<!--                                                                Free Plan-->
+<!--                                                            </p>-->
+<!--                                                            <p class="font-normal text-lg text-gray-500 leading-none">-->
+<!--                                                                12,000 views-->
+<!--                                                            </p>-->
+<!--                                                        </div>-->
+<!--                                                        <button type="button" class="inline-flex px-6 leading-6 py-3 rounded-md bg-indigo-50 hover:bg-indigo-50/80 transition-colors duration-200 text-indigo-500 font-medium text-lg">-->
+<!--                                                            Upgrade-->
+<!--                                                        </button>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
                                                 <div aria-label="footer" class="pt-2">
                                                     <Link :href="route('logout')" method="post" type="button"
                                                           class="flex items-center space-x-3 py-3 px-4 w-full leading-6 text-lg text-gray-600 focus:outline-none hover:bg-gray-100 rounded-md">

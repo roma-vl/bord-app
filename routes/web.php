@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Admin\PermissionsController as AdminPermissionsController;
 use App\Http\Controllers\Admin\RolesController as AdminRolesController;
 use App\Http\Controllers\Admin\UsersController as AdminUsersController;
+use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Cabinet\Adverts\AdvertController;
 use App\Http\Controllers\Cabinet\Adverts\FavoriteController;
 use App\Http\Controllers\Cabinet\Banner\BannerController;
@@ -156,14 +157,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
 });
-
+require __DIR__.'/auth.php';
+Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.redirect');
+Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
+Route::get('/contact', [StaticController::class, 'contact'])->name('contact');
 Route::get('/list/{urlPath?}', [IndexController::class, 'searchAdvert'])
     ->where('urlPath', '[a-z0-9-\/]+')
     ->name('list.advert');
 Route::get('/{urlPath?}', [IndexController::class, 'searchAdvert'])
     ->where('urlPath', '[a-z0-9-\/]+')
     ->name('search.advert');
-Route::get('/contact', [StaticController::class, 'contact'])->name('contact');
-
-
-require __DIR__.'/auth.php';

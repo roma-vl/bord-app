@@ -8,7 +8,7 @@ import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 import { createI18n } from 'vue-i18n';
 import { usePage } from '@inertiajs/vue3';
 import messages from '@/lang';
-
+import CanDirective from '@/directives/can.js';
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 createInertiaApp({
@@ -31,6 +31,7 @@ createInertiaApp({
 
         return createApp({ render: () => h(App, props) })
             .use(i18n)
+            .directive('can', CanDirective)
             .use(plugin)
             .use(ZiggyVue)
             .mount(el);

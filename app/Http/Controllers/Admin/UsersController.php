@@ -1,8 +1,6 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreUserRequest;
 use App\Http\Requests\Admin\UpdateUserRequest;
 use App\Http\Resources\Admin\User\UserResource;
@@ -11,22 +9,15 @@ use App\Http\Services\SearchSortService;
 use App\Http\Services\UserService;
 use App\Models\Role;
 use App\Models\User;
-use Illuminate\Database\Query\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class UsersController extends Controller
 {
-    const int PER_PAGE = 5;
-    const string SORT_BY_DEFAULT = 'id';
-    const string SORT_ORDER_DEFAULT = 'asc';
-
     public function __construct(
         private readonly UserService    $userService,
         private readonly UserRepository $userRepository,

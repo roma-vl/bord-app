@@ -31,6 +31,8 @@ class User extends Authenticatable implements MustVerifyEmail, Auditable
         'locale',
         'email_verified_at',
         'phone',
+        'avatar_url',
+        'google_id',
     ];
 
     protected $hidden = [

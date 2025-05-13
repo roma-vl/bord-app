@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 abstract class Controller
 {
-    //
-    const PER_PAGE = 10;
+    const int PER_PAGE = 5;
+    const string SORT_BY_DEFAULT = 'id';
+    const string SORT_ORDER_DEFAULT = 'asc';
 }

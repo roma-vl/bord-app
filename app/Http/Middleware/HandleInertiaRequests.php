@@ -17,6 +17,7 @@ class HandleInertiaRequests extends Middleware
 
     public function share(Request $request): array
     {
+        $dd = $this->getUserPermissions($request->user());
         return [
             ...parent::share($request),
             'auth' => [

@@ -1,26 +1,15 @@
 <script setup>
 import { ref } from 'vue';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-import Dropdown from '@/Components/Dropdown.vue';
 import NavLink from '@/Components/NavLink.vue';
 import { Link } from '@inertiajs/vue3';
 import Locale from "@/Layouts/Partials/Locale.vue";
 import Notifications from "@/Layouts/Partials/Notifications.vue";
 import AdminResponsiveNavigationMenu from "@/Layouts/Partials/AdminResponsiveNavigationMenu.vue";
 import SideMenu from "@/Layouts/Partials/SideMenu.vue";
-import AccountIcon from "@/Components/Icon/AccountIcon.vue";
-import VerifyIcon from "@/Components/Icon/VerifyIcon.vue";
-import UpDownIcon from "@/Components/Icon/UpDownIcon.vue";
-import IntegrationIcon from "@/Components/Icon/IntegrationIcon.vue";
-import SettingsIcon from "@/Components/Icon/SettingsIcon.vue";
-import GuideIcon from "@/Components/Icon/GuideIcon.vue";
-import HelperCenterIcon from "@/Components/Icon/HelperCenterIcon.vue";
-import LogoutIcon from "@/Components/Icon/LogoutIcon.vue";
-import {useAcl} from "@/composables/useAcl.js";
 import ArrowLeftIcon from "@/Components/Icon/ArrowLeftIcon.vue";
 
 const showingNavigationDropdown = ref(false);
-const { can } = useAcl();
 const toggleFullscreen = () => {
     if (document.fullscreenElement) {
         document.exitFullscreen();

@@ -8,7 +8,7 @@ class PermissionRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return auth()->user()->can('manage-permissions');
+        return true;
     }
 
     public function rules(): array

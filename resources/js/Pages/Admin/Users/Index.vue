@@ -13,15 +13,9 @@ import Create from "@/Pages/Admin/Users/Create.vue";
 import Edit from "@/Pages/Admin/Users/Edit.vue";
 import Show from "@/Pages/Admin/Users/Show.vue";
 import Forbidden from "@/Components/Forbidden.vue";
-import {useAcl} from "@/composables/useAcl.js";
-
-const { can } = useAcl();
 const flash = usePage().props.flash;
 const users = usePage().props.users.data;
 const pagination = computed(() => usePage().props.users.meta);
-
-const permissions = usePage().props.auth.permissions;
-
 
 const headings = [
     { key: "id", value: "ID", sortable: true, disabled: true},
@@ -119,7 +113,7 @@ const restoreUser = (id) => {
 
                 <div class="mb-2 flex justify-end">
                     <button
-                        v-if="can('user.create')"
+                        v-can="'user.create'"
                         @click="openCreateModal"
                         class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-500">
                         + New User
@@ -186,7 +180,7 @@ const restoreUser = (id) => {
                     <template #column-actions="{ row }">
                         <div class="flex gap-2">
                             <div class="flex justify-end gap-4">
-                                <div v-if="can('user.delete')">
+                                <div  v-can="'user.delete'">
                                     <a  v-if="!row.deleted_at" @click.prevent="deleteUser(row.id)" class="text-red-600 hover:text-red-900 cursor-pointer">
                                         <TrashIcon />
                                     </a>
@@ -194,7 +188,7 @@ const restoreUser = (id) => {
                                         <RefreshIcon />
                                     </a>
                                 </div>
-                                <div v-if="can('user.edit')">
+                                <div  v-can="'user.edit'">
                                     <a v-if="!row.deleted_at" @click.prevent="openEditModal(row.id)" class="text-blue-600 hover:text-blue-900 cursor-pointer">
                                         <PencilIcon />
                                     </a>
