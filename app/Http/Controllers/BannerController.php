@@ -19,21 +19,22 @@ class BannerController extends Controller
 
     public function get(Request $request)
     {
-        $format = $request['format'];
-        $category = $request['category'];
-        $region = $request['region'];
+        $format = $request->get('format');
+        $category = $request->get('category');
+        $region = $request->get('region');
 
-        if (!$banner = $this->service->getRandomForView($category, $region, $format)) {
-            return '';
+        $banner = $this->service->getRandomForView($category, $region, $format);
+
+        if (!$banner) {
+            return response()->json(['banner' => null]);
         }
 
-        $banner->width= $banner->getWidth();
-        $banner->height= $banner->getHeight();
+        $banner->width = $banner->getWidth();
+        $banner->height = $banner->getHeight();
 
-        return Inertia::render('Banner/Get', [
-            'banner' => $banner,
-        ]);
+        return response()->json(['banner' => $banner]);
     }
+
 
     public function click(Banner $banner): Application|Redirector|RedirectResponse
     {

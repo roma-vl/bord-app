@@ -92,7 +92,7 @@ class IndexController extends Controller
         $data = $this->categoryService->parseCategoryAndLocationFromUrl($urlPath);
 
         $page = (int) $request->input('page', 1);
-        $perPage = (int) $request->input('per_page', 1);
+        $perPage = (int) $request->input('per_page', 5);
         if ($perPage < 1) $perPage = 1;
         if ($page < 1) $page = 1;
 

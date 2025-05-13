@@ -172,7 +172,7 @@ class BannerService
                             ['term' => ['status' => Banner::STATUS_ACTIVE]],
                             ['term' => ['format' => $format ?: '']],
                             ['terms' => ['categories' => array_filter([$categoryId, 0])]],
-                            ['term' => ['regions' => $regionId ?: 0]],
+                            ['terms' => ['regions' => $regionId ? array_filter([$regionId, 0]) : [0]]],
                         ],
                     ],
                 ],

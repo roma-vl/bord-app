@@ -7,6 +7,7 @@ import CategoryAdvert from "@/Components/Advert/Category/CategoryAdvert.vue";
 import Breadcrumbs from "@/Components/Breadcrumbs.vue";
 import ChildCategories from "@/Components/Advert/Category/ChildCategories.vue";
 import CategoryDropdown from "@/Components/CategoryDropdown.vue";
+import Get from "@/Pages/Banner/Get.vue";
 const adverts = usePage().props.adverts;
 const queryFilter = ref(usePage().props.query || {});
 const props = defineProps({
@@ -21,12 +22,18 @@ const props = defineProps({
 
 const selectedCategoryId = computed(() => queryFilter.value.category_id)
 
+const lastLocation = computed(() => {
+    const entries = Object.entries(props.locations);
+    if (!entries.length) return null;
+    const [_, lastValue] = entries[entries.length - 1];
+    return lastValue;
+});
+
 const selectedCategoryAttributes = computed(() => {
     const selected = findCategoryById(props.categoryFilters, Number(selectedCategoryId.value));
     return selected?.attributes ?? [];
 });
 
-console.log(props.categoryFilters, 'categoryTree')
 function submit() {
     const filteredQuery = { ...queryFilter.value };
 
@@ -59,8 +66,6 @@ const handleCategoryChange = (category) => {
 
     router.visit(newPath);
 }
-
-
 
 watch(() => queryFilter.value.category_id, (newVal) => {
     if (!newVal) return;
@@ -109,6 +114,20 @@ function findCategoryBySlug(categories, slug) {
     }
     return null;
 }
+
+const banner = ref(null)
+
+onMounted(async () => {
+    const res = await axios.get('/banner/get', {
+        params: {
+            category: selectedCategoryId?.value,
+            region: lastLocation?.value?.id,
+            format: '240x400'
+        }
+    });
+    banner.value = res.data.banner;
+})
+
 
 </script>
 
@@ -168,20 +187,21 @@ function findCategoryBySlug(categories, slug) {
                             </div>
 
                         </div>
-
-
                         <Breadcrumbs class="mb-6" :categories="props.categories" :locations="props.locations"/>
 
                         <ChildCategories
                             :childCategories="props.childCategories"
                             :categoriesCounts="props.categoriesCounts"
                             :categories="props.categories"/>
+                        <h2 v-if="queryFilter.query" class="text-lg font-semibold text-gray-800 mb-4 mt-4">Пошук за запитом : {{queryFilter.query}}</h2>
 
-                        Пошук за запитом : {{query}}
                         <div v-if="adverts.data.length">
                             <CategoryAdvert :adverts="adverts"/>
+                            <Get :banner="banner"/>
                         </div>
-                        <div v-else> Нічого не знайдено. </div>
+                        <div v-else class="m-32 text-lg">
+                            <h2 class="text-xl mb-4 text-center">Нічого не знайдено.</h2>
+                        </div>
                     </div>
                 </div>
             </div>

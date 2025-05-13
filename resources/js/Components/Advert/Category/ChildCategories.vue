@@ -11,7 +11,7 @@ const props = defineProps({
         required: true
     },
     categoriesCounts: {
-        type: Array,
+        type: Object,
         required: false
     },
 });
