@@ -52,7 +52,7 @@ return [
     'email' => 'Поле :attribute має бути дійсною електронною адресою.',
     'ends_with' => 'Поле :attribute має закінчуватися одним із наступних значень: :values.',
     'enum' => 'Обране значення для :attribute є недійсним.',
-    'exists' => 'Обране значення для :attribute є недійсним.',
+//    'exists' => 'Обране значення для :attribute є недійсним.',
     'extensions' => 'Поле :attribute має містити один із наступних розширень файлу: :values.',
     'file' => 'Поле :attribute має бути файлом.',
     'filled' => 'Поле :attribute має містити значення.',
@@ -164,11 +164,37 @@ return [
     'uuid' => 'Поле :attribute повинно бути коректним UUID.',
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        'per_page' => [
+            'integer' => 'Поле :attribute має бути числом.',
+            'min' => 'Поле :attribute не може бути менше :min.',
+            'max' => 'Поле :attribute не може бути більше :max.',
+        ],
+        'sort_by' => [
+            'in' => 'Поле :attribute має одне з дозволених значень: name, email, created_at або id.',
+        ],
+        'sort_order' => [
+            'in' => 'Поле :attribute має бути "asc" або "desc".',
+        ],
+        'name' => [
+            'string' => 'Імʼя має бути рядком.',
+            'max' => 'Імʼя не може перевищувати :max символів.',
+        ],
+        'email' => [
+            'string' => 'Email має бути рядком.',
+            'max' => 'Email не може перевищувати :max символів.',
+        ],
+        'status' => [
+            'in' => 'Поле :attribute має бути "active" або "inactive".',
         ],
     ],
 
-    'attributes' => [],
+    'attributes' => [
+        'per_page' => 'кількість на сторінку',
+        'sort_by' => 'сортування за',
+        'sort_order' => 'порядок сортування',
+        'name' => 'імʼя',
+        'email' => 'email',
+        'status' => 'статус',
+    ],
 
 ];

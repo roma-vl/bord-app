@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\StoreUserRequest;
 use App\Http\Requests\Admin\UpdateUserRequest;
+use App\Http\Requests\User\UserFilterRequest;
 use App\Http\Resources\Admin\User\UserResource;
 use App\Http\Repositories\UserRepository;
 use App\Http\Services\SearchSortService;
@@ -24,16 +25,19 @@ class UsersController extends Controller
         private readonly SearchSortService $searchSortService
     ) {}
 
-    public function index(Request $request): Response
+    public function index(UserFilterRequest $request): Response
     {
-        $perPage = $this->getSessionValue($request, 'per_page', self::PER_PAGE);
         $sortBy = $this->getSessionValue($request, 'sort_by', self::SORT_BY_DEFAULT);
         $sortOrder = $this->getSessionValue($request, 'sort_order', self::SORT_ORDER_DEFAULT);
 
-        $usersQuery = $this->userRepository->getPaginatedUsers($perPage, $sortBy, $sortOrder);
-        $users = UserResource::collection($usersQuery);
+        $validated = $request->validatedWithDefaults();
+        $users = UserResource::collection($this->userRepository->getFilteredPaginatedUsers($validated));
 
-        return Inertia::render('Admin/Users/Index', compact('users', 'sortBy', 'sortOrder'));
+        return Inertia::render('Admin/Users/Index', [
+            'users' => $users,
+            'sortBy' => $sortBy,
+            'sortOrder' => $sortOrder,
+        ]);
     }
 
     public function create(): JsonResponse

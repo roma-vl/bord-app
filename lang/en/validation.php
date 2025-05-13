@@ -161,34 +161,38 @@ return [
     'ulid' => 'The :attribute field must be a valid ULID.',
     'uuid' => 'The :attribute field must be a valid UUID.',
 
-    /*
-    |--------------------------------------------------------------------------
-    | Custom Validation Language Lines
-    |--------------------------------------------------------------------------
-    |
-    | Here you may specify custom validation messages for attributes using the
-    | convention "attribute.rule" to name the lines. This makes it quick to
-    | specify a specific custom language line for a given attribute rule.
-    |
-    */
-
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        'per_page' => [
+            'integer' => 'The :attribute must be a number.',
+            'min' => 'The :attribute must be at least :min.',
+            'max' => 'The :attribute must not be greater than :max.',
+        ],
+        'sort_by' => [
+            'in' => 'The :attribute must be one of: name, email, created_at, or id.',
+        ],
+        'sort_order' => [
+            'in' => 'The :attribute must be either "asc" or "desc".',
+        ],
+        'name' => [
+            'string' => 'The name must be a string.',
+            'max' => 'The name must not exceed :max characters.',
+        ],
+        'email' => [
+            'string' => 'The email must be a string.',
+            'max' => 'The email must not exceed :max characters.',
+        ],
+        'status' => [
+            'in' => 'The :attribute must be either "active" or "inactive".',
         ],
     ],
 
-    /*
-    |--------------------------------------------------------------------------
-    | Custom Validation Attributes
-    |--------------------------------------------------------------------------
-    |
-    | The following language lines are used to swap our attribute placeholder
-    | with something more reader friendly such as "E-Mail Address" instead
-    | of "email". This simply helps us make our message more expressive.
-    |
-    */
-
-    'attributes' => [],
+    'attributes' => [
+        'per_page' => 'items per page',
+        'sort_by' => 'sort by',
+        'sort_order' => 'sort order',
+        'name' => 'name',
+        'email' => 'email',
+        'status' => 'status',
+    ],
 
 ];

@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use App\Models\Adverts\Advert;
 use App\Notifications\CustomVerifyEmail;
 use App\Notifications\ResetPasswordNotification;
+use App\Traits\Filterable;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -20,7 +20,7 @@ use OwenIt\Auditing\Auditable as AuditableTrait;
  */
 class User extends Authenticatable implements MustVerifyEmail, Auditable
 {
-    use HasFactory, Notifiable, SoftDeletes, AuditableTrait;
+    use HasFactory, Notifiable, SoftDeletes, AuditableTrait, Filterable;
 
     protected $fillable = [
         'first_name',
