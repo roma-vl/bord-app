@@ -28,21 +28,21 @@ class CreateController
         ]);
     }
 
-    public function region(Category $category, Location $region = null)
+    public function region(Category $category, Location $region)
     {
         $regions = Location::where('parent_id', $region ? $region->id : null)->orderBy('name')->get();
 
         return view('cabinet.banners.create.region', compact('category', 'region', 'regions'));
     }
 
-    public function banner(Category $category, Location $region = null)
+    public function banner(Category $category, Location $region)
     {
         $formats = Banner::formatsList();
 
         return view('cabinet.banners.create.banner', compact('category', 'region', 'formats'));
     }
 
-    public function store(CreateRequest $request, Category $category, Location $region = null)
+    public function store(CreateRequest $request, Category $category, Location $region)
     {
         try {
             $banner = $this->bannerService->create(\Auth::user(), $request);

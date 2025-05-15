@@ -42,6 +42,7 @@ class CreateRequest extends FormRequest
 
         return array_merge([
             'category_id' => ['required', 'exists:advert_categories,id'],
+            'region_id' => ['required', 'exists:locations,id'],
             'title' => 'required|string',
             'content' => 'required|string',
             'price' => 'required|integer',

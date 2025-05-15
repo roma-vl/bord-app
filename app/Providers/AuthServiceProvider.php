@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Adverts\Advert;
 use App\Models\Permission;
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;
@@ -23,5 +24,13 @@ class AuthServiceProvider extends ServiceProvider
                 return $user->hasPermission($permission);
             });
         }
+
+        Gate::define('horizon', function (User $user) {
+            return $user->isAdmin() || $user->isModerator();
+        });
+
+        Gate::define('manage-own-advert', function (User $user, Advert $advert) {
+            return $advert->user_id === $user->id;
+        });
     }
 }

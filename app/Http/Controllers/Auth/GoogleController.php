@@ -1,49 +1,33 @@
 <?php
-
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Http\Services\UserService;
+use Exception;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Redirector;
+use Symfony\Component\HttpFoundation\RedirectResponse as SymfonyRedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 
 class GoogleController extends Controller
 {
-    public function redirectToGoogle()
+    public function __construct(
+        private readonly UserService $userService
+    ){}
+    public function redirectToGoogle(): SymfonyRedirectResponse|RedirectResponse
     {
         return Socialite::driver('google')->redirect();
     }
 
-    public function handleGoogleCallback()
+    public function handleGoogleCallback(): Application|Redirector|RedirectResponse
     {
         try {
-            $googleUser = Socialite::driver('google')->stateless()->user();
-
-            // Шукаємо юзера з цим email
-            $existingUser = User::where('email', $googleUser->getEmail())->first();
-
-            if ($existingUser) {
-                if ($existingUser->google_id !== $googleUser->getId()) {
-                    return redirect('/')
-                        ->with('error', 'Цей email вже використовується. Спробуйте увійти звичайним способом.');
-                }
-
-                $user = $existingUser;
-            } else {
-                $user = User::create([
-                    'name' => $googleUser->getName(),
-                    'email' => $googleUser->getEmail(),
-                    'google_id' => $googleUser->getId(),
-                    'avatar' => $googleUser->getAvatar(),
-                    'email_verified_at' => now(),
-                ]);
-
-                $user->roles()->sync([3]);
-            }
-
+            $user = $this->userService->createUserFromGoogle();
             Auth::login($user, true);
             return redirect()->intended('/');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return redirect('/')->with('error', 'Помилка при авторизації через Google.');
         }
     }

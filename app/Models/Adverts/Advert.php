@@ -49,6 +49,16 @@ class Advert extends Model implements Auditable
         return $this->hasMany(Value::class, 'advert_id');
     }
 
+    public function getValue($id)
+    {
+        foreach ($this->values as $value) {
+            if ($value->attribute_id === $id) {
+                return $value->value;
+            }
+        }
+        return null;
+    }
+
     public function photo()
     {
         return $this->hasMany(Photo::class, 'advert_id', 'id');

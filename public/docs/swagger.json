@@ -1,0 +1,308 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "BordApp API",
+        "description": "Документація до API бордової дошки",
+        "contact": {
+            "email": "support@bord-app.com"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost",
+            "description": "Основний сервер"
+        }
+    ],
+    "paths": {
+        "/api/v1/adverts": {
+            "get": {
+                "tags": [
+                    "Adverts"
+                ],
+                "summary": "Список оголошень з фільтрами",
+                "operationId": "dd25f1509fc9176ae712684893b5d279",
+                "parameters": [
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "description": "ID категорії",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 4
+                        }
+                    },
+                    {
+                        "name": "region",
+                        "in": "query",
+                        "description": "ID регіону",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 22973
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Кількість оголошень на сторінку",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 5
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Сторінка пагінації",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Список оголошень",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/AdvertListResource"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    },
+                    {
+                        "OAuth2": []
+                    },
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/user/show": {
+            "get": {
+                "summary": "Отримати профіль користувача",
+                "operationId": "67f3f8b1861a17719fa8340349a08b72",
+                "responses": {
+                    "200": {
+                        "description": "Профіль користувача",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Profile"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    },
+                    {
+                        "OAuth2": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/user": {
+            "put": {
+                "summary": "Оновити профіль користувача",
+                "operationId": "8c2c65db9efe797db55d59f865e9445c",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProfileUpdateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Профіль оновлено",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Profile"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    },
+                    {
+                        "OAuth2": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ProfileUpdateRequest": {
+                "required": [
+                    "first_name",
+                    "name",
+                    "last_name",
+                    "email"
+                ],
+                "properties": {
+                    "first_name": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "last_name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    }
+                },
+                "type": "object"
+            },
+            "AdvertListResource": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "user": {
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "example": "Іван"
+                            },
+                            "phone": {
+                                "type": "string",
+                                "example": "+380991234567"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "category": {
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "example": 4
+                            },
+                            "name": {
+                                "type": "string",
+                                "example": "Авто"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "region": {
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "example": 22973
+                            },
+                            "name": {
+                                "type": "string",
+                                "example": "Київ"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Продаю BMW E39"
+                    },
+                    "price": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 15000
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-01T12:00:00Z"
+                    }
+                },
+                "type": "object"
+            },
+            "Profile": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "properties": {
+                            "first": {
+                                "type": "string"
+                            },
+                            "last": {
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "properties": {
+                            "number": {
+                                "type": "string"
+                            },
+                            "varified": {
+                                "type": "boolean"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "locale": {
+                        "type": "string"
+                    },
+                    "avatar_url": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "Bearer": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Adverts",
+            "description": "Adverts"
+        }
+    ]
+}

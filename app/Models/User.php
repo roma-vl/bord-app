@@ -11,16 +11,33 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Passport\HasApiTokens;
 use OwenIt\Auditing\Contracts\Auditable;
 use OwenIt\Auditing\Auditable as AuditableTrait;
+
 /**
- * @property $phone_verified
- * @property $phone_verify_token
- * @property $phone_verify_token_expire
+ * @property int $id
+ * @property string $name
+ * @property string $last_name
+ * @property string $first_name
+ * @property string $email
+ * @property string $locale
+ * @property string $phone
+ * @property bool $phone_verified
+ * @property string $password
+ * @property string $verify_token
+ * @property string $phone_verify_token
+ * @property Carbon $phone_verify_token_expire
+ * @property boolean $phone_auth
+ * @property string $role
+ * @property string $status
+ * @property string $avatar_url
+ * @property string $created_at
+ * @property string $updated_at
  */
 class User extends Authenticatable implements MustVerifyEmail, Auditable
 {
-    use HasFactory, Notifiable, SoftDeletes, AuditableTrait, Filterable;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes, AuditableTrait, Filterable;
 
     protected $fillable = [
         'first_name',
@@ -64,6 +81,16 @@ class User extends Authenticatable implements MustVerifyEmail, Auditable
     public function roles()
     {
         return $this->belongsToMany(Role::class, 'user_roles');
+    }
+
+    public function isAdmin()
+    {
+        return $this->roles()->where('name', 'admin')->exists();
+    }
+
+    public function isModerator()
+    {
+        return $this->roles()->where('name', 'moderator')->exists();
     }
 
     public function hasPermission($permissionKey)
@@ -146,5 +173,10 @@ class User extends Authenticatable implements MustVerifyEmail, Auditable
     public function favorites()
     {
         return $this->belongsToMany(User::class, 'advert_advert_favorites', 'user_id','advert_id');
+    }
+
+    public function findForPassport($identifier)
+    {
+        return self::where('email', $identifier)->whereNotNull('email_verified_at')->first();
     }
 }

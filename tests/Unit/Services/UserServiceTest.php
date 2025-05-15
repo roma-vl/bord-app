@@ -21,7 +21,7 @@ class UserServiceTest extends TestCase
         $this->userService = new UserService();
     }
 
-    public function testCreateUser(): void
+    public function testCreateUserFromAdmin(): void
     {
         $userData = [
             'name' => 'John Doe',
@@ -29,7 +29,7 @@ class UserServiceTest extends TestCase
             'password' => 'password',
         ];
 
-        $user = $this->userService->createUser($userData);
+        $user = $this->userService->createUserFromAdmin($userData);
 
         $this->assertDatabaseHas('users', [
             'name' => 'John Doe',
@@ -89,7 +89,7 @@ class UserServiceTest extends TestCase
             'roles' => [$role->id],
         ];
 
-        $user = $this->userService->createUser($userData);
+        $user = $this->userService->createUserFromAdmin($userData);
 
         $this->assertDatabaseHas('users', [
             'name' => 'John Doe',

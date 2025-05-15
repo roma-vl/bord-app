@@ -5,14 +5,20 @@ namespace App\Http\Requests;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use OpenApi\Attributes as OA;
 
+#[OA\Schema(
+    schema: 'ProfileUpdateRequest',
+    required: ['first_name', 'name', 'last_name', 'email'],
+    properties: [
+        new OA\Property(property: 'first_name', type: 'string'),
+        new OA\Property(property: 'name', type: 'string'),
+        new OA\Property(property: 'last_name', type: 'string'),
+        new OA\Property(property: 'email', type: 'string', format: 'email'),
+    ]
+)]
 class ProfileUpdateRequest extends FormRequest
 {
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [

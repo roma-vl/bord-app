@@ -144,15 +144,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
 
         Route::group(['prefix' => 'banners', 'as' => 'banners.'], function () {
-            Route::get('/', 'AdminBannerController@index')->name('index');
-            Route::get('/{banner}/show', 'AdminBannerController@show')->name('show');
-            Route::get('/{banner}/edit', 'AdminBannerController@editForm')->name('edit');
-            Route::put('/{banner}/edit', 'AdminBannerController@edit');
+            Route::get('/', [AdminBannerController::class, 'index'])->name('index');
+            Route::get('/{banner}/show', [AdminBannerController::class, 'show'])->name('show');
+            Route::put('/{banner}/edit', [AdminBannerController::class, 'edit']);
             Route::post('/{banner}/moderate', [AdminBannerController::class, 'moderate'])->name('moderate');
-            Route::get('/{banner}/reject', 'AdminBannerController@rejectForm')->name('reject');
             Route::post('/{banner}/reject', [AdminBannerController::class, 'reject']);
-            Route::post('/{banner}/pay', 'AdminBannerController@pay')->name('pay');
-            Route::delete('/{banner}/destroy', 'AdminBannerController@destroy')->name('destroy');
+            Route::post('/{banner}/pay', [AdminBannerController::class, 'pay'])->name('pay');
+            Route::delete('/{banner}/destroy', [AdminBannerController::class, 'pay'])->name('destroy');
         });
     });
 

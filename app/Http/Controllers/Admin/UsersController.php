@@ -56,7 +56,7 @@ class UsersController extends Controller
         if (Gate::denies('user.create')) {
             abort(403);
         }
-        $user = $this->userService->createUser($request->validated());
+        $user = $this->userService->createUserFromAdmin($request->validated());
 
         if ($request->has('roles')) {
             $user->roles()->sync($request->input('roles'));

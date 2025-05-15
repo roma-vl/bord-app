@@ -26,21 +26,21 @@ class SearchSortServiceTest extends TestCase
     public function testApplySearchUser(): void
     {
         $role = Role::factory()->create();
-        $this->userService->createUser([
+        $this->userService->createUserFromAdmin([
             'name' => 'John Doe',
             'email' => 'john@example.com',
             'password' => 'password',
             'roles' => [$role->id],
         ]);
 
-        $this->userService->createUser([
+        $this->userService->createUserFromAdmin([
             'name' => 'John Doe2',
             'email' => 'john2@example.com',
             'password' => 'password',
             'roles' => [$role->id],
         ]);
 
-        $this->userService->createUser([
+        $this->userService->createUserFromAdmin([
             'name' => 'John Doe3',
             'email' => 'john3@example.com',
             'password' => 'password',
@@ -59,21 +59,21 @@ class SearchSortServiceTest extends TestCase
     public function testApplySearchEmail(): void
     {
         $role = Role::factory()->create();
-        $this->userService->createUser([
+        $this->userService->createUserFromAdmin([
             'name' => 'John Doe',
             'email' => 'john@example.com',
             'password' => 'password',
             'roles' => [$role->id],
         ]);
 
-        $this->userService->createUser([
+        $this->userService->createUserFromAdmin([
             'name' => 'John Doe2',
             'email' => 'john2@example.com',
             'password' => 'password',
             'roles' => [$role->id],
         ]);
 
-        $this->userService->createUser([
+        $this->userService->createUserFromAdmin([
             'name' => 'John Doe3',
             'email' => 'john3@example.com',
             'password' => 'password',

@@ -4,8 +4,6 @@ namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Http\Exceptions\HttpResponseException;
 class UserFilterRequest extends FormRequest
 {
     public const SORTABLE_FIELDS = ['name', 'email', 'created_at', 'id'];

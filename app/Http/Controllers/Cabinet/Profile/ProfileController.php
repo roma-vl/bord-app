@@ -15,12 +15,6 @@ use Inertia\Response;
 
 class ProfileController extends Controller
 {
-
-    public function dashboard(): Response
-    {
-        return Inertia::render('Account/Dashboard');
-    }
-
     public function index(): Response
     {
         return Inertia::render('Account/Profile/Index');
