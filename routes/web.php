@@ -6,6 +6,8 @@ use App\Http\Controllers\Admin\Adverts\AttributeController;
 use App\Http\Controllers\Admin\Adverts\CategoryController;
 use App\Http\Controllers\Admin\IndexController as AdminIndexController;
 use App\Http\Controllers\Admin\LocationController;
+use App\Http\Controllers\Admin\PageController as AdminPageController;
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\Admin\PermissionsController as AdminPermissionsController;
 use App\Http\Controllers\Admin\RolesController as AdminRolesController;
 use App\Http\Controllers\Admin\UsersController as AdminUsersController;
@@ -143,6 +145,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
             });
         });
 
+        Route::resource('pages', AdminPageController::class);
+
+        Route::group(['prefix' => 'pages/{page}', 'as' => 'pages.'], function () {
+            Route::post('/first', [AdminPageController::class, 'first'])->name('first');
+            Route::post('/up', [AdminPageController::class, 'up'])->name('up');
+            Route::post('/down', [AdminPageController::class, 'down'])->name('down');
+            Route::post('/last', [AdminPageController::class, 'last'])->name('last');
+        });
+
         Route::group(['prefix' => 'banners', 'as' => 'banners.'], function () {
             Route::get('/', [AdminBannerController::class, 'index'])->name('index');
             Route::get('/{banner}/show', [AdminBannerController::class, 'show'])->name('show');
@@ -159,9 +170,8 @@ require __DIR__.'/auth.php';
 Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.redirect');
 Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
 Route::get('/contact', [StaticController::class, 'contact'])->name('contact');
+Route::get('/page/{page_path}', [PageController::class, 'show'])->name('page')->where('page_path', '.+');
 Route::get('/list/{urlPath?}', [IndexController::class, 'searchAdvert'])
-    ->where('urlPath', '[a-z0-9-\/]+')
-    ->name('list.advert');
+    ->where('urlPath', '[a-z0-9-\/]+')->name('list.advert');
 Route::get('/{urlPath?}', [IndexController::class, 'searchAdvert'])
-    ->where('urlPath', '[a-z0-9-\/]+')
-    ->name('search.advert');
+    ->where('urlPath', '[a-z0-9-\/]+')->name('search.advert');
