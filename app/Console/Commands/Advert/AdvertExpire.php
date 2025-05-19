@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Console\Commands\Advert;
 
 use App\Http\Services\Adverts\AdvertService;
@@ -11,6 +10,7 @@ use Illuminate\Console\Command;
 class AdvertExpire extends Command
 {
     protected $signature = 'advert:expire';
+
     protected $description = 'Закриває закінчені оголошення';
 
     private $service;

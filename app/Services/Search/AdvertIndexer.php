@@ -2,7 +2,6 @@
 
 namespace App\Services\Search;
 
-
 use App\Models\Adverts\Advert;
 use App\Models\Adverts\Value;
 use Elastic\Elasticsearch\Client;
@@ -23,7 +22,7 @@ class AdvertIndexer
             'type' => 'advert',
             'body' => [
                 'query' => [
-                    'match_all' => new \stdClass(),
+                    'match_all' => new \stdClass,
                 ],
             ],
         ]);
@@ -53,8 +52,8 @@ class AdvertIndexer
                 'values' => array_map(function (Value $value) {
                     return [
                         'attribute' => $value->attribute_id,
-                        'value_string' => (string)$value->value,
-                        'value_int' => (int)$value->value,
+                        'value_string' => (string) $value->value,
+                        'value_int' => (int) $value->value,
                     ];
                 }, $advert->values()->getModels()),
             ],

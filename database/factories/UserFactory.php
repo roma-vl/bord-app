@@ -28,7 +28,7 @@ class UserFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => fake()->boolean(50) ? now() : null, // 50% що буде верифікований
             'password' => static::$password ??= Hash::make('password'),
-            'avatar_url' => "https://placehold.co/100x100",
+            'avatar_url' => 'https://placehold.co/100x100',
             'locale' => fake()->randomElement(['uk', 'en']),
             'remember_token' => Str::random(10),
             'deleted_at' => fake()->boolean(20) ? now() : null, // 20% що буде softDeleted

@@ -22,40 +22,40 @@ class BannerController extends Controller
 {
     public function __construct(
         private readonly BannerService $bannerService,
-    )
-    {}
+    ) {}
 
     public function index(): Response
     {
         $banners = Banner::forUser(Auth::user())->orderBy('id')->paginate(self::PER_PAGE);
 
         return Inertia::render('Account/Banner/Index', [
-            'banners' => $banners
+            'banners' => $banners,
         ]);
     }
 
     public function show(Banner $banner): Response
     {
-//        $this->checkAccess($banner);
+        //        $this->checkAccess($banner);
         return Inertia::render('Account/Banner/Show', [
-            'banner' => $banner
+            'banner' => $banner,
         ]);
     }
 
     public function edit(Banner $banner): Response|RedirectResponse
     {
-//        $this->checkAccess($banner);
+        //        $this->checkAccess($banner);
         if ($banner->canBeChanged()) {
             return back()->with('error', 'Enable to edit this banner!');
         }
+
         return Inertia::render('Account/Banner/Edit', [
-            'banner' => $banner
+            'banner' => $banner,
         ]);
     }
 
     public function update(EditRequest $request, Banner $banner): RedirectResponse
     {
-//        $this->checkAccess($banner);
+        //        $this->checkAccess($banner);
         try {
             $this->bannerService->editByOwner($banner->id, $request);
         } catch (DomainException $exception) {
@@ -68,10 +68,11 @@ class BannerController extends Controller
     public function fileForm(Banner $banner): View|Application|Factory|RedirectResponse
     {
         $this->checkAccess($banner);
-        if (!$banner->canBeChanged()) {
+        if (! $banner->canBeChanged()) {
             return redirect()->route('account.banners.show', $banner)->with('error', 'Unable to edit.');
         }
         $formats = Banner::formatsList();
+
         return view('cabinet.banners.file', compact('banner', 'formats'));
     }
 
@@ -89,7 +90,7 @@ class BannerController extends Controller
 
     public function send(Banner $banner): RedirectResponse
     {
-//        $this->checkAccess($banner);
+        //        $this->checkAccess($banner);
         try {
             $this->bannerService->sendToModeration($banner->id);
         } catch (DomainException $exception) {
@@ -101,7 +102,7 @@ class BannerController extends Controller
 
     public function cancel(Banner $banner): RedirectResponse
     {
-//        $this->checkAccess($banner);
+        //        $this->checkAccess($banner);
         try {
             $this->bannerService->cancelModeration($banner->id);
         } catch (DomainException $e) {
@@ -115,9 +116,10 @@ class BannerController extends Controller
     {
         $this->checkAccess($banner);
         try {
-            //@TODO зробити оплату через банк або рахунок на ручну оплату
-            if ( $banner = $this->bannerService->order($banner->id)) {
-                $url = 'https::/посилання на оплату' . $banner;
+            // @TODO зробити оплату через банк або рахунок на ручну оплату
+            if ($banner = $this->bannerService->order($banner->id)) {
+                $url = 'https::/посилання на оплату'.$banner;
+
                 return redirect($url);
             }
         } catch (DomainException $e) {
@@ -141,7 +143,7 @@ class BannerController extends Controller
 
     private function checkAccess(Banner $banner): void
     {
-        if (!Gate::allows('manage-own-banner', $banner)) {
+        if (! Gate::allows('manage-own-banner', $banner)) {
             abort(403);
         }
     }

@@ -2,9 +2,7 @@
 
 namespace App\Http\Requests\Admin;
 
-use App\Models\Adverts\Attribute;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class UpdateAttributeRequest extends FormRequest
 {

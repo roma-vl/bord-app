@@ -9,6 +9,7 @@ use Illuminate\Validation\Rule;
 class AttributesRequest extends FormRequest
 {
     private ?Category $category = null;
+
     public function authorize(): bool
     {
         return true;
@@ -32,10 +33,10 @@ class AttributesRequest extends FormRequest
                     $rules[] = 'string';
                     $rules[] = 'max:255';
                 }
-                if (!empty($attribute['variants'])) {
+                if (! empty($attribute['variants'])) {
                     $rules[] = Rule::in($attribute['variants']);
                 }
-                $items['attributes.' . $attribute['id']] = $rules;
+                $items['attributes.'.$attribute['id']] = $rules;
             }
 
         }
@@ -51,7 +52,7 @@ class AttributesRequest extends FormRequest
 
     private function loadCategory(): void
     {
-        if (!$this->category) {
+        if (! $this->category) {
             $this->category = Category::find($this->input('category_id'));
         }
     }

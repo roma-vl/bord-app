@@ -16,38 +16,38 @@ class BannerController extends Controller
 {
     public function __construct(
         private readonly BannerService $bannerService
-    ){}
+    ) {}
 
     public function index(Request $request): Response
     {
         $query = Banner::query()->orderByDesc('updated_at');
 
-        if (!empty($value = $request->get('id'))) {
+        if (! empty($value = $request->get('id'))) {
             $query->where('id', $value);
         }
 
-        if (!empty($value = $request->get('user'))) {
+        if (! empty($value = $request->get('user'))) {
             $query->where('user', $value);
         }
 
-        if (!empty($value = $request->get('region'))) {
+        if (! empty($value = $request->get('region'))) {
             $query->where('region', $value);
         }
 
-        if (!empty($value = $request->get('category'))) {
+        if (! empty($value = $request->get('category'))) {
             $query->where('category', $value);
         }
 
-        if (!empty($value = $request->get('status'))) {
+        if (! empty($value = $request->get('status'))) {
             $query->where('status', $value);
         }
 
-        $banners = $query->paginate(self::PER_PAGE );
+        $banners = $query->paginate(self::PER_PAGE);
 
         $statuses = Banner::statusesList();
 
         return Inertia::render('Admin/Banner/Index', [
-            'banners'  => $banners,
+            'banners' => $banners,
             'statuses' => $statuses,
         ]);
 
@@ -56,14 +56,14 @@ class BannerController extends Controller
     public function show(Banner $banner): Response
     {
         return Inertia::render('Account/Banner/Show', [
-            'banner' => $banner
+            'banner' => $banner,
         ]);
     }
 
     public function editForm(Banner $banner): Response
     {
         return Inertia::render('Account/Banner/Edit', [
-            'banner' => $banner
+            'banner' => $banner,
         ]);
     }
 
@@ -71,7 +71,7 @@ class BannerController extends Controller
     {
         try {
             $this->bannerService->editByAdmin($banner->id, $request);
-        } catch ( DomainException $exception) {
+        } catch (DomainException $exception) {
             return back()->with('error', $exception->getMessage());
         }
 
@@ -82,7 +82,7 @@ class BannerController extends Controller
     {
         try {
             $this->bannerService->moderate($banner->id);
-        } catch ( DomainException $exception) {
+        } catch (DomainException $exception) {
             return back()->with('error', $exception->getMessage());
         }
 
@@ -92,7 +92,7 @@ class BannerController extends Controller
     public function rejectForm(Banner $banner): Response
     {
         return Inertia::render('Account/Banner/Reject', [
-            'banner' => $banner
+            'banner' => $banner,
         ]);
     }
 
@@ -100,9 +100,10 @@ class BannerController extends Controller
     {
         try {
             $this->bannerService->reject($banner->id, $request);
-        } catch ( DomainException $exception) {
+        } catch (DomainException $exception) {
             return back()->with('error', $exception->getMessage());
         }
+
         return redirect()->route('admin.banner.show', $banner);
     }
 
@@ -110,9 +111,10 @@ class BannerController extends Controller
     {
         try {
             $this->bannerService->pay($banner->id);
-        } catch ( DomainException $exception) {
+        } catch (DomainException $exception) {
             return back()->with('error', $exception->getMessage());
         }
+
         return redirect()->route('admin.banner.show', $banner);
     }
 
@@ -120,14 +122,10 @@ class BannerController extends Controller
     {
         try {
             $this->bannerService->removeByAdmin($banner->id);
-        } catch ( DomainException $exception) {
+        } catch (DomainException $exception) {
             return back()->with('error', $exception->getMessage());
         }
+
         return redirect()->route('admin.banner.index');
     }
-
 }
-
-
-
-

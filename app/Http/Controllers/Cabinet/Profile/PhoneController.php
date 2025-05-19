@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Cabinet\Profile;
+
 use App\Contracts\SmsServiceInterface;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PhoneUpdateRequest;
@@ -35,16 +36,17 @@ class PhoneController extends Controller
             $user->unverifyPhone();
         }
 
-//        Mail::to($request->user()->email)->send(new \App\Mail\TestEmail($request->user()));
+        //        Mail::to($request->user()->email)->send(new \App\Mail\TestEmail($request->user()));
         return Redirect::route('account.profile.settings');
     }
-    public function request( Request $request): RedirectResponse
+
+    public function request(Request $request): RedirectResponse
     {
         $user = Auth::user();
 
         try {
             $token = $user->requestPhoneVerification(Carbon::now());
-            $this->smsService->sendVerifyCode(phone: $user->phone,code:  $token);
+            $this->smsService->sendVerifyCode(phone: $user->phone, code: $token);
         } catch (DomainException $e) {
             request()->session()->flash('error', $e->getMessage());
         }
@@ -70,6 +72,7 @@ class PhoneController extends Controller
         } catch (DomainException $e) {
             return redirect()->route('account.profile.phone.form')->with('error', $e->getMessage());
         }
+
         return redirect()->route('account.profile.index');
     }
 }

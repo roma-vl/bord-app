@@ -2,8 +2,6 @@
 
 namespace App\Http\Services;
 
-use App\Models\Adverts\Category;
-use App\Models\Location;
 use App\Models\Page;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
@@ -25,7 +23,7 @@ class PageService
     public function parsePageFromUrl(?string $urlPath)
     {
         Cache::flush();
-        $cacheKey = 'showPages_' . md5($urlPath);
+        $cacheKey = 'showPages_'.md5($urlPath);
 
         return Cache::tags([Page::class])->rememberForever($cacheKey, function () use ($urlPath) {
             $slugs = $urlPath ? array_reverse(explode('/', $urlPath)) : [];
@@ -37,12 +35,13 @@ class PageService
                 }
             }
 
-            if (1 > count($locations)) abort(404);
+            if (count($locations) < 1) {
+                abort(404);
+            }
 
             return $locations;
         });
     }
-
 
     public function getPages()
     {
@@ -56,6 +55,7 @@ class PageService
     {
         $data['slug'] = Str::slug($data['name'], '-');
         $page->update($data);
+
         return $page;
     }
 

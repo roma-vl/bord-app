@@ -17,21 +17,22 @@ use Inertia\Response;
 
 class TicketController extends Controller
 {
-    public function __construct(private readonly TicketService $ticketService){}
+    public function __construct(private readonly TicketService $ticketService) {}
+
     public function index(Request $request): Response
     {
         $query = Ticket::orderByDesc('updated_at')
             ->with('user');
 
-        if (!empty($value = $request->get('id'))) {
+        if (! empty($value = $request->get('id'))) {
             $query->where('id', $value);
         }
 
-        if (!empty($value = $request->get('user'))) {
+        if (! empty($value = $request->get('user'))) {
             $query->where('user_id', $value);
         }
 
-        if (!empty($value = $request->get('status'))) {
+        if (! empty($value = $request->get('status'))) {
             $query->where('status', $value);
         }
 
@@ -39,8 +40,8 @@ class TicketController extends Controller
         $statuses = Status::statusesList();
 
         return Inertia::render('Admin/Ticket/Index', [
-            'tickets'  => $tickets,
-            'statuses' => $statuses
+            'tickets' => $tickets,
+            'statuses' => $statuses,
         ]);
 
     }
@@ -48,9 +49,9 @@ class TicketController extends Controller
     public function show(Ticket $ticket): Response
     {
         return Inertia::render('Admin/Ticket/Show', [
-            'ticket'   => $ticket,
+            'ticket' => $ticket,
             'statuses' => $ticket->statuses()->get(),
-            'messages' => $ticket->messages()->with('user')->get()
+            'messages' => $ticket->messages()->with('user')->get(),
         ]);
     }
 
@@ -75,7 +76,6 @@ class TicketController extends Controller
 
         return redirect()->route('cabinet.tickets.show', $ticket);
     }
-
 
     public function approve(Ticket $ticket): RedirectResponse
     {

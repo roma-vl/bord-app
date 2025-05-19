@@ -10,15 +10,15 @@ use App\Mail\TestEmail;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
-use Symfony\Component\HttpFoundation\Response;
 use OpenApi\Attributes as OA;
+use Symfony\Component\HttpFoundation\Response;
 
 #[OA\Tag(name: 'Profile')]
 class ProfileController extends Controller
 {
     public function __construct(
         private readonly ProfileService $profileService,
-    ){}
+    ) {}
 
     #[OA\Get(
         path: '/api/v1/user/show',
@@ -29,7 +29,7 @@ class ProfileController extends Controller
                 response: 200,
                 description: 'Профіль користувача',
                 content: new OA\JsonContent(ref: '#/components/schemas/Profile')
-            )
+            ),
         ]
     )]
     public function show(Request $request)
@@ -56,7 +56,7 @@ class ProfileController extends Controller
                 response: 200,
                 description: 'Профіль оновлено',
                 content: new OA\JsonContent(ref: '#/components/schemas/Profile')
-            )
+            ),
         ]
     )]
     public function update(ProfileUpdateRequest $request): ProfileResource

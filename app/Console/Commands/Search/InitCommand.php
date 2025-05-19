@@ -6,7 +6,6 @@ use Elastic\Elasticsearch\Client;
 use Elastic\Elasticsearch\Exception\ClientResponseException;
 use Illuminate\Console\Command;
 
-
 class InitCommand extends Command
 {
     protected $signature = 'search:init';
@@ -36,10 +35,9 @@ class InitCommand extends Command
             if ($e->getCode() === 404) {
                 $this->warn('Індекс adverts не існує');
             } else {
-                $this->error('Помилка видалення індексу: ' . $e->getMessage());
+                $this->error('Помилка видалення індексу: '.$e->getMessage());
             }
         }
-
 
         $this->client->indices()->create([
             'index' => 'adverts',
@@ -111,13 +109,13 @@ class InitCommand extends Command
     {
         try {
             $this->client->indices()->delete([
-                'index' => 'banners'
+                'index' => 'banners',
             ]);
         } catch (ClientResponseException $e) {
             if ($e->getCode() === 404) {
                 $this->warn('Індекс banners не існує');
             } else {
-                $this->error('Помилка видалення індексу: ' . $e->getMessage());
+                $this->error('Помилка видалення індексу: '.$e->getMessage());
             }
         }
 

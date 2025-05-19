@@ -12,8 +12,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
-use OwenIt\Auditing\Contracts\Auditable;
 use OwenIt\Auditing\Auditable as AuditableTrait;
+use OwenIt\Auditing\Contracts\Auditable;
 
 /**
  * @property int $id
@@ -28,16 +28,16 @@ use OwenIt\Auditing\Auditable as AuditableTrait;
  * @property string $verify_token
  * @property string $phone_verify_token
  * @property Carbon $phone_verify_token_expire
- * @property boolean $phone_auth
+ * @property bool $phone_auth
  * @property string $role
  * @property string $status
  * @property string $avatar_url
  * @property string $created_at
  * @property string $updated_at
  */
-class User extends Authenticatable implements MustVerifyEmail, Auditable
+class User extends Authenticatable implements Auditable, MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes, AuditableTrait, Filterable;
+    use AuditableTrait, Filterable, HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     protected $fillable = [
         'first_name',
@@ -75,7 +75,7 @@ class User extends Authenticatable implements MustVerifyEmail, Auditable
 
     public function sendEmailVerificationNotification(): void
     {
-        $this->notify(new CustomVerifyEmail());
+        $this->notify(new CustomVerifyEmail);
     }
 
     public function roles()
@@ -97,15 +97,16 @@ class User extends Authenticatable implements MustVerifyEmail, Auditable
     {
         return $this->roles()
             ->whereHas('permissions', function ($query) use ($permissionKey) {
-            $query->where('key', $permissionKey);
-        })->exists();
+                $query->where('key', $permissionKey);
+            })->exists();
     }
+
     public function getPermissions(): array
     {
         return $this->roles()
             ->with('permissions:key,id')
             ->get()
-            ->flatMap(fn($role) => $role->permissions->pluck('key'))
+            ->flatMap(fn ($role) => $role->permissions->pluck('key'))
             ->unique()
             ->values()
             ->toArray();
@@ -124,12 +125,12 @@ class User extends Authenticatable implements MustVerifyEmail, Auditable
         if (empty($this->phone)) {
             throw new \DomainException('Phone number is empty.');
         }
-        if (!empty($this->phone_verify_token) && $this->phone_verify_token_expire &&
+        if (! empty($this->phone_verify_token) && $this->phone_verify_token_expire &&
             $this->phone_verify_token_expire->gt($now)) {
             throw new \DomainException('Phone is already requested.');
         }
         $this->phone_verified = false;
-        $this->phone_verify_token = (string)random_int(10000, 99999);
+        $this->phone_verify_token = (string) random_int(10000, 99999);
         $this->phone_verify_token_expire = $now->copy()->addSeconds(300);
         $this->saveOrFail();
 
@@ -160,7 +161,7 @@ class User extends Authenticatable implements MustVerifyEmail, Auditable
 
     public function removeFromFavorites($id): void
     {
-        if (!$this->hasIsFavorites($id)) {
+        if (! $this->hasIsFavorites($id)) {
             throw new \DomainException('This advert is not in favorites.');
         }
         $this->favorites()->detach($id);
@@ -170,9 +171,10 @@ class User extends Authenticatable implements MustVerifyEmail, Auditable
     {
         return $this->favorites()->where('id', $id)->exists();
     }
+
     public function favorites()
     {
-        return $this->belongsToMany(User::class, 'advert_advert_favorites', 'user_id','advert_id');
+        return $this->belongsToMany(User::class, 'advert_advert_favorites', 'user_id', 'advert_id');
     }
 
     public function findForPassport($identifier)

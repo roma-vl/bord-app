@@ -7,9 +7,6 @@ use Illuminate\Foundation\Application;
 
 abstract class Repository
 {
-    /**
-     * @var Model $model
-     */
     protected Model $model;
 
     public function __construct()
@@ -17,9 +14,6 @@ abstract class Repository
         $this->model = app($this->getModelClass());
     }
 
-    /**
-     * @return string
-     */
     abstract protected function getModelClass(): string;
 
     /**

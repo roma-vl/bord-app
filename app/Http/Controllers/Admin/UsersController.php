@@ -1,11 +1,12 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Repositories\UserRepository;
 use App\Http\Requests\Admin\StoreUserRequest;
 use App\Http\Requests\Admin\UpdateUserRequest;
 use App\Http\Requests\User\UserFilterRequest;
 use App\Http\Resources\Admin\User\UserResource;
-use App\Http\Repositories\UserRepository;
 use App\Http\Services\SearchSortService;
 use App\Http\Services\UserService;
 use App\Models\Role;
@@ -20,7 +21,7 @@ use Inertia\Response;
 class UsersController extends Controller
 {
     public function __construct(
-        private readonly UserService    $userService,
+        private readonly UserService $userService,
         private readonly UserRepository $userRepository,
         private readonly SearchSortService $searchSortService
     ) {}
@@ -34,8 +35,8 @@ class UsersController extends Controller
         $users = UserResource::collection($this->userRepository->getFilteredPaginatedUsers($validated));
 
         return Inertia::render('Admin/Users/Index', [
-            'users'     => $users,
-            'sortBy'    => $sortBy,
+            'users' => $users,
+            'sortBy' => $sortBy,
             'sortOrder' => $sortOrder,
         ]);
     }
@@ -66,7 +67,6 @@ class UsersController extends Controller
         return back()->with('success', 'User created successfully!');
     }
 
-
     public function show(User $user)
     {
         return response()->json($user);
@@ -79,12 +79,11 @@ class UsersController extends Controller
         }
 
         return response()->json([
-            'user'      => new UserResource($user),
-            'roles'     => Role::all(),
-            'userRoles' => $user->roles->pluck('id')
+            'user' => new UserResource($user),
+            'roles' => Role::all(),
+            'userRoles' => $user->roles->pluck('id'),
         ]);
     }
-
 
     public function update(UpdateUserRequest $request, User $user): RedirectResponse
     {
@@ -101,7 +100,6 @@ class UsersController extends Controller
         return redirect()->route('admin.users.index')
             ->with('success', 'User updated successfully.');
     }
-
 
     public function destroy(User $user): RedirectResponse
     {
@@ -138,12 +136,11 @@ class UsersController extends Controller
         $this->searchSortService->applySearch($usersQuery, $search);
         $usersQuery = $usersQuery->paginate($perPage);
 
-
         $users = UserResource::collection($usersQuery);
 
         return Inertia::render('Admin/Users/Index', [
-            'users'     => $users,
-            'sortBy'    => $sortBy,
+            'users' => $users,
+            'sortBy' => $sortBy,
             'sortOrder' => $sortOrder,
         ]);
     }
@@ -152,6 +149,7 @@ class UsersController extends Controller
     {
         $value = $request->query($key, session($key, $default));
         session([$key => $value]);
+
         return $value;
     }
 }

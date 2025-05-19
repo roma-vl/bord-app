@@ -1,9 +1,11 @@
 <?php
+
 namespace App\Models\Ticket;
+
 use App\Models\User;
-use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -28,7 +30,7 @@ class Ticket extends Model
             'user_id' => $userId,
             'subject' => $subject,
             'content' => $content,
-            'status'  => Status::OPEN,
+            'status' => Status::OPEN,
         ]);
 
         $ticket->setStatus(Status::OPEN, $userId);
@@ -46,7 +48,7 @@ class Ticket extends Model
 
     public function addMessage(int $userId, $message): void
     {
-        if (!$this->allowsMessages()) {
+        if (! $this->allowsMessages()) {
             throw new \DomainException('Ticket is closed for messages.');
         }
 
@@ -60,7 +62,7 @@ class Ticket extends Model
 
     public function allowsMessages(): bool
     {
-        return !$this->isClosed();
+        return ! $this->isClosed();
     }
 
     public function approve(int $userId): void
@@ -83,7 +85,7 @@ class Ticket extends Model
 
     public function reopen(int $userId): void
     {
-        if (!$this->isClosed()) {
+        if (! $this->isClosed()) {
             throw new \DomainException('Ticket is not closed.');
         }
 
@@ -129,11 +131,11 @@ class Ticket extends Model
     {
         $this->statuses()->create([
             'status' => $status,
-            'user_id' => $userId
+            'user_id' => $userId,
         ]);
 
         $this->update([
-            'status' => $status
+            'status' => $status,
         ]);
     }
 

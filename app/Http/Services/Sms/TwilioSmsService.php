@@ -12,8 +12,9 @@ class TwilioSmsService implements SmsServiceInterface
     {
         $config = config('sms.services.twilio');
 
-        if (!$config['sid'] || !$config['token'] || !$config['from']) {
-            Log::error("Twilio credentials are missing in configuration.");
+        if (! $config['sid'] || ! $config['token'] || ! $config['from']) {
+            Log::error('Twilio credentials are missing in configuration.');
+
             return;
         }
 
@@ -21,13 +22,13 @@ class TwilioSmsService implements SmsServiceInterface
             $twilio = new Client($config['sid'], $config['token']);
             $twilio->messages->create($phone, [
                 'from' => $config['from'],
-                'body' => "Your verification code: $code"
+                'body' => "Your verification code: $code",
             ]);
 
             Log::info("SMS sent to $phone via Twilio with code: $code");
 
         } catch (\Exception $e) {
-            Log::error("Failed to send SMS: " . $e->getMessage());
+            Log::error('Failed to send SMS: '.$e->getMessage());
         }
     }
 }

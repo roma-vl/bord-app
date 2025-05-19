@@ -14,6 +14,7 @@ class FavoriteService
 
         $user->addToFavorites($advert->id);
     }
+
     public function remove(int $userId, int $advertId): void
     {
         $user = $this->getUser($userId);
@@ -31,5 +32,4 @@ class FavoriteService
     {
         return Advert::findOrFail($advertId);
     }
-
 }

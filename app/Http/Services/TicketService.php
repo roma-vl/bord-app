@@ -51,7 +51,7 @@ class TicketService
     {
         $ticket = $this->getTicket($id);
 
-        if (!$ticket->canBeRemoved()) {
+        if (! $ticket->canBeRemoved()) {
             throw new \DomainException('Unable to remove active ticket');
         }
 

@@ -17,25 +17,31 @@ use Illuminate\Support\Carbon;
  */
 class Status extends Model
 {
-    public const string OPEN       = 'open';
-    public const string APPROVED   = 'approved';
-    public const string PENDING    = 'pending';
+    public const string OPEN = 'open';
+
+    public const string APPROVED = 'approved';
+
+    public const string PENDING = 'pending';
+
     public const string PROCESSING = 'processing';
-    public const string CANCELLED  = 'cancelled';
-    public const string CLOSED     = 'closed';
+
+    public const string CANCELLED = 'cancelled';
+
+    public const string CLOSED = 'closed';
 
     protected $table = 'ticket_statuses';
+
     protected $guarded = ['id'];
 
     public static function statusesList(): array
     {
         return [
-            self::OPEN       => __('Open'),
-            self::APPROVED   => __('Approved'),
-            self::PENDING    => __('Pending'),
+            self::OPEN => __('Open'),
+            self::APPROVED => __('Approved'),
+            self::PENDING => __('Pending'),
             self::PROCESSING => __('Processing'),
-            self::CANCELLED  => __('Cancelled'),
-            self::CLOSED     => __('Closed')
+            self::CANCELLED => __('Cancelled'),
+            self::CLOSED => __('Closed'),
         ];
     }
 

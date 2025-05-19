@@ -20,7 +20,7 @@ class BannerService
     public function __construct(
         private readonly CostCalculatorService $costCalculatorService,
         private readonly Client $client
-    ){}
+    ) {}
 
     public function create(User $user, CreateRequest $request): Banner
     {
@@ -30,7 +30,7 @@ class BannerService
         $category = Category::findOrFail($categoryId);
         $region = $regionId ? Location::findOrFail($regionId) : null;
 
-        return DB::transaction(function () use ($user, $category, $region,$request) {
+        return DB::transaction(function () use ($user, $category, $region, $request) {
             /** @var Banner $banner */
             $banner = Banner::make([
                 'name' => $request['name'],
@@ -50,13 +50,14 @@ class BannerService
             return $banner;
         });
     }
+
     public function changeFile($id, FileRequest $request): void
     {
         $banner = $this->getBanner($id);
-        if (!$banner->canBeChanged()) {
+        if (! $banner->canBeChanged()) {
             throw new \DomainException('Unable to edit the banner.');
         }
-        Storage::delete('public/' . $banner->file);
+        Storage::delete('public/'.$banner->file);
         $banner->update([
             'format' => $request['format'],
             'file' => $request->file('file')->store('banners', 'public'),
@@ -66,7 +67,7 @@ class BannerService
     public function editByOwner($id, EditRequest $request): void
     {
         $banner = $this->getBanner($id);
-        if (!$banner->canBeChanged()) {
+        if (! $banner->canBeChanged()) {
             throw new \DomainException('Unable to edit the banner.');
         }
         $banner->update([
@@ -115,6 +116,7 @@ class BannerService
         $banner = $this->getBanner($id);
         $cost = $this->costCalculatorService->calc($banner->limit);
         $banner->order($cost);
+
         return $banner;
     }
 
@@ -137,7 +139,7 @@ class BannerService
     public function removeByOwner($id): void
     {
         $banner = $this->getBanner($id);
-        if (!$banner->canBeRemoved()) {
+        if (! $banner->canBeRemoved()) {
             throw new \DomainException('Unable to remove the banner.');
         }
         $banner->delete();
@@ -179,21 +181,22 @@ class BannerService
             ],
         ]);
 
-        if (!$ids = array_column($response['hits']['hits'], '_id')) {
+        if (! $ids = array_column($response['hits']['hits'], '_id')) {
             return null;
         }
 
         $banner = Banner::active()
             ->with(['category', 'region'])
             ->whereIn('id', $ids)
-            ->orderByRaw('FIELD(id,' . implode(',', $ids) . ')')
+            ->orderByRaw('FIELD(id,'.implode(',', $ids).')')
             ->first();
 
-        if (!$banner) {
+        if (! $banner) {
             return null;
         }
 
         $banner->view();
+
         return $banner;
     }
 }

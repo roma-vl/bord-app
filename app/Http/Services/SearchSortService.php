@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 class SearchSortService
 {
     protected array $allowedSortFields = ['id', 'name', 'email'];
+
     protected int $searchMinLength = 1;
 
     public function applySearch(Builder $query, ?string $search): void

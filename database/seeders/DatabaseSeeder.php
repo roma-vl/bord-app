@@ -19,13 +19,13 @@ class DatabaseSeeder extends Seeder
         User::factory(10)->create();
 
         // Додаємо тестового користувача (гарантовано активного)
-//        User::factory()->create([
-//            'name' => 'Test User',
-//            'email' => 'test@example.com',
-//            'email_verified_at' => now(),
-//            'avatar' => 'https://via.placeholder.com/100', // Статичний аватар для тестового юзера
-//            'locale' => 'en',
-//            'deleted_at' => null, // Не видаляємо
-//        ]);
+        //        User::factory()->create([
+        //            'name' => 'Test User',
+        //            'email' => 'test@example.com',
+        //            'email_verified_at' => now(),
+        //            'avatar' => 'https://via.placeholder.com/100', // Статичний аватар для тестового юзера
+        //            'locale' => 'en',
+        //            'deleted_at' => null, // Не видаляємо
+        //        ]);
     }
 }

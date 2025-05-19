@@ -18,6 +18,7 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         $dd = $this->getUserPermissions($request->user());
+
         return [
             ...parent::share($request),
             'auth' => [
@@ -25,9 +26,9 @@ class HandleInertiaRequests extends Middleware
                 'permissions' => $this->getUserPermissions($request->user()),
             ],
             'flash' => [
-                'success' => fn() => $request->session()->get('success'),
-                'error' => fn() => $request->session()->get('error'),
-                'info' => fn() => $request->session()->get('info'),
+                'success' => fn () => $request->session()->get('success'),
+                'error' => fn () => $request->session()->get('error'),
+                'info' => fn () => $request->session()->get('info'),
             ],
         ];
     }
@@ -36,5 +37,4 @@ class HandleInertiaRequests extends Middleware
     {
         return $user ? $user->getPermissions() : [];
     }
-
 }

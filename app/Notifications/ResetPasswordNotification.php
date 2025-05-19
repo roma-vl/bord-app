@@ -2,9 +2,9 @@
 
 namespace App\Notifications;
 
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Auth\Notifications\ResetPassword;
 
 class ResetPasswordNotification extends ResetPassword
 {
@@ -21,6 +21,4 @@ class ResetPasswordNotification extends ResetPassword
             ->line('Якщо ви не запитували зміну пароля, ніяких дій не потрібно.')
             ->salutation('З повагою, Laravel');
     }
-
-
 }

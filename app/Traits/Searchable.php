@@ -25,6 +25,7 @@ trait Searchable
             'id' => $this->getKey(),
         ]);
     }
+
     public static function bootSearchable(): void
     {
         if (config('services.search.enabled')) {
@@ -33,5 +34,6 @@ trait Searchable
     }
 
     abstract public function toElasticsearchDocumentArray(): array;
+
     abstract public function getSearchableFields(): array;
 }

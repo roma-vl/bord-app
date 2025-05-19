@@ -13,7 +13,7 @@ use Laravel\Socialite\Facades\Socialite;
 
 class UserService
 {
-    const array DEFAULT_ROLE_TO_USER = [3]; //role -> user
+    const array DEFAULT_ROLE_TO_USER = [3]; // role -> user
 
     public function createUser(RegisterRequest $request): User
     {
@@ -28,6 +28,7 @@ class UserService
 
         return $user;
     }
+
     public function createUserFromAdmin(array $data): User
     {
         $user = User::create([
@@ -37,12 +38,13 @@ class UserService
             'email_verified_at' => now(),
         ]);
 
-        if (!empty($data['roles'])) {
+        if (! empty($data['roles'])) {
             $user->roles()->sync($data['roles']);
         }
 
         return $user;
     }
+
     public function createUserFromGoogle(): User|Application|RedirectResponse|Redirector
     {
         $googleUser = Socialite::driver('google')->stateless()->user();
@@ -74,7 +76,7 @@ class UserService
     {
         $user->name = $data['name'];
         $user->email = strtolower($data['email']);
-        if (!empty($data['password'])) {
+        if (! empty($data['password'])) {
             $user->password = Hash::make($data['password']);
         }
         $user->locale = $data['locale'];
@@ -94,14 +96,15 @@ class UserService
     {
         $user = User::withTrashed()->findOrFail($id);
         $user->restore();
+
         return $user;
     }
 
     public function getUserPermissions(User $user): Collection
     {
         return $user->roles()->with('permissions')->get()
-            ->flatMap(fn($role) => $role->permissions)
-            ->map(fn($permission) => "{$permission->object}.{$permission->operation}")
+            ->flatMap(fn ($role) => $role->permissions)
+            ->map(fn ($permission) => "{$permission->object}.{$permission->operation}")
             ->unique();
     }
 }

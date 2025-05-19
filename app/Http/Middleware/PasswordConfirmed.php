@@ -4,18 +4,14 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
-use Inertia\Inertia;
-use Inertia\Middleware;
 
 class PasswordConfirmed
 {
     public function handle(Request $request, Closure $next)
     {
         // Якщо користувач не залогінений — пропускаємо далі
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return $next($request);
         }
 

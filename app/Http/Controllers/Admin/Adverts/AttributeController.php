@@ -31,6 +31,7 @@ class AttributeController extends Controller
     public function store(StoreAttributeRequest $request, Category $category): RedirectResponse
     {
         $this->service->create($category, $request->validated());
+
         return redirect()->route('admin.adverts.category.show', $category->id);
     }
 
@@ -46,12 +47,14 @@ class AttributeController extends Controller
     public function update(UpdateAttributeRequest $request, Category $category, Attribute $attribute): RedirectResponse
     {
         $this->service->update($attribute, $request->validated());
+
         return redirect()->route('admin.adverts.category.show', $category->id);
     }
 
     public function destroy(Category $category, Attribute $attribute): RedirectResponse
     {
         $this->service->delete($attribute);
+
         return redirect()->route('admin.adverts.category.show', $category->id);
     }
 }

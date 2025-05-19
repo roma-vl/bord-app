@@ -22,14 +22,19 @@ class RegisteredUserController extends Controller
      *     path="/register",
      *     tags={"Auth"},
      *     summary="Реєстрація нового користувача",
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\JsonContent(ref="#/components/schemas/RegisterRequest")
      *     ),
+     *
      *     @OA\Response(
      *         response=201,
      *         description="Користувача створено. Перевірте емейл",
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="success", type="string", example="перевірте емейл і підтвердіть пошту")
      *         )
      *     )

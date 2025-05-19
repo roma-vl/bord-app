@@ -22,5 +22,4 @@ class UserFilter extends QueryFilter
             $this->builder->whereNull('email_verified_at');
         }
     }
-
 }

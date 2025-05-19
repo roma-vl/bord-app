@@ -13,7 +13,9 @@ use Illuminate\Validation\ValidationException;
 class LoginRequest extends FormRequest
 {
     private const int MAX_ATTEMPTS = 5;
+
     private const int DELAY_SECONDS = 60;
+
     /**
      * Determine if the user is authorized to make this request.
      */

@@ -3,8 +3,8 @@
 namespace App\Http\Services;
 
 use App\Models\Location;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class LocationService
 {
@@ -28,7 +28,6 @@ class LocationService
             ->limit(10)
             ->get(['id', 'name', 'slug']);
     }
-
 
     public function getCountries(): Collection
     {
@@ -60,6 +59,7 @@ class LocationService
         ]);
 
         $location->appendToNode($parent)->save();
+
         return $location;
     }
 
@@ -68,5 +68,4 @@ class LocationService
         $location = Location::findOrFail($id);
         $location->delete();
     }
-
 }

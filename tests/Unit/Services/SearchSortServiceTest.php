@@ -14,16 +14,17 @@ class SearchSortServiceTest extends TestCase
     use RefreshDatabase;
 
     private SearchSortService $searchSortService;
+
     private UserService $userService;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->searchSortService = new SearchSortService();
-        $this->userService = new UserService();
+        $this->searchSortService = new SearchSortService;
+        $this->userService = new UserService;
     }
 
-    public function testApplySearchUser(): void
+    public function test_apply_search_user(): void
     {
         $role = Role::factory()->create();
         $this->userService->createUserFromAdmin([
@@ -56,7 +57,7 @@ class SearchSortServiceTest extends TestCase
         $this->assertEquals('John Doe2', $query->first()->name);
     }
 
-    public function testApplySearchEmail(): void
+    public function test_apply_search_email(): void
     {
         $role = Role::factory()->create();
         $this->userService->createUserFromAdmin([

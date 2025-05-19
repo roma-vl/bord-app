@@ -4,10 +4,13 @@ namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+
 class UserFilterRequest extends FormRequest
 {
     public const SORTABLE_FIELDS = ['name', 'email', 'created_at', 'id'];
+
     public const SORT_DIRECTIONS = ['asc', 'desc'];
+
     public const STATUSES = ['active', 'inactive'];
 
     public function authorize(): bool
@@ -42,9 +45,10 @@ class UserFilterRequest extends FormRequest
             'status.in' => __('validation.custom.status.in'),
         ];
     }
+
     public function validatedWithDefaults(): array
     {
-        $validated = array_filter($this->validated(), fn($value) => !is_null($value));
+        $validated = array_filter($this->validated(), fn ($value) => ! is_null($value));
 
         return array_merge([
             'per_page' => 10,
@@ -52,5 +56,4 @@ class UserFilterRequest extends FormRequest
             'sort_order' => 'desc',
         ], $validated);
     }
-
 }

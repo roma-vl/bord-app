@@ -5,7 +5,6 @@ namespace Tests\Unit\Services;
 use App\Http\Services\CategoryService;
 use App\Models\Adverts\Category;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Validator;
 use Mockery;
 use Tests\TestCase;
 
@@ -18,7 +17,7 @@ class CategoryServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->categoryService = new CategoryService();
+        $this->categoryService = new CategoryService;
     }
 
     public function test_it_can_get_categories()

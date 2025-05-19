@@ -15,13 +15,13 @@ class CreateController
     public function __construct(
         private readonly BannerService $bannerService,
         private readonly CategoryService $categoryService
-    )
-    {}
+    ) {}
 
     public function category()
     {
         $formats = Banner::formatsList();
-        $categories =  $this->categoryService->getCategories();
+        $categories = $this->categoryService->getCategories();
+
         return Inertia::render('Account/Banner/Create', [
             'categories' => $categories,
             'formats' => $formats,

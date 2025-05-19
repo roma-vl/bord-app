@@ -13,6 +13,7 @@ class ClearCacheServiceProvider extends ServiceProvider
         Location::class,
         Category::class,
     ];
+
     public function register(): void
     {
         //
@@ -36,5 +37,4 @@ class ClearCacheServiceProvider extends ServiceProvider
         $class::updated($flush);
         $class::deleted($flush);
     }
-
 }

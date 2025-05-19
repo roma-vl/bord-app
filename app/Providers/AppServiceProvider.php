@@ -4,22 +4,22 @@ namespace App\Providers;
 
 use App\Http\Services\Banner\CostCalculatorService;
 use App\Models\Adverts\Advert;
+use DateInterval;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Contracts\Foundation\Application;
-use Laravel\Passport\Passport;
 use Laravel\Passport\Bridge\AccessTokenRepository;
-use Laravel\Passport\Bridge\RefreshTokenRepository;
 use Laravel\Passport\Bridge\ClientRepository;
-use Laravel\Passport\Bridge\UserRepository;
+use Laravel\Passport\Bridge\RefreshTokenRepository;
 use Laravel\Passport\Bridge\ScopeRepository;
+use Laravel\Passport\Bridge\UserRepository;
+use Laravel\Passport\Passport;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Grant\PasswordGrant;
 use League\OAuth2\Server\Grant\RefreshTokenGrant;
-use DateInterval;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -53,8 +53,8 @@ class AppServiceProvider extends ServiceProvider
                 $app->make(ClientRepository::class),
                 $app->make(AccessTokenRepository::class),
                 $app->make(ScopeRepository::class),
-                'file://' . storage_path('oauth-private.key'),
-                'file://' . storage_path('oauth-public.key')
+                'file://'.storage_path('oauth-private.key'),
+                'file://'.storage_path('oauth-public.key')
             );
 
             // додаємо PasswordGrant
@@ -92,6 +92,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->singleton(CostCalculatorService::class, function (Application $app) {
             $config = $app->make('config')->get('banner');
+
             return new CostCalculatorService($config['price']);
         });
     }

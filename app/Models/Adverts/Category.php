@@ -12,9 +12,10 @@ class Category extends Model
     use HasFactory, NodeTrait;
 
     protected $table = 'advert_categories';
-    public $timestamps = false;
-    protected $fillable = ['name', 'slug', 'parent_id'];
 
+    public $timestamps = false;
+
+    protected $fillable = ['name', 'slug', 'parent_id'];
 
     public function children()
     {
@@ -26,7 +27,6 @@ class Category extends Model
         return $this->hasMany(Category::class, 'parent_id')
             ->select(['id', 'name', 'parent_id', 'slug']);
     }
-
 
     public function getParentAttributes()
     {
@@ -41,6 +41,7 @@ class Category extends Model
     {
         $parent = $this->getParentAttributes()->toArray();
         $attr = $this->attributes()->orderBy('sort')->get()->toArray();
+
         return array_merge($parent, $attr);
     }
 
@@ -55,6 +56,4 @@ class Category extends Model
             ->with('childrenRecursive')
             ->orderBy('_lft');
     }
-
 }
-

@@ -17,14 +17,14 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
 
-
 class AdvertController extends Controller
 {
     public function __construct(
         private readonly LocationService $locationService,
         private readonly CategoryService $categoryService,
         private readonly AdvertService $advertService
-    ){}
+    ) {}
+
     public function index(): Response
     {
         $adverts = Advert::forUser(Auth::user())
@@ -33,13 +33,14 @@ class AdvertController extends Controller
             ->paginate(10);
 
         return Inertia::render('Account/Advert/Index', [
-            'adverts' => $adverts
+            'adverts' => $adverts,
         ]);
     }
 
     public function create(): Response
     {
-        $categories =  $this->categoryService->getCategories();
+        $categories = $this->categoryService->getCategories();
+
         return Inertia::render('Account/Advert/Create', [
             'categories' => $categories,
         ]);
@@ -58,6 +59,7 @@ class AdvertController extends Controller
         $category = Category::findOrFail($advert->category_id);
         $attributes = array_merge($category->getParentAttributes()->toArray(),
             $category->attributes()->orderBy('sort')->get()->toArray());
+
         return Inertia::render('Account/Advert/Edit', [
             'advert' => $advert,
             'categories' => $categories,
@@ -74,17 +76,21 @@ class AdvertController extends Controller
         } catch (DomainException $e) {
             return response()->json(['error' => $e->getMessage()], 422);
         }
+
         return redirect()->route('account.adverts.index')->with('success', 'Оголошення створено!');
     }
 
     public function publish(Advert $advert): RedirectResponse
     {
         $advert->sendToModeration();
+
         return back()->with('success', 'Advert send to Moderate!');
     }
+
     public function draft(Advert $advert): RedirectResponse
     {
         $advert->backToDraft();
+
         return back()->with('success', 'Advert is Draft!');
     }
 
@@ -95,7 +101,8 @@ class AdvertController extends Controller
         } catch (DomainException $e) {
             return response()->json(['error' => $e->getMessage()], 422);
         }
-       return redirect()->route('account.adverts.index')->with('success', 'Оголошення створено!');
+
+        return redirect()->route('account.adverts.index')->with('success', 'Оголошення створено!');
     }
 
     public function photos(Advert $advert): Response
@@ -108,6 +115,7 @@ class AdvertController extends Controller
     public function destroy(Advert $advert): RedirectResponse
     {
         $advert->delete();
+
         return redirect()->route('account.adverts.index')->with('success', 'Advert is Deleted!');
     }
 
@@ -120,12 +128,13 @@ class AdvertController extends Controller
     {
         return response()->json($this->locationService->getVillages($areaId));
     }
+
     public function getAttributes(int $categoryId): JsonResponse
     {
         $category = Category::findOrFail($categoryId);
         $parentAttributes = $category->getParentAttributes()->toArray();
         $attributes = $category->attributes()->orderBy('sort')->get()->toArray();
+
         return response()->json(array_merge($parentAttributes, $attributes));
     }
-
 }

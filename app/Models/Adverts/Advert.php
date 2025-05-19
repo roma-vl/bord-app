@@ -6,39 +6,49 @@ use App\Models\Location;
 use App\Models\User;
 use App\Traits\Searchable;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Builder;
-use OwenIt\Auditing\Contracts\Auditable;
 use OwenIt\Auditing\Auditable as AuditableTrait;
+use OwenIt\Auditing\Contracts\Auditable;
 
 class Advert extends Model implements Auditable
 {
-    use HasFactory, SoftDeletes, AuditableTrait, Searchable;
+    use AuditableTrait, HasFactory, Searchable, SoftDeletes;
 
     public const string STATUS_DRAFT = 'draft';
+
     public const string STATUS_MODERATION = 'moderation';
+
     public const string STATUS_ACTIVE = 'active';
+
     public const string STATUS_CLOSED = 'closed';
+
     public const string STATUS_MODERATION_FAIL = 'moderation_fail';
+
     public const string STATUS_BANNED = 'banned';
+
     public const string STATUS_DELETED = 'deleted';
+
     public const string STATUS_EXPIRED = 'expired';
+
     protected $table = 'advert_adverts';
+
     protected $guarded = ['id'];
 
     protected $casts = [
         'published_at' => 'datetime',
-        'expires_at'   => 'datetime',
+        'expires_at' => 'datetime',
     ];
-    protected $appends = ['is_favorited'];
 
+    protected $appends = ['is_favorited'];
 
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
     public function category()
     {
         return $this->belongsTo(Category::class, 'category_id');
@@ -56,6 +66,7 @@ class Advert extends Model implements Auditable
                 return $value->value;
             }
         }
+
         return null;
     }
 
@@ -86,12 +97,12 @@ class Advert extends Model implements Auditable
 
     public function sendToModeration(): void
     {
-        if (!$this->isDraft()) {
+        if (! $this->isDraft()) {
             throw new \DomainException('Advert is not draft.');
         }
-//        if (!\count($this->photo)) {
-//            throw new \DomainException('Upload photos.');
-//        }
+        //        if (!\count($this->photo)) {
+        //            throw new \DomainException('Upload photos.');
+        //        }
         $this->update([
             'status' => self::STATUS_MODERATION,
         ]);
@@ -116,18 +127,21 @@ class Advert extends Model implements Auditable
             'reject_reason' => $reason,
         ]);
     }
+
     public function backToDraft(): void
     {
         $this->update([
             'status' => self::STATUS_DRAFT,
         ]);
     }
+
     public function expire(): void
     {
         $this->update([
             'status' => self::STATUS_CLOSED,
         ]);
     }
+
     public function active(): void
     {
         $this->update([
@@ -146,16 +160,17 @@ class Advert extends Model implements Auditable
     public static function statusesList(): array
     {
         return [
-            self::STATUS_DRAFT           => 'Чернетка',
-            self::STATUS_MODERATION      => 'На модерації',
-            self::STATUS_ACTIVE          => 'Активний',
-            self::STATUS_CLOSED          => 'Закритий',
+            self::STATUS_DRAFT => 'Чернетка',
+            self::STATUS_MODERATION => 'На модерації',
+            self::STATUS_ACTIVE => 'Активний',
+            self::STATUS_CLOSED => 'Закритий',
             self::STATUS_MODERATION_FAIL => 'Не пройшов модерацію',
-            self::STATUS_BANNED          => 'Заблокований',
-            self::STATUS_DELETED         => 'Видалений',
-            self::STATUS_EXPIRED         => 'Закінчився термін дії',
+            self::STATUS_BANNED => 'Заблокований',
+            self::STATUS_DELETED => 'Видалений',
+            self::STATUS_EXPIRED => 'Закінчився термін дії',
         ];
     }
+
     public function scopeForUser(Builder $query, User $user): Builder
     {
         return $query->where('user_id', $user->id);
@@ -189,16 +204,16 @@ class Advert extends Model implements Auditable
     public function getIsFavoritedAttribute()
     {
         $user = auth()->user();
-        if (!$user) {
+        if (! $user) {
             return false;
         }
+
         return $this->favorites->contains('id', $user->id);
     }
 
-
     public function values()
     {
-        return $this->hasMany(Value::class,  'advert_id', 'id');
+        return $this->hasMany(Value::class, 'advert_id', 'id');
     }
 
     public function toElasticsearchDocumentArray(): array

@@ -24,7 +24,7 @@ class BannerExpire extends Command
         $success = true;
 
         foreach (Banner::active()->whereRaw('`limit` - views < 100')->with('user')->cursor() as $banner) {
-            $key = 'banner_notify_' . $banner->id;
+            $key = 'banner_notify_'.$banner->id;
             if ($this->client->get($key)) {
                 continue;
             }

@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
 class Message extends Model
 {
     protected $table = 'ticket_messages';
+
     protected $guarded = ['id'];
 
     public function user()

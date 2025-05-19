@@ -5,5 +5,5 @@ return [
     App\Providers\AuthServiceProvider::class,
     App\Providers\TelescopeServiceProvider::class,
     App\Providers\ClearCacheServiceProvider::class,
-    App\Providers\SearchServiceProvider::class
+    App\Providers\SearchServiceProvider::class,
 ];

@@ -11,13 +11,18 @@ use Illuminate\Database\Eloquent\Model;
 class Attribute extends Model
 {
     public const string TYPE_STRING = 'string';
+
     public const string TYPE_INTEGER = 'integer';
+
     public const string TYPE_FLOAT = 'float';
+
     public const string TYPE_BOOLEAN = 'boolean';
 
     protected $table = 'advert_attributes';
+
     public $timestamps = false;
-    protected $fillable = ['name', 'type', 'is_required','default', 'variants', 'sort'];
+
+    protected $fillable = ['name', 'type', 'is_required', 'default', 'variants', 'sort'];
 
     protected $casts = [
         'variants' => 'array',
@@ -43,18 +48,18 @@ class Attribute extends Model
         return $this->type === self::TYPE_INTEGER;
     }
 
-    public function isFloat (): bool
+    public function isFloat(): bool
     {
         return $this->type === self::TYPE_FLOAT;
     }
+
     public function isBoolean(): bool
     {
         return $this->type === self::TYPE_BOOLEAN;
     }
+
     public function isSelect(): bool
     {
         return count($this->variants) > 0;
     }
-
 }
-

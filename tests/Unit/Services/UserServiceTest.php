@@ -2,9 +2,9 @@
 
 namespace Tests\Unit\Services;
 
+use App\Http\Services\UserService;
 use App\Models\Role;
 use App\Models\User;
-use App\Http\Services\UserService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
@@ -18,10 +18,10 @@ class UserServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->userService = new UserService();
+        $this->userService = new UserService;
     }
 
-    public function testCreateUserFromAdmin(): void
+    public function test_create_user_from_admin(): void
     {
         $userData = [
             'name' => 'John Doe',
@@ -38,7 +38,7 @@ class UserServiceTest extends TestCase
         $this->assertNotNull($user->email_verified_at);
     }
 
-    public function testUpdateUser(): void
+    public function test_update_user(): void
     {
         $user = User::factory()->create();
 
@@ -57,7 +57,7 @@ class UserServiceTest extends TestCase
         $this->assertTrue(Hash::check('newpassword', $updatedUser->password));
     }
 
-    public function testDeleteUser(): void
+    public function test_delete_user(): void
     {
         $user = User::factory()->create();
 
@@ -66,7 +66,7 @@ class UserServiceTest extends TestCase
         $this->assertSoftDeleted($user);
     }
 
-    public function testRestoreUser(): void
+    public function test_restore_user(): void
     {
         $user = User::factory()->create();
         $user->delete();
@@ -78,7 +78,8 @@ class UserServiceTest extends TestCase
             'deleted_at' => null,
         ]);
     }
-    public function testCreateUserWithRoles(): void
+
+    public function test_create_user_with_roles(): void
     {
         $role = Role::factory()->create();
 
@@ -99,5 +100,4 @@ class UserServiceTest extends TestCase
         // Перевіряємо, чи ролі були прив'язані
         $this->assertTrue($user->roles->contains($role));
     }
-
 }

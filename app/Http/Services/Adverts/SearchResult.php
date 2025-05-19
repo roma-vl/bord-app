@@ -7,7 +7,9 @@ use Illuminate\Contracts\Pagination\Paginator;
 class SearchResult
 {
     public $adverts;
+
     public $regionsCounts;
+
     public $categoriesCounts;
 
     public function __construct(Paginator $adverts, array $regionsCounts, array $categoriesCounts)

@@ -6,8 +6,8 @@ use App\Http\Services\AttributeService;
 use App\Models\Adverts\Attribute;
 use App\Models\Adverts\Category;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 use Mockery;
+use Tests\TestCase;
 
 class AttributeServiceTest extends TestCase
 {
@@ -27,14 +27,14 @@ class AttributeServiceTest extends TestCase
                 'type' => 'text',
                 'is_required' => true,
                 'variants' => ['option1', 'option2'],
-                'sort' => 1
+                'sort' => 1,
             ])
             ->andReturn(new Attribute([
                 'name' => 'Test Attribute',
                 'type' => 'text',
                 'is_required' => true,
                 'variants' => ['option1', 'option2'],
-                'sort' => 1
+                'sort' => 1,
             ]));
 
         $data = [
@@ -42,17 +42,17 @@ class AttributeServiceTest extends TestCase
             'type' => 'text',
             'is_required' => true,
             'variants' => "option1\noption2",
-            'sort' => 1
+            'sort' => 1,
         ];
 
-        $service = new AttributeService();
+        $service = new AttributeService;
         $attribute = $service->create($category, $data);
 
         $this->assertInstanceOf(Attribute::class, $attribute);
         $this->assertEquals('Test Attribute', $attribute->name);
         $this->assertEquals('text', $attribute->type);
         $this->assertTrue($attribute->is_required);
-//        $this->assertCount(2, $attribute->variant);
+        //        $this->assertCount(2, $attribute->variant);
     }
 
     public function test_update_attribute()
@@ -66,18 +66,18 @@ class AttributeServiceTest extends TestCase
                 'type' => 'select',
                 'is_required' => false,
                 'variants' => ['option3'],
-                'sort' => 2
+                'sort' => 2,
             ]);
 
         $data = [
             'name' => 'Updated Attribute',
             'type' => 'select',
             'is_required' => false,
-            'variants' => "option3",
-            'sort' => 2
+            'variants' => 'option3',
+            'sort' => 2,
         ];
 
-        $service = new AttributeService();
+        $service = new AttributeService;
         $updatedAttribute = $service->update($attribute, $data);
 
         $this->assertInstanceOf(Attribute::class, $updatedAttribute);
@@ -90,11 +90,10 @@ class AttributeServiceTest extends TestCase
         $attribute->shouldReceive('delete')
             ->once();
 
-        $service = new AttributeService();
+        $service = new AttributeService;
         $service->delete($attribute);
 
         // Перевіряємо, що delete був викликаний
         $this->assertTrue(true);
     }
-
 }

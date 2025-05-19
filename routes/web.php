@@ -1,32 +1,30 @@
 <?php
 
-
 use App\Http\Controllers\Admin\Adverts\AdvertsController;
 use App\Http\Controllers\Admin\Adverts\AttributeController;
 use App\Http\Controllers\Admin\Adverts\CategoryController;
+use App\Http\Controllers\Admin\BannerController as AdminBannerController;
 use App\Http\Controllers\Admin\IndexController as AdminIndexController;
 use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Admin\PageController as AdminPageController;
-use App\Http\Controllers\Cabinet\TicketController;
-use App\Http\Controllers\Admin\TicketController as AdminTicketController;
-use App\Http\Controllers\PageController;
 use App\Http\Controllers\Admin\PermissionsController as AdminPermissionsController;
 use App\Http\Controllers\Admin\RolesController as AdminRolesController;
+use App\Http\Controllers\Admin\TicketController as AdminTicketController;
 use App\Http\Controllers\Admin\UsersController as AdminUsersController;
 use App\Http\Controllers\Auth\GoogleController;
+use App\Http\Controllers\BannerController as PublicBannerController;
 use App\Http\Controllers\Cabinet\Adverts\AdvertController;
 use App\Http\Controllers\Cabinet\Adverts\FavoriteController;
 use App\Http\Controllers\Cabinet\Banner\BannerController;
-use App\Http\Controllers\BannerController as PublicBannerController;
-use App\Http\Controllers\Admin\BannerController as AdminBannerController;
 use App\Http\Controllers\Cabinet\Banner\CreateController;
 use App\Http\Controllers\Cabinet\Chat\ChatController;
 use App\Http\Controllers\Cabinet\Profile\PhoneController;
 use App\Http\Controllers\Cabinet\Profile\ProfileController;
+use App\Http\Controllers\Cabinet\TicketController;
 use App\Http\Controllers\IndexController;
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\StaticController;
 use Illuminate\Support\Facades\Route;
-
 
 Route::get('/banner/get', [PublicBannerController::class, 'get'])->name('banner.get');
 Route::get('/banner/{banner}/click', [PublicBannerController::class, 'click'])->name('banner.click');

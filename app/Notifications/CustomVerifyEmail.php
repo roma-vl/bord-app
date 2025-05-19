@@ -2,8 +2,8 @@
 
 namespace App\Notifications;
 
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Auth\Notifications\VerifyEmail as BaseVerifyEmail;
+use Illuminate\Notifications\Messages\MailMessage;
 
 class CustomVerifyEmail extends BaseVerifyEmail
 {
@@ -20,4 +20,3 @@ class CustomVerifyEmail extends BaseVerifyEmail
             ->salutation('З повагою, Команда Laravel'); // Додай підпис
     }
 }
-

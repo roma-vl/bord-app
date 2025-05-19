@@ -5,16 +5,15 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\PermissionRequest;
 use App\Http\Services\PermissionService;
+use App\Models\Permission;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
-use App\Models\Permission;
 
 class PermissionsController extends Controller
 {
-
     private PermissionService $permissionService;
 
     public function __construct(PermissionService $permissionService)
@@ -28,7 +27,7 @@ class PermissionsController extends Controller
     public function index(): Response
     {
         $permissions = Permission::orderByDesc('created_at')->paginate(self::PER_PAGE);
-//        $permissions = $this->permissionService->getAll();
+        //        $permissions = $this->permissionService->getAll();
 
         return Inertia::render('Admin/Permissions/Index',
             compact('permissions'));
@@ -65,4 +64,3 @@ class PermissionsController extends Controller
         return redirect()->route('admin.permissions.index')->with('info', 'Permission deleted successfully');
     }
 }
-

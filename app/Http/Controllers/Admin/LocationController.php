@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\LocationRequest;
@@ -25,43 +26,50 @@ class LocationController extends Controller
 
     public function getCountries(): JsonResponse
     {
-        $ff =$this->locationService->getCountries();
+        $ff = $this->locationService->getCountries();
+
         return response()->json($this->locationService->getCountries());
     }
 
     public function getRegions(int $countryId): JsonResponse
     {
         $country = Location::findOrFail($countryId);
+
         return response()->json($this->locationService->getRegions($country));
     }
 
     public function getAreas(int $regionId): JsonResponse
     {
         $region = Location::findOrFail($regionId);
+
         return response()->json($this->locationService->getAreas($region));
     }
 
     public function getVillages(int $areaId): JsonResponse
     {
         $area = Location::findOrFail($areaId);
+
         return response()->json($this->locationService->getVillages($area));
     }
 
     public function store(LocationRequest $request): RedirectResponse
     {
         $this->locationService->createLocation($request->validated());
+
         return redirect()->back()->with('success', 'Локацію створено');
     }
 
     public function show(string $type, int $id): JsonResponse
     {
         $data = $this->locationService->getLocation($type, $id);
+
         return response()->json($data);
     }
 
     public function destroy(string $type, int $id): RedirectResponse
     {
-        $this->locationService->deleteLocation( $id, $type);
+        $this->locationService->deleteLocation($id, $type);
+
         return redirect()->back()->with('info', "Локацію {$type} видалено");
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -15,7 +16,8 @@ class RolesController extends Controller
 {
     protected RoleService $roleService;
 
-    public function __construct(RoleService $roleService) {
+    public function __construct(RoleService $roleService)
+    {
         if (Gate::denies('role')) {
             abort(403);
         }
@@ -25,6 +27,7 @@ class RolesController extends Controller
     public function index(): Response
     {
         $roles = Role::orderByDesc('created_at')->paginate(self::PER_PAGE);
+
         return Inertia::render('Admin/Roles/Index', [
             'roles' => $roles,
         ]);

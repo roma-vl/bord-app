@@ -10,6 +10,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @OA\Schema(
  *     schema="AdvertDetailResource",
  *     type="object",
+ *
  *     @OA\Property(property="id", type="integer", example=1),
  *     @OA\Property(
  *         property="user",
@@ -42,8 +43,10 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *     @OA\Property(
  *         property="values",
  *         type="array",
+ *
  *         @OA\Items(
  *             type="object",
+ *
  *             @OA\Property(property="name", type="string", example="Рік"),
  *             @OA\Property(property="value", type="string", example="2003")
  *         )
@@ -51,11 +54,11 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *     @OA\Property(
  *         property="photos",
  *         type="array",
+ *
  *         @OA\Items(type="string", example="/uploads/photos/1.jpg")
  *     )
  * )
  */
-
 class AdvertDetailResource extends JsonResource
 {
     public function toArray($request): array

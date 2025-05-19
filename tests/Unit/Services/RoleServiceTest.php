@@ -19,10 +19,10 @@ class RoleServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->roleService = new RoleService();
+        $this->roleService = new RoleService;
     }
 
-    public function testGetAllRoles(): void
+    public function test_get_all_roles(): void
     {
         Role::factory(3)->create();
 
@@ -31,7 +31,7 @@ class RoleServiceTest extends TestCase
         $this->assertCount(3, $roles);
     }
 
-    public function testGetAllPermissions(): void
+    public function test_get_all_permissions(): void
     {
         Permission::factory(5)->create();
 
@@ -40,7 +40,7 @@ class RoleServiceTest extends TestCase
         $this->assertCount(5, $permissions);
     }
 
-    public function testCreateRole(): void
+    public function test_create_role(): void
     {
         $data = [
             'name' => 'Admin',
@@ -55,7 +55,7 @@ class RoleServiceTest extends TestCase
         ]);
     }
 
-    public function testUpdateRole(): void
+    public function test_update_role(): void
     {
         $role = Role::factory()->create(['name' => 'User']);
 
@@ -68,10 +68,10 @@ class RoleServiceTest extends TestCase
         $role->refresh();
 
         $this->assertEquals('Moderator', $role->name);
-        $this->assertFalse((boolean)$role->is_enabled);
+        $this->assertFalse((bool) $role->is_enabled);
     }
 
-    public function testDeleteRole(): void
+    public function test_delete_role(): void
     {
         $role = Role::factory()->create();
 
@@ -80,7 +80,7 @@ class RoleServiceTest extends TestCase
         $this->assertDatabaseMissing('roles', ['id' => $role->id]);
     }
 
-    public function testRoleRequestValidation(): void
+    public function test_role_request_validation(): void
     {
         $data = [
             'name' => '',
@@ -88,7 +88,7 @@ class RoleServiceTest extends TestCase
             'permissions' => [999],
         ];
 
-        $request = new RoleRequest();
+        $request = new RoleRequest;
         $validator = Validator::make($data, $request->rules());
 
         $this->assertTrue($validator->fails());

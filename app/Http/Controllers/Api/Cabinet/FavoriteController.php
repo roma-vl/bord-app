@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
 
 class FavoriteController
 {
-    public function __construct(private readonly FavoriteService $service){}
+    public function __construct(private readonly FavoriteService $service) {}
 
     public function index(): AnonymousResourceCollection
     {

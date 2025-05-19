@@ -4,7 +4,6 @@ namespace App\Parents\Repositories;
 
 use Elastic\Elasticsearch\Client;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
 
 abstract class ElasticsearchRepository extends Repository
@@ -18,7 +17,7 @@ abstract class ElasticsearchRepository extends Repository
         $this->elasticsearch = app(Client::class);
     }
 
-    public function search(string $searchText, Builder $query = null): Builder
+    public function search(string $searchText, ?Builder $query = null): Builder
     {
         $items = $this->searchOnElasticsearch($searchText);
 
@@ -38,14 +37,14 @@ abstract class ElasticsearchRepository extends Repository
                         'fields' => $this->model->getSearchableFields(),
                         'query' => $searchText,
                     ],
-                ]
+                ],
             ],
         ])->asArray();
 
         return $items;
     }
 
-    private function buildCollection(array $items, Builder $query = null): Builder
+    private function buildCollection(array $items, ?Builder $query = null): Builder
     {
         $ids = Arr::pluck($items['hits']['hits'], '_id');
 

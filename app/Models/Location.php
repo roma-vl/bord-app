@@ -20,7 +20,7 @@ class Location extends Model
         $counter = 1;
 
         while (self::where('slug', $slug)->exists()) {
-            $slug = $originalSlug . '_' . $counter;
+            $slug = $originalSlug.'_'.$counter;
             $counter++;
         }
 
@@ -40,5 +40,4 @@ class Location extends Model
             }
         });
     }
-
 }

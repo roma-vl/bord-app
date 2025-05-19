@@ -23,8 +23,8 @@ class CategoryService
 
     public function parseCategoryAndLocationFromUrl(?string $urlPath): array
     {
-//        Cache::flush();
-        $cacheKey = 'showCategory_' . md5($urlPath);
+        //        Cache::flush();
+        $cacheKey = 'showCategory_'.md5($urlPath);
 
         return Cache::tags([Location::class, Category::class])->rememberForever($cacheKey, function () use ($urlPath) {
             $slugs = $urlPath ? array_reverse(explode('/', $urlPath)) : [];
@@ -49,7 +49,9 @@ class CategoryService
             $categories = collect();
             foreach (array_reverse($categorySlugs) as $slug) {
                 $category = Category::where('slug', $slug)->first();
-                if (!$category) abort(404);
+                if (! $category) {
+                    abort(404);
+                }
                 $categories->push($category);
             }
 
@@ -59,7 +61,6 @@ class CategoryService
             return compact('locations', 'categories', 'childCategories');
         });
     }
-
 
     public function getCategories()
     {
@@ -72,6 +73,7 @@ class CategoryService
     public function createCategory(array $data): Category
     {
         $data['slug'] = Str::slug($data['name'], '-');
+
         return Category::create($data);
     }
 
@@ -79,6 +81,7 @@ class CategoryService
     {
         $data['slug'] = Str::slug($data['name'], '-');
         $category->update($data);
+
         return $category;
     }
 

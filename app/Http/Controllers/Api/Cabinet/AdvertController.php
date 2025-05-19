@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AdvertController
 {
-    public function __construct(private readonly AdvertService $advertService){}
+    public function __construct(private readonly AdvertService $advertService) {}
 
     public function index(): AnonymousResourceCollection
     {
@@ -30,6 +30,7 @@ class AdvertController
     public function show(Advert $advert): AdvertDetailResource
     {
         $this->checkAccess($advert);
+
         return new AdvertDetailResource($advert);
     }
 
@@ -49,6 +50,7 @@ class AdvertController
     {
         $this->checkAccess($advert);
         $this->advertService->edit($advert->id, $request);
+
         return new AdvertDetailResource(Advert::findOrFail($advert->id));
     }
 
@@ -56,6 +58,7 @@ class AdvertController
     {
         $this->checkAccess($advert);
         $this->advertService->editAttributes($advert->id, $request);
+
         return new AdvertDetailResource(Advert::findOrFail($advert->id));
     }
 
@@ -63,6 +66,7 @@ class AdvertController
     {
         $this->checkAccess($advert);
         $this->advertService->addPhoto($advert->id, $request);
+
         return new AdvertDetailResource(Advert::findOrFail($advert->id));
     }
 
@@ -70,6 +74,7 @@ class AdvertController
     {
         $this->checkAccess($advert);
         $this->advertService->sendToModeration($advert->id);
+
         return new AdvertDetailResource(Advert::findOrFail($advert->id));
     }
 
@@ -77,6 +82,7 @@ class AdvertController
     {
         $this->checkAccess($advert);
         $this->advertService->close($advert->id);
+
         return new AdvertDetailResource(Advert::findOrFail($advert->id));
     }
 
@@ -84,12 +90,13 @@ class AdvertController
     {
         $this->checkAccess($advert);
         $this->advertService->remove($advert->id);
+
         return response()->json([], Response::HTTP_NO_CONTENT);
     }
 
     private function checkAccess(Advert $advert): void
     {
-        if (!Gate::allows('manage-own-advert', $advert)) {
+        if (! Gate::allows('manage-own-advert', $advert)) {
             abort(403);
         }
     }

@@ -5,8 +5,8 @@ namespace App\Models\Banners;
 use App\Models\Adverts\Category;
 use App\Models\Location;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 
 /**
@@ -24,7 +24,6 @@ use Illuminate\Support\Carbon;
  * @property string $file
  * @property string $status
  * @property Carbon $published_at
- *
  * @property Location|null $region
  * @property Category $category
  *
@@ -34,10 +33,15 @@ use Illuminate\Support\Carbon;
 class Banner extends Model
 {
     public const string STATUS_DRAFT = 'draft';
+
     public const string STATUS_MODERATION = 'moderation';
+
     public const string STATUS_MODERATED = 'moderated';
+
     public const string STATUS_ORDERED = 'ordered';
+
     public const string STATUS_ACTIVE = 'active';
+
     public const string STATUS_CLOSED = 'close';
 
     protected $table = 'banner_banners';
@@ -86,7 +90,7 @@ class Banner extends Model
 
     public function sendToModeration(): void
     {
-        if (!$this->isDraft()) {
+        if (! $this->isDraft()) {
             throw new \DomainException('Advert is not draft.');
         }
         $this->update([
@@ -97,7 +101,7 @@ class Banner extends Model
 
     public function cancelModeration(): void
     {
-        if (!$this->isOnModeration()) {
+        if (! $this->isOnModeration()) {
             throw new \DomainException('Advert is not sent to moderation.');
         }
         $this->update([
@@ -107,7 +111,7 @@ class Banner extends Model
 
     public function moderate(): void
     {
-        if (!$this->isOnModeration()) {
+        if (! $this->isOnModeration()) {
             throw new \DomainException('Advert is not sent to moderation.');
         }
         $this->update([
@@ -125,7 +129,7 @@ class Banner extends Model
 
     public function order(int $cost): void
     {
-        if (!$this->isModerated()) {
+        if (! $this->isModerated()) {
             throw new \DomainException('Advert is not moderated.');
         }
         $this->update([
@@ -136,7 +140,7 @@ class Banner extends Model
 
     public function pay(Carbon $date): void
     {
-        if (!$this->isOrdered()) {
+        if (! $this->isOrdered()) {
             throw new \DomainException('Advert is not ordered.');
         }
         $this->update([
@@ -222,7 +226,7 @@ class Banner extends Model
 
     private function assertIsActive(): void
     {
-        if (!$this->isActive()) {
+        if (! $this->isActive()) {
             throw new \DomainException('Banner is not active.');
         }
     }

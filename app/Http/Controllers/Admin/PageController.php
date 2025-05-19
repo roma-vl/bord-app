@@ -7,27 +7,24 @@ use App\Http\Services\PageService;
 use App\Models\Page;
 use Inertia\Inertia;
 
-
 class PageController
 {
     public function __construct(private readonly PageService $pageService)
     {
-//        $this->middleware('can:manage-pages');
+        //        $this->middleware('can:manage-pages');
     }
 
     public function index()
     {
         return Inertia::render('Admin/Page/Index', [
-            'pages' => $this->pageService->getPages()
+            'pages' => $this->pageService->getPages(),
         ]);
     }
-
-
 
     public function create()
     {
         return response()->json([
-            'pages' => $this->pageService->getPages()
+            'pages' => $this->pageService->getPages(),
         ]);
     }
 
@@ -48,7 +45,7 @@ class PageController
     public function show(Page $page)
     {
         return Inertia::render('Admin/Page/Show', [
-            'page' => $page
+            'page' => $page,
         ]);
     }
 
@@ -57,7 +54,7 @@ class PageController
 
         return response()->json([
             'page' => $page,
-            'pages' => Page::defaultOrder()->withDepth()->get()
+            'pages' => Page::defaultOrder()->withDepth()->get(),
         ]);
     }
 

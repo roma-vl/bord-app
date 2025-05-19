@@ -24,7 +24,6 @@ class ShareLocale extends Middleware
         return $next($request);
     }
 
-
     public function getLocale(): string
     {
         return Auth::user()?->locale ?? Session::get('locale') ?? App::getLocale();

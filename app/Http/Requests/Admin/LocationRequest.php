@@ -13,7 +13,7 @@ class LocationRequest extends FormRequest
 
     public function rules(): array
     {
-        return[
+        return [
             'name' => 'required|string|max:150',
             'parent_id' => 'nullable|exists:locations,id',
         ];

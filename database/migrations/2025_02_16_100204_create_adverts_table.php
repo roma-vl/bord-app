@@ -17,7 +17,6 @@ return new class extends Migration
             $table->integer('category_id')->references('id')->on('advert_categories')->onDelete('cascade');
             $table->foreignId('region_id')->constrained('locations')->onDelete('cascade');
 
-
             $table->string('title');
             $table->integer('price');
             $table->text('address');

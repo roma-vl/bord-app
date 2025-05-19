@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests\Cabinet\Adverts;
 
+use App\Models\Adverts\Category;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use App\Models\Adverts\Category;
+
 class CreateRequest extends FormRequest
 {
     private ?Category $category = null;
@@ -32,10 +33,10 @@ class CreateRequest extends FormRequest
                     $rules[] = 'string';
                     $rules[] = 'max:255';
                 }
-                if (!empty($attribute['variants'])) {
+                if (! empty($attribute['variants'])) {
                     $rules[] = Rule::in($attribute['variants']);
                 }
-                $items['attributes.' . $attribute['id']] = $rules;
+                $items['attributes.'.$attribute['id']] = $rules;
             }
 
         }
@@ -68,7 +69,7 @@ class CreateRequest extends FormRequest
 
     private function loadCategory(): void
     {
-        if (!$this->category) {
+        if (! $this->category) {
             $this->category = Category::find($this->input('category_id'));
         }
     }

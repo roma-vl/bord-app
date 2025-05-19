@@ -2,7 +2,6 @@
 
 namespace App\Http\Services\Adverts;
 
-
 use App\Http\Requests\Cabinet\Adverts\AttributesRequest;
 use App\Http\Requests\Cabinet\Adverts\CreateRequest;
 use App\Http\Requests\Cabinet\Adverts\EditRequest;
@@ -28,7 +27,7 @@ class AdvertService
         $category = Category::findOrFail($categoryId);
         $region = $regionId ? Location::findOrFail($regionId) : null;
 
-        return DB::transaction(function () use ($user, $category, $region,$request) {
+        return DB::transaction(function () use ($user, $category, $region, $request) {
             $advert = Advert::make([
                 'title' => $request->input('title'),
                 'content' => $request->input('content'),
@@ -55,7 +54,7 @@ class AdvertService
             if ($request->hasFile('images')) {
                 foreach ($request->file('images') as $image) {
                     $advert->photo()->create([
-                        'file' => $image->store('adverts/' . $advert->id, 'public'),
+                        'file' => $image->store('adverts/'.$advert->id, 'public'),
                     ]);
                 }
             }
@@ -75,11 +74,11 @@ class AdvertService
             'address',
         ]));
 
-//        if ($oldPrice != $advert->price) {
-//            foreach ($advert->favorites()->create() as $user) {
-//                \Mail::to($user->email)->queue(new AdvertPriceChanged($user, $advert, $oldPrice));
-//            }
-//        }
+        //        if ($oldPrice != $advert->price) {
+        //            foreach ($advert->favorites()->create() as $user) {
+        //                \Mail::to($user->email)->queue(new AdvertPriceChanged($user, $advert, $oldPrice));
+        //            }
+        //        }
     }
 
     public function update(UpdateRequest $request, Advert $advert): void
@@ -109,13 +108,12 @@ class AdvertService
             if ($request->hasFile('images')) {
                 foreach ($request->file('images') as $image) {
                     $advert->photo()->create([
-                        'file' => $image->store('adverts/' . $advert->id, 'public'),
+                        'file' => $image->store('adverts/'.$advert->id, 'public'),
                     ]);
                 }
             }
         });
     }
-
 
     public function editAttributes($id, AttributesRequest $request): void
     {
@@ -146,17 +144,17 @@ class AdvertService
         DB::transaction(function () use ($photosRequest, $advert) {
             foreach ($photosRequest->file('photos') as $photo) {
                 $advert->photo()->create([
-                    'file' => $photo->store('adverts/' . $advert->id, 'public'),
+                    'file' => $photo->store('adverts/'.$advert->id, 'public'),
                 ]);
             }
         });
     }
+
     public function sendToModeration($id): void
     {
         $advert = $this->getAdvert($id);
         $advert->sendToModeration();
     }
-
 
     public function moderate($id): void
     {
@@ -169,6 +167,7 @@ class AdvertService
         $advert = $this->getAdvert($id);
         $advert->reject($request['reason']);
     }
+
     public function expire(Advert $advert): void
     {
         $advert->expire();
@@ -185,7 +184,6 @@ class AdvertService
         $advert = $this->getAdvert($id);
         $advert->delete();
     }
-
 
     public function getAdvert($id): Advert
     {
@@ -212,5 +210,4 @@ class AdvertService
             ->take(4)
             ->get();
     }
-
 }

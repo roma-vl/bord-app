@@ -1,12 +1,13 @@
 <?php
+
 namespace App\Http\Controllers;
+
 use App\Http\Services\Banner\BannerService;
 use App\Models\Banners\Banner;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
-use Inertia\Inertia;
 
 class BannerController extends Controller
 {
@@ -25,7 +26,7 @@ class BannerController extends Controller
 
         $banner = $this->service->getRandomForView($category, $region, $format);
 
-        if (!$banner) {
+        if (! $banner) {
             return response()->json(['banner' => null]);
         }
 
@@ -35,10 +36,10 @@ class BannerController extends Controller
         return response()->json(['banner' => $banner]);
     }
 
-
     public function click(Banner $banner): Application|Redirector|RedirectResponse
     {
         $this->service->click($banner);
+
         return redirect($banner->url);
     }
 }

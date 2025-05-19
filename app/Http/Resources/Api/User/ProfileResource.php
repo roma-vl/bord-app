@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Api\User;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use OpenApi\Attributes as OA;
@@ -37,11 +38,12 @@ class ProfileResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        /** @var User $this */
         return [
             'id' => $this->id,
             'name' => [
                 'first' => $this->name,
-                'last' => $this->first_name
+                'last' => $this->first_name,
             ],
             'email' => $this->email,
             'phone' => [

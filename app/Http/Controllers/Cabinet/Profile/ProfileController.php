@@ -45,6 +45,7 @@ class ProfileController extends Controller
         $request->user()->save();
 
         Mail::to($request->user()->email)->send(new \App\Mail\TestEmail($request->user()));
+
         return Redirect::route('account.profile.settings');
     }
 

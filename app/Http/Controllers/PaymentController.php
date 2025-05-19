@@ -28,16 +28,10 @@ class PaymentController extends Controller
         $banner = Banner::findOrFail($inv_id);
         $banner->pay(Carbon::now());
 
-        return 'OK' . $inv_id;
+        return 'OK'.$inv_id;
     }
 
-    public function success(Request $request)
-    {
+    public function success(Request $request) {}
 
-    }
-
-    public function fail(Request $request)
-    {
-
-    }
+    public function fail(Request $request) {}
 }

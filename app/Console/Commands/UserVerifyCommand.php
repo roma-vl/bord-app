@@ -6,7 +6,6 @@ use Illuminate\Console\Command;
 
 class UserVerifyCommand extends Command
 {
-
     protected $signature = 'user:verify {email}';
 
     protected $description = 'Command description';
@@ -15,6 +14,6 @@ class UserVerifyCommand extends Command
     {
         $email = $this->argument('email');
         // активувати по емайлу
-        $this->info('Hello World '. $this->argument('email'));
+        $this->info('Hello World '.$this->argument('email'));
     }
 }

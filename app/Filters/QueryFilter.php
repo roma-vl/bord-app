@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 abstract class QueryFilter
 {
     protected Builder $builder;
+
     protected array $data;
 
     public function __construct(array $data)
@@ -18,7 +19,7 @@ abstract class QueryFilter
     {
         $this->builder = $builder;
 
-        foreach (array_filter($this->data, fn($value) => $value !== null && $value !== '') as $filter => $value) {
+        foreach (array_filter($this->data, fn ($value) => $value !== null && $value !== '') as $filter => $value) {
             if (method_exists($this, $filter)) {
                 $this->$filter($value);
             }
@@ -26,5 +27,4 @@ abstract class QueryFilter
 
         return $this->builder;
     }
-
 }

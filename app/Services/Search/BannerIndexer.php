@@ -22,7 +22,7 @@ class BannerIndexer
             'type' => 'banner',
             'body' => [
                 'query' => [
-                    'match_all' => new \stdClass(),
+                    'match_all' => new \stdClass,
                 ],
             ],
         ]);

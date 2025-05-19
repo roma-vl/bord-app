@@ -8,7 +8,6 @@ use Illuminate\Validation\Rule;
 
 class CreateRequest extends FormRequest
 {
-
     public function authorize(): bool
     {
         return true;
@@ -20,12 +19,13 @@ class CreateRequest extends FormRequest
         if ($format = $this->input('format')) {
             [$width, $height] = explode('x', $format);
         }
+
         return [
-            'name' => 'required|string',//['required', 'exists:advert_categories,id'],
+            'name' => 'required|string', // ['required', 'exists:advert_categories,id'],
             'limit' => 'required|integer',
             'url' => 'required|url',
             'format' => ['required', 'string', Rule::in(Banner::formatsList())],
-            'file' => 'required|image|mimes:jpeg,jpg,png,gif|dimensions:min_width=' . $width . ',min_height=' . $height,
+            'file' => 'required|image|mimes:jpeg,jpg,png,gif|dimensions:min_width='.$width.',min_height='.$height,
         ];
     }
 
@@ -35,5 +35,4 @@ class CreateRequest extends FormRequest
             'name.required' => 'Введіть назву банера .',
         ];
     }
-
 }

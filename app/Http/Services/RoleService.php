@@ -34,7 +34,7 @@ class RoleService
             'is_enabled' => $data['is_enabled'] ?? false,
         ]);
 
-        if (!empty($data['permissions'])) {
+        if (! empty($data['permissions'])) {
             $role->permissions()->sync($data['permissions']);
         }
 

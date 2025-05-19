@@ -9,7 +9,9 @@ use Kalnoy\Nestedset\NodeTrait;
 class Page extends Model
 {
     use HasFactory, NodeTrait;
+
     protected $table = 'pages';
+
     protected $guarded = [];
 
     public function getPath(): string

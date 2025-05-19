@@ -13,7 +13,7 @@ use Inertia\Inertia;
 
 class TicketController extends Controller
 {
-    public function __construct(private readonly TicketService $ticketService){}
+    public function __construct(private readonly TicketService $ticketService) {}
 
     public function index()
     {
@@ -22,16 +22,16 @@ class TicketController extends Controller
             ->paginate(20);
 
         return Inertia::render('Account/Ticket/Index', [
-            'tickets' => $tickets
+            'tickets' => $tickets,
         ]);
     }
 
     public function show(Ticket $ticket)
     {
         return Inertia::render('Account/Ticket/Show', [
-            'ticket'   => $ticket,
+            'ticket' => $ticket,
             'statuses' => $ticket->statuses()->get(),
-            'messages' => $ticket->messages()->with('user')->get()
+            'messages' => $ticket->messages()->with('user')->get(),
         ]);
     }
 
@@ -71,7 +71,7 @@ class TicketController extends Controller
 
     private function checkAccess(Ticket $ticket): void
     {
-        if (!Gate::allows('manage-own-ticket', $ticket)) {
+        if (! Gate::allows('manage-own-ticket', $ticket)) {
             abort(403);
         }
     }

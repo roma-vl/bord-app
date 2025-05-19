@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Console\Commands\helpScripts;
 
 use App\Models\Location;
@@ -10,8 +9,8 @@ use Illuminate\Support\Facades\DB;
 class MigrateLocationsToNestedSets extends Command
 {
     protected $signature = 'locations:migrate-nested-sets';
-    protected $description = 'Migrate existing locations into a nested sets structure';
 
+    protected $description = 'Migrate existing locations into a nested sets structure';
 
     public function handle()
     {
@@ -24,7 +23,7 @@ class MigrateLocationsToNestedSets extends Command
                 $countryNode = Location::create([
                     'name' => $country->country,
                     'slug' => Location::generateSlug($country->country),
-                    'depth' => 0
+                    'depth' => 0,
                 ]);
 
                 $this->info("Processing regions for {$country->country}...");
@@ -33,7 +32,7 @@ class MigrateLocationsToNestedSets extends Command
                     $regionNode = $countryNode->children()->create([
                         'name' => $region->region,
                         'slug' => Location::generateSlug($region->region, $country->id),
-                        'depth' => 1
+                        'depth' => 1,
                     ]);
 
                     $this->info("Processing areas for {$region->region}...");
@@ -42,7 +41,7 @@ class MigrateLocationsToNestedSets extends Command
                         $areaNode = $regionNode->children()->create([
                             'name' => $area->area,
                             'slug' => Location::generateSlug($area->area, $region->id),
-                            'depth' => 2
+                            'depth' => 2,
                         ]);
 
                         $this->info("Processing villages for {$area->area}...");
@@ -51,7 +50,7 @@ class MigrateLocationsToNestedSets extends Command
                             $areaNode->children()->create([
                                 'name' => $village->village,
                                 'slug' => Location::generateSlug($village->village, $area->id),
-                                'depth' => 3
+                                'depth' => 3,
                             ]);
                         }
                     }

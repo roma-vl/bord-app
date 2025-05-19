@@ -19,15 +19,15 @@ use Inertia\Response;
 
 class IndexController extends Controller
 {
-
     public function __construct(
         private readonly AdvertService $advertService,
         private readonly CategoryService $categoryService,
         private readonly SearchService $searchService,
     ) {}
+
     public function changeLocale(string $locale): RedirectResponse
     {
-        if (!in_array($locale, ['en', 'uk'])) {
+        if (! in_array($locale, ['en', 'uk'])) {
             abort(400);
         }
 
@@ -48,18 +48,19 @@ class IndexController extends Controller
         return Inertia::render('Index', [
             'categories' => $this->categoryService->getFirstLevelCategoriesWithChildren(),
             'news' => $this->advertService->getLatest(),
-            'vip' => $this->advertService->getVip()
+            'vip' => $this->advertService->getVip(),
         ]);
     }
-
 
     public function regions(): JsonResponse
     {
         $regions = Location::whereDepth(1)->get();
+
         return response()->json([
-            'regions' => $regions
+            'regions' => $regions,
         ]);
     }
+
     public function cities(Location $region): JsonResponse
     {
         $cities = $region->descendants()
@@ -69,9 +70,10 @@ class IndexController extends Controller
             ->get(['name', 'slug', 'id']);
 
         return response()->json([
-            'cities' => $cities
+            'cities' => $cities,
         ]);
     }
+
     public function search($region): JsonResponse
     {
         if (strlen($region) < 2) {
@@ -93,8 +95,12 @@ class IndexController extends Controller
 
         $page = (int) $request->input('page', 1);
         $perPage = (int) $request->input('per_page', 5);
-        if ($perPage < 1) $perPage = 1;
-        if ($page < 1) $page = 1;
+        if ($perPage < 1) {
+            $perPage = 1;
+        }
+        if ($page < 1) {
+            $page = 1;
+        }
 
         $results = $this->searchService->search($data['categories']->last(), $data['locations']->last(), $request, $urlPath, $page, $perPage);
 
@@ -114,12 +120,11 @@ class IndexController extends Controller
             return isset($categoriesCounts[$category->id]) && $categoriesCounts[$category->id] > 0;
         });
 
-//        $categoryTree = $this->categoryService->getFirstLevelCategoriesWithChildren();
+        //        $categoryTree = $this->categoryService->getFirstLevelCategoriesWithChildren();
         $attributes = count($data['categories']) ? $data['categories']->last()->allArrayAttributes() : [];
         $categoryTree = $this->categoryService->getFirstLevelCategoriesWithChildren();
 
         $categoryFilters = $categoryTree->map(fn ($category) => $this->formatCategoryWithAttributes($category));
-
 
         return Inertia::render('Search/List', [
             'adverts' => [
@@ -152,15 +157,14 @@ class IndexController extends Controller
         ];
     }
 
-
     public function show(Advert $advert)
     {
         $advert->load(['category.ancestors', 'value.attribute',
-            'photo', 'user', 'region','favorites']);
+            'photo', 'user', 'region', 'favorites']);
         $values = $advert->value->map(function ($value) {
             return [
                 'attribute' => $value->attribute->name ?? null,
-                'value' => $value->value
+                'value' => $value->value,
             ];
         });
 

@@ -16,7 +16,7 @@ class PermissionRequest extends FormRequest
         $permissionId = $this->route('permission')?->id ?? 'NULL';
 
         return [
-            'key' => 'required|string|unique:permissions,key,' . $permissionId,
+            'key' => 'required|string|unique:permissions,key,'.$permissionId,
             'description' => 'nullable|string',
         ];
     }

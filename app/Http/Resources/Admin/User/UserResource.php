@@ -16,7 +16,7 @@ class UserResource extends JsonResource
             'status' => $this->email_verified_at,
             'avatar_url' => $this->avatar_url,
             'locale' => $this->locale,
-            'created_at' =>  $this->created_at ? $this->created_at->diffForHumans() : null,
+            'created_at' => $this->created_at ? $this->created_at->diffForHumans() : null,
             'updated_at' => $this->updated_at ? $this->updated_at->diffForHumans() : null,
             'deleted_at' => $this->deleted_at ? $this->deleted_at->diffForHumans() : null,
             'roles' => $this->roles->pluck('name'),

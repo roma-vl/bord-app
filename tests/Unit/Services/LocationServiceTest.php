@@ -16,7 +16,7 @@ class LocationServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->locationService = new LocationService();
+        $this->locationService = new LocationService;
     }
 
     public function test_returns_list_of_countries()
@@ -31,16 +31,16 @@ class LocationServiceTest extends TestCase
     public function test_returns_list_of_regions_for_given_country()
     {
         $country = LocatedCountry::factory()->create();
-         $this->locationService->createLocation([
+        $this->locationService->createLocation([
             'type' => 'region',
             'country_id' => $country->id,
-            'name' => 'Kyiv Region'
+            'name' => 'Kyiv Region',
         ]);
 
-         $this->locationService->createLocation([
+        $this->locationService->createLocation([
             'type' => 'region',
             'country_id' => $country->id,
-            'name' => 'Kyiv Region2'
+            'name' => 'Kyiv Region2',
         ]);
 
         $regions = $this->locationService->getRegions($country->id);
@@ -54,21 +54,21 @@ class LocationServiceTest extends TestCase
         $region = $this->locationService->createLocation([
             'type' => 'region',
             'country_id' => $country->id,
-            'name' => 'Kyiv Region'
+            'name' => 'Kyiv Region',
         ]);
 
         $this->locationService->createLocation([
             'type' => 'area',
             'country_id' => $country->id,
             'region_id' => $region->id,
-            'name' => 'Obukhi'
+            'name' => 'Obukhi',
         ]);
 
         $this->locationService->createLocation([
             'type' => 'area',
             'country_id' => $country->id,
             'region_id' => $region->id,
-            'name' => 'Obukhi2'
+            'name' => 'Obukhi2',
         ]);
 
         $areas = $this->locationService->getAreas($region->id);
@@ -80,10 +80,9 @@ class LocationServiceTest extends TestCase
     {
         LocatedCountry::factory()->create();
         $country = $this->locationService->createLocation([
-             'type' => 'country',
-             'name' => 'Switzerland'
-         ]);
-
+            'type' => 'country',
+            'name' => 'Switzerland',
+        ]);
 
         $this->assertDatabaseHas('located_countrys', ['id' => $country->id, 'country' => 'Switzerland']);
     }
@@ -93,13 +92,13 @@ class LocationServiceTest extends TestCase
         $country = LocatedCountry::factory()->create();
         $this->locationService->createLocation([
             'type' => 'country',
-            'name' => 'Ukraine1'
+            'name' => 'Ukraine1',
         ]);
 
         $region = $this->locationService->createLocation([
             'type' => 'region',
             'country_id' => $country->id,
-            'name' => 'Kyiv Region'
+            'name' => 'Kyiv Region',
         ]);
 
         $this->assertDatabaseHas('located_region', ['id' => $region->id, 'region' => 'Kyiv Region']);
@@ -110,21 +109,20 @@ class LocationServiceTest extends TestCase
         $country = LocatedCountry::factory()->create();
         $this->locationService->createLocation([
             'type' => 'country',
-            'name' => 'Ukraine1'
+            'name' => 'Ukraine1',
         ]);
 
         $region = $this->locationService->createLocation([
             'type' => 'region',
             'country_id' => $country->id,
-            'name' => 'Kyiv Region'
+            'name' => 'Kyiv Region',
         ]);
-
 
         $area = $this->locationService->createLocation([
             'type' => 'area',
             'country_id' => $country->id,
             'region_id' => $region->id,
-            'name' => 'Obukhiv'
+            'name' => 'Obukhiv',
         ]);
 
         $this->assertDatabaseHas('located_area', ['id' => $area->id, 'area' => 'Obukhiv']);
@@ -135,21 +133,20 @@ class LocationServiceTest extends TestCase
         $country = LocatedCountry::factory()->create();
         $this->locationService->createLocation([
             'type' => 'country',
-            'name' => 'Ukraine1'
+            'name' => 'Ukraine1',
         ]);
 
         $region = $this->locationService->createLocation([
             'type' => 'region',
             'country_id' => $country->id,
-            'name' => 'Kyiv Region'
+            'name' => 'Kyiv Region',
         ]);
-
 
         $area = $this->locationService->createLocation([
             'type' => 'area',
             'country_id' => $country->id,
             'region_id' => $region->id,
-            'name' => 'Obuk'
+            'name' => 'Obuk',
         ]);
 
         $village = $this->locationService->createLocation([
@@ -157,7 +154,7 @@ class LocationServiceTest extends TestCase
             'country_id' => $country->id,
             'region_id' => $region->id,
             'area_id' => $area->id,
-            'name' => 'Berezivka'
+            'name' => 'Berezivka',
         ]);
 
         $this->assertDatabaseHas('located_village', ['id' => $village->id, 'village' => 'Berezivka']);

@@ -13,7 +13,7 @@ use OpenApi\Attributes as OA;
             property: 'user',
             properties: [
                 new OA\Property(property: 'name', type: 'string', example: 'Іван'),
-                new OA\Property(property: 'phone', type: 'string', example: '+380991234567')
+                new OA\Property(property: 'phone', type: 'string', example: '+380991234567'),
             ],
             type: 'object'
         ),
@@ -21,7 +21,7 @@ use OpenApi\Attributes as OA;
             property: 'category',
             properties: [
                 new OA\Property(property: 'id', type: 'integer', example: 4),
-                new OA\Property(property: 'name', type: 'string', example: 'Авто')
+                new OA\Property(property: 'name', type: 'string', example: 'Авто'),
             ],
             type: 'object'
         ),
@@ -29,13 +29,13 @@ use OpenApi\Attributes as OA;
             property: 'region',
             properties: [
                 new OA\Property(property: 'id', type: 'integer', example: 22973),
-                new OA\Property(property: 'name', type: 'string', example: 'Київ')
+                new OA\Property(property: 'name', type: 'string', example: 'Київ'),
             ],
             type: 'object'
         ),
         new OA\Property(property: 'title', type: 'string', example: 'Продаю BMW E39'),
         new OA\Property(property: 'price', type: 'number', format: 'float', example: 15000),
-        new OA\Property(property: 'date', type: 'string', format: 'date-time', example: '2024-01-01T12:00:00Z')
+        new OA\Property(property: 'date', type: 'string', format: 'date-time', example: '2024-01-01T12:00:00Z'),
     ],
     type: 'object'
 )]
@@ -61,7 +61,7 @@ class AdvertListResource extends JsonResource
             'title' => $this->title,
             'price' => $this->price,
             'date' => $this->published_at,
-//            'photo' => $this->photos->first(),
+            //            'photo' => $this->photos->first(),
         ];
     }
 }
