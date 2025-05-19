@@ -25,6 +25,7 @@ use App\Http\Controllers\IndexController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\StaticController;
 use Illuminate\Support\Facades\Route;
+use Rap2hpoutre\LaravelLogViewer\LogViewerController;
 
 Route::get('/banner/get', [PublicBannerController::class, 'get'])->name('banner.get');
 Route::get('/banner/{banner}/click', [PublicBannerController::class, 'click'])->name('banner.click');
@@ -103,7 +104,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('/admin')->name('admin.')->group(function () {
         Route::get('/', [AdminIndexController::class, 'index'])->name('index');
-
+        Route::get('logs', [LogViewerController::class, 'index']);
         Route::controller(AdminUsersController::class)->prefix('users')->name('users.')->group(function () {
             Route::get('/search', 'search')->name('search');
             Route::put('/{user}/restore', 'restore')->name('restore');
