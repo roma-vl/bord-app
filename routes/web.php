@@ -7,6 +7,8 @@ use App\Http\Controllers\Admin\Adverts\CategoryController;
 use App\Http\Controllers\Admin\IndexController as AdminIndexController;
 use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Admin\PageController as AdminPageController;
+use App\Http\Controllers\Cabinet\TicketController;
+use App\Http\Controllers\Admin\TicketController as AdminTicketController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\Admin\PermissionsController as AdminPermissionsController;
 use App\Http\Controllers\Admin\RolesController as AdminRolesController;
@@ -57,7 +59,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('favorites/{advert}', [FavoriteController::class, 'add'])->name('favorites.add');
         Route::delete('favorites/{advert}', [FavoriteController::class, 'remove'])->name('favorites.remove');
 
-//        Route::get('banners', [BannerController::class, 'index'])->name('banners.index');
+        Route::resource('tickets', TicketController::class);
+        Route::post('tickets/{ticket}/message', [TicketController::class, 'message'])->name('tickets.message');
+
         Route::prefix('/adverts')->name('adverts.')->group(function () {
             Route::get('/', [AdvertController::class, 'index'])->name('index');
             Route::get('/show/{advert}', [IndexController::class, 'show'])->name('show');
@@ -81,17 +85,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/regions/{category}/{region?}', [CreateController::class, 'getRegions'])->name('regions');
             Route::get('/attributes/{category}', [CreateController::class, 'getAttributes'])->name('attributes');
             Route::post('/store', [CreateController::class, 'store'])->name('store');
+
             Route::get('/show/{banner}', [BannerController::class, 'show'])->name('show');
             Route::get('/edit/{banner}', [BannerController::class, 'edit'])->name('edit');
             Route::post('/update/{banner}', [BannerController::class, 'update'])->name('update');
-
             Route::get('/edit/{banner}/file', [BannerController::class, 'fileForm'])->name('edit.file');
             Route::post('/edit/{banner}/file', [BannerController::class, 'fileUpdate'])->name('edit.file.update');
-
             Route::post('/publish/{banner}', [BannerController::class, 'send'])->name('actions.publish');
             Route::post('/draft/{banner}', [BannerController::class, 'cancel'])->name('actions.draft');
             Route::post('/order/{banner}', [BannerController::class, 'order'])->name('actions.order');
-
             Route::delete('/destroy/{banner}', [BannerController::class, 'destroy'])->name('destroy');
         });
 
@@ -120,7 +122,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/villages/{areaId}', 'getVillages')->name('villages');
             Route::post('/store', 'store')->name('store');
             Route::delete('/destroy/{type}/{id}', 'destroy')->name('destroy');
-
             Route::get('/{type}/{id}', 'show')->name('show');
         });
 
@@ -162,6 +163,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('/{banner}/reject', [AdminBannerController::class, 'reject']);
             Route::post('/{banner}/pay', [AdminBannerController::class, 'pay'])->name('pay');
             Route::delete('/{banner}/destroy', [AdminBannerController::class, 'pay'])->name('destroy');
+        });
+
+        Route::group(['prefix' => 'tickets', 'as' => 'tickets.'], function () {
+            Route::get('/', [AdminTicketController::class, 'index'])->name('index');
+            Route::get('/{ticket}/show', [AdminTicketController::class, 'show'])->name('show');
+            Route::put('/{ticket}/edit', [AdminTicketController::class, 'edit'])->name('edit');
+            Route::post('{ticket}/message', [AdminTicketController::class, 'message'])->name('message');
+            Route::post('/{ticket}/close', [AdminTicketController::class, 'close'])->name('close');
+            Route::post('/{ticket}/approve', [AdminTicketController::class, 'approve'])->name('approve');
+            Route::post('/{ticket}/reopen', [AdminTicketController::class, 'reopen'])->name('reopen');
+            Route::delete('/{ticket}/destroy', [AdminTicketController::class, 'destroy'])->name('destroy');
         });
     });
 

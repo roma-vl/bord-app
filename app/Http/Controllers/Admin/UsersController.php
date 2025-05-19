@@ -34,8 +34,8 @@ class UsersController extends Controller
         $users = UserResource::collection($this->userRepository->getFilteredPaginatedUsers($validated));
 
         return Inertia::render('Admin/Users/Index', [
-            'users' => $users,
-            'sortBy' => $sortBy,
+            'users'     => $users,
+            'sortBy'    => $sortBy,
             'sortOrder' => $sortOrder,
         ]);
     }
@@ -56,6 +56,7 @@ class UsersController extends Controller
         if (Gate::denies('user.create')) {
             abort(403);
         }
+
         $user = $this->userService->createUserFromAdmin($request->validated());
 
         if ($request->has('roles')) {
@@ -78,8 +79,8 @@ class UsersController extends Controller
         }
 
         return response()->json([
-            'user' => new UserResource($user),
-            'roles' => Role::all(),
+            'user'      => new UserResource($user),
+            'roles'     => Role::all(),
             'userRoles' => $user->roles->pluck('id')
         ]);
     }
@@ -109,6 +110,7 @@ class UsersController extends Controller
         }
 
         $this->userService->deleteUser($user);
+
         return redirect()->route('admin.users.index')
             ->with('info', 'Вжух і щось сталося... 🤡 ');
     }
@@ -139,7 +141,11 @@ class UsersController extends Controller
 
         $users = UserResource::collection($usersQuery);
 
-        return Inertia::render('Admin/Users/Index', compact('users', 'sortBy', 'sortOrder'));
+        return Inertia::render('Admin/Users/Index', [
+            'users'     => $users,
+            'sortBy'    => $sortBy,
+            'sortOrder' => $sortOrder,
+        ]);
     }
 
     private function getSessionValue(Request $request, string $key, $default)

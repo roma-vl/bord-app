@@ -7,15 +7,13 @@ import FlashMessage from "@/Components/FlashMessage.vue";
 import AdvertList from "@/Components/AdvertList.vue";
 
 const adverts = usePage().props.adverts;
-console.log(adverts, 'adverts')
+const flash = computed(() => usePage().props.flash);
 
 const routes = {
-        edit: "account.adverts.edit",
-        remove: "account.adverts.destroy",
-        show: "adverts.show",
+    edit: "account.adverts.edit",
+    remove: "account.adverts.destroy",
+    show: "adverts.show",
 };
-
-const flash = computed(() => usePage().props.flash);
 
 </script>
 
@@ -29,7 +27,9 @@ const flash = computed(() => usePage().props.flash);
                     <ProfileMenu :activeTab="'account.adverts.index'" />
                     <div class=" px-4">
                         <div class="grid grid-cols-2 gap-4 items-start mb-3">
-                            <h2 class="text-xl font-bold mb-4">Мої оголошення</h2>
+                            <h2 class="text-xl font-bold mb-4">
+                                Мої оголошення
+                            </h2>
 
                             <a :href="route('account.adverts.create')"
                                class="justify-self-end w-48 h-12 flex items-center justify-center text-md font-medium text-violet-500 hover:text-violet-600 transition-all duration-300 ease-in-out relative
@@ -42,7 +42,6 @@ const flash = computed(() => usePage().props.flash);
                                 <span class="absolute right-0 top-0 h-full w-[3px] bg-violet-600 scale-y-0 transition-transform duration-300 ease-in-out group-hover:scale-y-100 origin-bottom"></span>
                             </a>
                         </div>
-
                         <AdvertList :adverts="adverts" :routes="routes"></AdvertList>
                     </div>
                 </div>

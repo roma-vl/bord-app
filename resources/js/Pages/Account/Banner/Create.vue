@@ -99,25 +99,27 @@ onBeforeUnmount(() => {
                 <div class="overflow-hidden bg-white shadow sm:rounded-lg p-6">
                     <div class="px-4">
                         <form @submit.prevent="submit">
-
                             <div class="mb-4">
-                                <label class="block text-sm font-medium mb-2">Назва</label>
+                                <label class="block text-sm font-medium mb-2">
+                                    Назва
+                                </label>
                                 <input v-model="form.name" type="text"  class="w-full border-gray-300 p-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
                             </div>
                             <InputError class="mt-2" :message="form.errors.name"/>
-
                             <div class="mb-4 ">
-                                <label class="block text-sm font-medium mb-2">Views</label>
+                                <label class="block text-sm font-medium mb-2">
+                                    Views
+                                </label>
                                 <input v-model="form.limit" type="number" required class="w-full border-gray-300 p-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
                             </div>
                             <InputError class="mt-2" :message="form.errors.limit"/>
-
                             <div class="mb-4">
-                                <label class="block text-sm font-medium mb-2">Назва</label>
+                                <label class="block text-sm font-medium mb-2">
+                                    Назва
+                                </label>
                                 <input v-model="form.url" type="text"  class="w-full border-gray-300 p-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
                             </div>
                             <InputError class="mt-2" :message="form.errors.url"/>
-
                             <div class="mb-4">
                                 <label class="block text-sm font-medium mb-2">Формат</label>
                                 <select v-model="form.format" class="w-full border-gray-300 p-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
@@ -127,7 +129,6 @@ onBeforeUnmount(() => {
                                 </select>
                             </div>
                             <InputError class="mt-2" :message="form.errors.category_id"/>
-
                             <div class="mb-4">
                                 <label class="block text-sm font-medium mb-2">Категорія</label>
                                 <select v-model="form.category_id" class="w-full border-gray-300 p-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
@@ -137,14 +138,13 @@ onBeforeUnmount(() => {
                                 </select>
                             </div>
                             <InputError class="mt-2" :message="form.errors.category_id"/>
-
                             <div class="mb-4">
-                                <label class="block text-sm font-medium mb-2">Місцезнаходження</label>
+                                <label class="block text-sm font-medium mb-2">
+                                    Місцезнаходження
+                                </label>
                                 <div class="relative search-container">
-                                    <input v-model="citySearchQuery" type="text"
-                                           class="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-green-600 transition duration-200"
-                                           placeholder="Почніть вводити адресу" />
-
+                                    <input v-model="citySearchQuery" type="text" placeholder="Почніть вводити адресу"
+                                        class="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-green-600 transition duration-200"/>
                                     <div v-if="showLocationDropdown" class="absolute left-0 w-full bg-white border mt-1 rounded-lg shadow-lg z-10 h-[400px] overflow-y-auto">
                                         <ul v-if="filteredCities.length">
                                             <li v-for="city in filteredCities" :key="city.id" @click="selectCity(city)"
@@ -155,15 +155,16 @@ onBeforeUnmount(() => {
                                     </div>
                                 </div>
                             </div>
-
                             <div class="mb-4">
-                                <label class="block text-sm font-medium mb-2">Фото</label>
+                                <label class="block text-sm font-medium mb-2">
+                                    Фото
+                                </label>
                                 <input type="file" @change="onFileChange" accept="image/*" class="w-full border-gray-300 p-2 rounded-md shadow-sm" />
                                 <InputError class="mt-2" :message="form.errors.image"/>
-
                             </div>
-
-                            <button type="submit" class="mt-6 bg-blue-500 text-white px-6 py-3 rounded-md shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">Створити</button>
+                            <button type="submit" class="mt-6 bg-blue-500 text-white px-6 py-3 rounded-md shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                Створити
+                            </button>
                         </form>
                     </div>
                 </div>

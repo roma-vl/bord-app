@@ -110,7 +110,6 @@ const restoreUser = (id) => {
         <div class="py-2">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <FlashMessage v-if="flash" :flash="flash" />
-
                 <div class="mb-2 flex justify-end">
                     <button
                         v-can="'user.create'"
@@ -119,13 +118,7 @@ const restoreUser = (id) => {
                         + New User
                     </button>
                 </div>
-
-                <Grid
-                    :items="users"
-                    :pagination="pagination"
-                    :headings="headings"
-                    :routes="routes"
-                >
+                <Grid :items="users" :pagination="pagination" :headings="headings" :routes="routes">
                     <template #column-name="{ row }">
                         <div class="flex gap-2 font-normal">
                             <div class="relative h-10 w-10">
@@ -143,7 +136,6 @@ const restoreUser = (id) => {
                             </div>
                         </div>
                     </template>
-
                     <template #column-email="{ row }">
                         <a @click.prevent="openShowModal(row.id)" class="text-sm hover:underline cursor-pointer">
                             {{ row.email }}
@@ -168,11 +160,8 @@ const restoreUser = (id) => {
                     </template>
                     <template #column-role="{ row }">
                         <div class="flex gap-2">
-                            <span
-                                v-for="(role, index) in row.roles"
-                                :key="index"
-                                class="inline-flex items-center gap-1 rounded-full bg-violet-50 px-2 py-1 text-xs font-semibold text-violet-600"
-                            >
+                            <span v-for="(role, index) in row.roles" :key="index"
+                                class="inline-flex items-center gap-1 rounded-full bg-violet-50 px-2 py-1 text-xs font-semibold text-violet-600">
                                 {{ role }}
                             </span>
                         </div>
@@ -181,44 +170,35 @@ const restoreUser = (id) => {
                         <div class="flex gap-2">
                             <div class="flex justify-end gap-4">
                                 <div  v-can="'user.delete'">
-                                    <a  v-if="!row.deleted_at" @click.prevent="deleteUser(row.id)" class="text-red-600 hover:text-red-900 cursor-pointer">
+                                    <a v-if="!row.deleted_at" @click.prevent="deleteUser(row.id)" class="text-red-600 hover:text-red-900 cursor-pointer">
                                         <TrashIcon />
                                     </a>
-                                    <a v-else  @click.prevent="restoreUser(row.id)" class="text-green-600 hover:text-green-900 cursor-pointer">
+                                    <a v-else @click.prevent="restoreUser(row.id)" class="text-green-600 hover:text-green-900 cursor-pointer">
                                         <RefreshIcon />
                                     </a>
                                 </div>
-                                <div  v-can="'user.edit'">
+                                <div v-can="'user.edit'">
                                     <a v-if="!row.deleted_at" @click.prevent="openEditModal(row.id)" class="text-blue-600 hover:text-blue-900 cursor-pointer">
                                         <PencilIcon />
                                     </a>
                                 </div>
-
                             </div>
                         </div>
                     </template>
                 </Grid>
-
                 <Modal :show="isCreateModalOpen" maxWidth="2xl" @close="isCreateModalOpen = false">
                     <Create v-if="selectedUser"  @userCreated="refreshUsers" :roles="selectedUser.roles" />
                 </Modal>
-
                 <Modal :show="isEditModalOpen" @close="isEditModalOpen = false">
-                    <Edit v-if="selectedUser"
-                          :user="selectedUser.user"
-                          :roles="selectedUser.roles"
-                          :user-roles="selectedUser.userRoles"
-                          @userUpdated="refreshUsers" />
+                    <Edit v-if="selectedUser" :user="selectedUser.user" :roles="selectedUser.roles"
+                          :user-roles="selectedUser.userRoles" @userUpdated="refreshUsers" />
                 </Modal>
-
                 <Modal :show="isShowModalOpen" @close="isShowModalOpen = false" maxWidth="2xl">
                     <Show v-if="selectedUser" :user="selectedUser" />
                 </Modal>
-
                 <Modal :show="showForbidden" @close="showForbidden = false" maxWidth="2xl">
                     <Forbidden :data="errorForbidden" />
                 </Modal>
-
             </div>
         </div>
     </AdminLayout>

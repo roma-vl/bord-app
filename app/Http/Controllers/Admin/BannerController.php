@@ -47,7 +47,7 @@ class BannerController extends Controller
         $statuses = Banner::statusesList();
 
         return Inertia::render('Admin/Banner/Index', [
-            'banners' => $banners,
+            'banners'  => $banners,
             'statuses' => $statuses,
         ]);
 
