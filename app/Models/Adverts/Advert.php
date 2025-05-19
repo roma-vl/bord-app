@@ -2,17 +2,43 @@
 
 namespace App\Models\Adverts;
 
+use App\Models\Adverts\Dialog\Dialog;
 use App\Models\Location;
 use App\Models\User;
 use App\Traits\Searchable;
 use Carbon\Carbon;
+use DomainException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Auditable as AuditableTrait;
 use OwenIt\Auditing\Contracts\Auditable;
 
+/**
+ * @property int $id
+ * @property int $user_id
+ * @property int $category_id
+ * @property int $region_id
+ * @property string $title
+ * @property string $content
+ * @property int $price
+ * @property string $address
+ * @property string $status
+ * @property string $reject_reason
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ * @property Carbon $published_at
+ * @property Carbon $expires_at
+ * @property User $user
+ * @property Location $region
+ * @property Category $category
+ * @property Value[] $values
+ * @property Photo[] $photos
+ * @method Builder forUser(User $user)
+ */
 class Advert extends Model implements Auditable
 {
     use AuditableTrait, HasFactory, Searchable, SoftDeletes;
@@ -98,7 +124,7 @@ class Advert extends Model implements Auditable
     public function sendToModeration(): void
     {
         if (! $this->isDraft()) {
-            throw new \DomainException('Advert is not draft.');
+            throw new DomainException('Advert is not draft.');
         }
         //        if (!\count($this->photo)) {
         //            throw new \DomainException('Upload photos.');
@@ -111,7 +137,7 @@ class Advert extends Model implements Auditable
     public function moderate(Carbon $date): void
     {
         if ($this->status !== self::STATUS_MODERATION) {
-            throw new \DomainException('Advert is not sent to moderation.');
+            throw new DomainException('Advert is not sent to moderation.');
         }
         $this->update([
             'published_at' => $date,
@@ -157,6 +183,50 @@ class Advert extends Model implements Auditable
         ]);
     }
 
+    public function writeClientMessage(int $fromId, string $message): void
+    {
+        $this->getOrCreateDialogWith($fromId)->writeMessageByClient($fromId, $message);
+    }
+
+    public function writeOwnerMessage(int $toId, string $message): void
+    {
+        $this->getDialogWith($toId)->writeMessageByOwner($this->user_id, $message);
+    }
+
+    public function readClientMessages(int $userId): void
+    {
+        $this->getDialogWith($userId)->readByClient();
+    }
+
+    public function readOwnerMessages(int $userId): void
+    {
+        $this->getDialogWith($userId)->readByOwner();
+    }
+
+    private function getDialogWith(int $userId): Dialog
+    {
+        $dialog = $this->dialogs()->where([
+            'user_id' => $this->user_id,
+            'client_id' => $userId,
+        ])->first();
+        if (! $dialog) {
+            throw new DomainException('Dialog not found.');
+        }
+        return $dialog;
+    }
+    private function getOrCreateDialogWith(int $userId): Dialog
+    {
+        if ($userId === $this->user_id) {
+            throw new DomainException('Cannot create dialog to myself.');
+        }
+
+        return $this->dialogs()->firstOrCreate([
+            'user_id' => $this->user_id,
+            'client_id' => $userId,
+        ]);
+    }
+
+
     public static function statusesList(): array
     {
         return [
@@ -176,7 +246,7 @@ class Advert extends Model implements Auditable
         return $query->where('user_id', $user->id);
     }
 
-    public function scopeForCategory(Builder $query, Category $category)
+    public function scopeForCategory(Builder $query, Category $category): Builder
     {
         return $query->whereIn('category_id', array_merge(
             [$category->id],
@@ -184,22 +254,27 @@ class Advert extends Model implements Auditable
         ));
     }
 
-    public function scopeActive(Builder $query)
+    public function scopeActive(Builder $query): Builder
     {
         return $query->where('status', self::STATUS_ACTIVE);
     }
 
-    public function scopeFavoriteByUser(Builder $query, User $user)
+    public function scopeFavoriteByUser(Builder $query, User $user): Builder
     {
         return $query->whereHas('favorites', function (Builder $query) use ($user) {
             $query->where('user_id', $user->id);
         });
     }
 
-    public function favorites()
+    public function favorites(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'advert_advert_favorites', 'advert_id', 'user_id');
     }
+    public function dialogs(): HasMany
+    {
+        return $this->hasMany(Dialog::class, 'advert_id', 'id');
+    }
+
 
     public function getIsFavoritedAttribute()
     {
@@ -211,7 +286,7 @@ class Advert extends Model implements Auditable
         return $this->favorites->contains('id', $user->id);
     }
 
-    public function values()
+    public function values(): HasMany
     {
         return $this->hasMany(Value::class, 'advert_id', 'id');
     }
