@@ -6,6 +6,8 @@ use App\Http\Requests\Adverts\SearchRequest;
 use App\Http\Services\Adverts\AdvertService;
 use App\Http\Services\Adverts\SearchService;
 use App\Http\Services\CategoryService;
+use App\Http\Services\LocaleService;
+use App\Http\Services\LocationService;
 use App\Models\Adverts\Advert;
 use App\Models\Adverts\Category;
 use App\Models\Location;
@@ -23,23 +25,13 @@ class IndexController extends Controller
         private readonly AdvertService $advertService,
         private readonly CategoryService $categoryService,
         private readonly SearchService $searchService,
+        private readonly LocaleService $localeService,
+        private readonly LocationService $locationService,
     ) {}
 
     public function changeLocale(string $locale): RedirectResponse
     {
-        if (! in_array($locale, ['en', 'uk'])) {
-            abort(400);
-        }
-
-        App::setLocale($locale);
-        Session::put('locale', $locale);
-
-        if (Auth::check()) {
-            Auth::user()->update(['locale' => $locale]);
-        }
-
-        session()->flash('success', trans('auth.language'));
-
+        $this->localeService->changeLocale($locale);
         return redirect()->back();
     }
 
@@ -54,7 +46,8 @@ class IndexController extends Controller
 
     public function regions(): JsonResponse
     {
-        $regions = Location::whereDepth(1)->get();
+        $country = $this->locationService->getCountries()->first();
+        $regions = $this->locationService->getRegions($country);
 
         return response()->json([
             'regions' => $regions,
@@ -63,11 +56,7 @@ class IndexController extends Controller
 
     public function cities(Location $region): JsonResponse
     {
-        $cities = $region->descendants()
-            ->whereDepth(3)
-            ->orderBy('name')
-            ->take(300)
-            ->get(['name', 'slug', 'id']);
+        $cities = $this->locationService->getCities($region);
 
         return response()->json([
             'cities' => $cities,
@@ -76,16 +65,11 @@ class IndexController extends Controller
 
     public function search($region): JsonResponse
     {
-        if (strlen($region) < 2) {
-            return response()->json(['regions' => []]);
-        }
+        $regions = $this->locationService->search($region);
 
-        $regions = Location::where('name', 'like', "%{$region}%")
-            ->orderBy('name', 'asc')
-            ->limit(10)
-            ->get(['id', 'name', 'slug']);
-
-        return response()->json(['regions' => $regions]);
+        return response()->json([
+            'regions' => $regions
+        ]);
 
     }
 

@@ -8,18 +8,10 @@ use Illuminate\Support\Collection;
 
 class LocationService
 {
-    public function getCities(Location $region): Collection
-    {
-        return $region->descendants()
-            ->whereDepth(3)
-            ->orderBy('name')
-            ->take(300)
-            ->get(['name', 'slug', 'id']);
-    }
-
+    public const int MIN_SEARCH_LENGTH = 3;
     public function search(string $query): Collection
     {
-        if (strlen($query) < 2) {
+        if (strlen($query) < self::MIN_SEARCH_LENGTH) {
             return collect();
         }
 
@@ -36,7 +28,18 @@ class LocationService
 
     public function getRegions(Location $region): Collection
     {
-        return $region->children()->where('depth', 1)->get();
+        return $region->children()
+            ->where('depth', 1)
+            ->get(['name', 'slug', 'id']);
+    }
+
+    public function getCities(Location $region): Collection
+    {
+        return $region->descendants()
+            ->whereDepth(3)
+            ->orderBy('name')
+            ->take(300)
+            ->get(['name', 'slug', 'id']);
     }
 
     public function getAreas(Location $region): Collection
