@@ -37,6 +37,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property Category $category
  * @property Value[] $values
  * @property Photo[] $photos
+ *
  * @method Builder forUser(User $user)
  */
 class Advert extends Model implements Auditable
@@ -131,6 +132,7 @@ class Advert extends Model implements Auditable
         //        }
         $this->update([
             'status' => self::STATUS_MODERATION,
+            'reject_reason' => '',
         ]);
     }
 
@@ -143,6 +145,7 @@ class Advert extends Model implements Auditable
             'published_at' => $date,
             'expires_at' => $date->copy()->addDays(15),
             'status' => self::STATUS_ACTIVE,
+            'reject_reason' => '',
         ]);
     }
 
@@ -212,8 +215,10 @@ class Advert extends Model implements Auditable
         if (! $dialog) {
             throw new DomainException('Dialog not found.');
         }
+
         return $dialog;
     }
+
     private function getOrCreateDialogWith(int $userId): Dialog
     {
         if ($userId === $this->user_id) {
@@ -225,7 +230,6 @@ class Advert extends Model implements Auditable
             'client_id' => $userId,
         ]);
     }
-
 
     public static function statusesList(): array
     {
@@ -270,11 +274,11 @@ class Advert extends Model implements Auditable
     {
         return $this->belongsToMany(User::class, 'advert_advert_favorites', 'advert_id', 'user_id');
     }
+
     public function dialogs(): HasMany
     {
         return $this->hasMany(Dialog::class, 'advert_id', 'id');
     }
-
 
     public function getIsFavoritedAttribute()
     {

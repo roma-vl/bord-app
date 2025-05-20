@@ -2,22 +2,27 @@
 
 namespace App\Http\Services\Adverts;
 
+use App\Events\Advert\ModerationPassed;
+use App\Http\Requests\Admin\Adverts\RejectRequest;
 use App\Http\Requests\Cabinet\Adverts\AttributesRequest;
 use App\Http\Requests\Cabinet\Adverts\CreateRequest;
 use App\Http\Requests\Cabinet\Adverts\EditRequest;
 use App\Http\Requests\Cabinet\Adverts\PhotosRequest;
-use App\Http\Requests\Cabinet\Adverts\RejectRequest;
 use App\Http\Requests\Cabinet\Adverts\UpdateRequest;
 use App\Models\Adverts\Advert;
 use App\Models\Adverts\Category;
 use App\Models\Location;
 use App\Models\User;
+use App\Notifications\Advert\ModerationPassedNotification;
+use App\Notifications\Advert\ModerationRejectNotification;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class AdvertService
 {
+    const int PER_PAGE = 5;
+
     public function create($userId, CreateRequest $request): Advert
     {
         $categoryId = $request->input('category_id');
@@ -156,16 +161,21 @@ class AdvertService
         $advert->sendToModeration();
     }
 
-    public function moderate($id): void
+    public function moderate(Advert $advert): void
     {
-        $advert = $this->getAdvert($id);
-        $advert->moderate(Carbon::now());
+        if (! $advert->isActive()) {
+            $advert->moderate(Carbon::now());
+        }
+
+        $advert->user->notify(new ModerationPassedNotification($advert));
+        //        event(new ModerationPassed($advert));
     }
 
-    public function reject($id, RejectRequest $request): void
+    public function reject(Advert $advert, RejectRequest $request): void
     {
-        $advert = $this->getAdvert($id);
-        $advert->reject($request['reason']);
+        $advert->reject($request['reject_reason']);
+
+        $advert->user->notify(new ModerationRejectNotification($advert, $request['reject_reason']));
     }
 
     public function expire(Advert $advert): void
@@ -209,5 +219,13 @@ class AdvertService
             ->latest()
             ->take(4)
             ->get();
+    }
+
+    public function getAdvertForModeration()
+    {
+        return Advert::query()
+            ->where('status', Advert::STATUS_MODERATION)
+            ->orderByDesc('created_at')
+            ->paginate(self::PER_PAGE);
     }
 }
