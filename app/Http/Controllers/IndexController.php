@@ -76,39 +76,24 @@ class IndexController extends Controller
     public function searchAdvert(SearchRequest $request, ?string $urlPath = ''): Response
     {
         $data = $this->categoryService->parseCategoryAndLocationFromUrl($urlPath);
+        $pagination = $this->preparePaginationData($request);
 
-        $page = (int) $request->input('page', 1);
-        $perPage = (int) $request->input('per_page', 5);
-        if ($perPage < 1) {
-            $perPage = 1;
-        }
-        if ($page < 1) {
-            $page = 1;
-        }
+        $results = $this->searchService->search(
+            $data['categories']->last(),
+            $data['locations']->last(),
+            $request,
+            $urlPath,
+            $pagination['page'],
+            $pagination['perPage']
+        );
 
-        $results = $this->searchService->search($data['categories']->last(), $data['locations']->last(), $request, $urlPath, $page, $perPage);
+        $locations = $this->filterAvailableLocations($data['locations'], $results->regionsCounts);
+        $categories = $this->filterAvailableCategories($data['categories'], $results->categoriesCounts);
+        $childCategories = $this->filterAvailableCategories($data['childCategories'], $results->categoriesCounts)->values();
 
-        $locationsCounts = $results->regionsCounts;
-        $categoriesCounts = $results->categoriesCounts;
-
-        $locations = $data['locations']->filter(function (Location $location) use ($locationsCounts) {
-            return isset($locationsCounts[$location->id]) && $locationsCounts[$location->id] > 0;
-        });
-        $childCategories = $data['childCategories']
-            ->filter(function (Category $category) use ($categoriesCounts) {
-                return isset($categoriesCounts[$category->id]) && $categoriesCounts[$category->id] > 0;
-            })
-            ->values();
-
-        $categories = $data['categories']->filter(function (Category $category) use ($categoriesCounts) {
-            return isset($categoriesCounts[$category->id]) && $categoriesCounts[$category->id] > 0;
-        });
-
-        //        $categoryTree = $this->categoryService->getFirstLevelCategoriesWithChildren();
         $attributes = count($data['categories']) ? $data['categories']->last()->allArrayAttributes() : [];
         $categoryTree = $this->categoryService->getFirstLevelCategoriesWithChildren();
-
-        $categoryFilters = $categoryTree->map(fn ($category) => $this->formatCategoryWithAttributes($category));
+        $categoryFilters = $this->buildCategoryFilters($categoryTree);
 
         return Inertia::render('Search/List', [
             'adverts' => [
@@ -129,6 +114,7 @@ class IndexController extends Controller
             'query' => $request->query(),
         ]);
     }
+
 
     private function formatCategoryWithAttributes(Category $category): array
     {
@@ -169,4 +155,28 @@ class IndexController extends Controller
     {
         return $advert->user->phone;
     }
+
+    private function preparePaginationData(SearchRequest $request): array
+    {
+        $page = max((int) $request->input('page', 1), 1);
+        $perPage = max((int) $request->input('per_page', 5), 1);
+
+        return compact('page', 'perPage');
+    }
+
+    private function filterAvailableLocations($locations, $counts)
+    {
+        return $locations->filter(fn(Location $loc) => isset($counts[$loc->id]) && $counts[$loc->id] > 0);
+    }
+
+    private function filterAvailableCategories($categories, $counts)
+    {
+        return $categories->filter(fn(Category $cat) => isset($counts[$cat->id]) && $counts[$cat->id] > 0);
+    }
+    private function buildCategoryFilters($categoryTree)
+    {
+        return $categoryTree->map(fn($cat) => $this->formatCategoryWithAttributes($cat));
+    }
+
+
 }
