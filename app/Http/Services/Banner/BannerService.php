@@ -2,6 +2,7 @@
 
 namespace App\Http\Services\Banner;
 
+use App\Http\Requests\Banner\GetRequest;
 use App\Http\Requests\Cabinet\Banners\CreateRequest;
 use App\Http\Requests\Cabinet\Banners\EditRequest;
 use App\Http\Requests\Cabinet\Banners\FileRequest;
@@ -11,6 +12,7 @@ use App\Models\Banners\Banner;
 use App\Models\Location;
 use App\Models\User;
 use Elastic\Elasticsearch\Client;
+use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Storage;
@@ -153,8 +155,12 @@ class BannerService
         Storage::disk('public')->delete($banner->file);
     }
 
-    public function getRandomForView(?int $categoryId, ?int $regionId, $format): ?Banner
+    public function getRandomForView(GetRequest $request): ?Banner
     {
+        $format = $request->get('format');
+        $category = (int) $request->get('category');
+        $region = (int) $request->get('region');
+
         $response = $this->client->search([
             'index' => 'banners',
             'type' => 'banner',
@@ -173,8 +179,8 @@ class BannerService
                         'must' => [
                             ['term' => ['status' => Banner::STATUS_ACTIVE]],
                             ['term' => ['format' => $format ?: '']],
-                            ['terms' => ['categories' => array_filter([$categoryId, 0])]],
-                            ['terms' => ['regions' => $regionId ? array_filter([$regionId, 0]) : [0]]],
+                            ['terms' => ['categories' => array_filter([$category, 0])]],
+                            ['terms' => ['regions' => $region ? array_filter([$region, 0]) : [0]]],
                         ],
                     ],
                 ],
@@ -191,9 +197,10 @@ class BannerService
             ->orderByRaw('FIELD(id,'.implode(',', $ids).')')
             ->first();
 
-        if (! $banner) {
-            return null;
-        }
+        if (! $banner ) return null;
+
+        $banner->width = $banner->getWidth();
+        $banner->height = $banner->getHeight();
 
         $banner->view();
 
