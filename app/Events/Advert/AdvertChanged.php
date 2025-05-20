@@ -6,7 +6,7 @@ use App\Models\Adverts\Advert;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class ModerationPassed
+class AdvertChanged
 {
     use Dispatchable, SerializesModels;
 
