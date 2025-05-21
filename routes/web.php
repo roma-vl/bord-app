@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Admin\PageController as AdminPageController;
 use App\Http\Controllers\Admin\PermissionsController as AdminPermissionsController;
 use App\Http\Controllers\Admin\RolesController as AdminRolesController;
+use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\TicketController as AdminTicketController;
 use App\Http\Controllers\Admin\UsersController as AdminUsersController;
 use App\Http\Controllers\Auth\GoogleController;
@@ -174,6 +175,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('/{ticket}/reopen', [AdminTicketController::class, 'reopen'])->name('reopen');
             Route::delete('/{ticket}/destroy', [AdminTicketController::class, 'destroy'])->name('destroy');
         });
+
+        Route::prefix('settings')->group(function () {
+            Route::get('/', [SettingsController::class, 'index'])->name('settings.index');
+            Route::get('{group}', [SettingsController::class, 'edit'])->name('settings.edit');
+            Route::put('/settings/general', [SettingsController::class, 'updateGeneral'])->name('settings.general');
+            Route::put('/settings/user', [SettingsController::class, 'updateUser'])->name('settings.user');
+
+        });
+
     });
 
 });

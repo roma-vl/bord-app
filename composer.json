@@ -25,6 +25,7 @@
         "nesbot/carbon": "^3.8",
         "owen-it/laravel-auditing": "^13.7",
         "rap2hpoutre/laravel-log-viewer": "^2.5",
+        "spatie/laravel-settings": "^3.4",
         "tightenco/ziggy": "^2.0",
         "twilio/sdk": "^8.3",
         "zircote/swagger-php": "^5.1"

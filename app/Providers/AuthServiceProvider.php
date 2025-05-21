@@ -17,14 +17,12 @@ class AuthServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        if (auth()->user()) {
-            $permissions = Permission::pluck('key')->toArray();
+        $permissions = Permission::pluck('key')->toArray();
 
-            foreach ($permissions as $permission) {
-                Gate::define($permission, function (User $user) use ($permission) {
-                    return $user->hasPermission($permission);
-                });
-            }
+        foreach ($permissions as $permission) {
+            Gate::define($permission, function (User $user) use ($permission) {
+                return $user->hasPermission($permission);
+            });
         }
 
         Gate::define('horizon', function (User $user) {
