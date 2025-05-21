@@ -13,7 +13,7 @@ const flash = usePage().props.flash;
     <AdminLayout>
         <div class="py-2">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg p-3">
+                <div class="overflow-hidden bg-white dark:bg-gray-500 shadow-sm sm:rounded-lg p-3">
 
                     <FlashMessage :flash="flash"/>
                         <!-- Statistics Cards -->

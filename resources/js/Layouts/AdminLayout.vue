@@ -43,19 +43,19 @@ const toggleFullscreen = () => {
 </script>
 
 <template>
-        <div class="min-h-screen bg-gray-100 flex flex-col">
-            <nav class="border-b border-gray-100 bg-white">
-                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div class="flex h-16 justify-between">
+        <div class="min-h-screen bg-gray-100 dark:bg-gray-800 flex flex-col">
+            <nav class="border-b border-gray-100 dark:border-gray-600 bg-white dark:bg-gray-800">
+                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 ">
+                    <div class="flex h-16 justify-between ">
                         <div class="flex">
-                            <div class="flex shrink-0 items-center">
+                            <div class="flex shrink-0 items-center ">
                                 <Link :href="route('admin.index')">
                                     <ApplicationLogo class="block h-9 w-auto fill-current text-gray-800"/>
                                 </Link>
                             </div>
 
-                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink :href="route('main')">
+                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex ">
+                                <NavLink :href="route('main')" class="dark:text-white">
                                    <ArrowLeftIcon /> Повернутися на головну
                                 </NavLink>
                             </div>
@@ -64,19 +64,20 @@ const toggleFullscreen = () => {
                         <div class="hidden sm:ms-6 sm:flex sm:items-center">
 
 
-                            <div class="relative ms-3">
+                            <div class="relative ms-3 px-2 py-[7px] bg-gray-100 dark:bg-gray-700 hover:bg-stone-200 rounded ">
                                 <button @click="toggleFullscreen">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
-                                        <path d="M5 5h5V3H3v7h2zm5 14H5v-5H3v7h7zm11-5h-2v5h-5v2h7zm-2-4h2V3h-7v2h5z"></path>
+                                    <svg class="w-5 h-5 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 4H4m0 0v4m0-4 5 5m7-5h4m0 0v4m0-4-5 5M8 20H4m0 0v-4m0 4 5-5m7 5h4m0 0v-4m0 4-5-5"/>
                                     </svg>
+
                                 </button>
                             </div>
-                            <div class="relative ms-3">
+                            <div class="relative ms-3 dark:bg-gray-700  rounded">
                                 <Locale/>
                             </div>
                             <div class="relative ms-3">
-                                <button @click="toggleTheme" class="px-4 py-2 bg-gray-300 dark:bg-gray-700 rounded">
-                                    {{ theme === 'dark' ? '🌙 Темна' : '☀️ Світла' }}
+                                <button @click="toggleTheme" class="px-4 py-2 bg-gray-100 hover:bg-stone-200 dark:bg-gray-700  rounded">
+                                    {{ theme === 'dark' ? '🌙' : '☀️' }}
                                 </button>
                             </div>
 
@@ -130,7 +131,7 @@ const toggleFullscreen = () => {
                <AdminResponsiveNavigationMenu :showingNavigationDropdown="showingNavigationDropdown" />
             </nav>
 
-            <header class="bg-white shadow" v-if="$slots.header">
+            <header class="bg-white dark:bg-gray-800 shadow" v-if="$slots.header">
                 <div class="mx-auto max-w-7xl px-3 py-3 sm:px-6 lg:px-8">
                     <slot name="header" />
                 </div>
