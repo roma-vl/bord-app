@@ -19,10 +19,10 @@ class ActivityLogsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //            'per_page' => 'sometimes|integer|min:1|max:100',
-            //            'search' => 'nullable|string|min:1|max:100',
-            //            'sort_by' => ['sometimes', Rule::in(self::SORTABLE_FIELDS)],
-            //            'sort_order' => ['sometimes', Rule::in(self::SORT_DIRECTIONS)],
+            'per_page' => 'sometimes|integer|min:1|max:100',
+            'search' => 'nullable|string|min:1|max:100',
+            'sort_by' => ['sometimes', Rule::in(self::SORTABLE_FIELDS)],
+            'sort_order' => ['sometimes', Rule::in(self::SORT_DIRECTIONS)],
         ];
     }
 

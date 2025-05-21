@@ -13,7 +13,7 @@ import NotificationIcon from "@/Components/Icon/NotificationIcon.vue";
                         <button class="inline-grid place-items-center align-middle select-none font-sans font-medium text-center
                          transition-all duration-300 ease-in disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none
                          text-sm min-w-[32px] min-h-[32px] rounded-md hover:shadow-sm
-                         text-stone-800 hover:bg-stone-200 px-4 py-3 bg-gray-100 dark:bg-gray-700 dark:text-white">
+                         text-stone-800 hover:bg-stone-200 px-4 py-3  dark:bg-gray-700 dark:text-white">
                             <NotificationIcon />
                         </button>
                     </div>

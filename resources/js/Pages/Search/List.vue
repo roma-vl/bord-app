@@ -20,6 +20,9 @@ const props = defineProps({
     categoryFilters: Object,
 });
 
+console.log(props.categories, 'props.categories')
+console.log(props.locations, 'props.locations')
+
 const selectedCategoryId = computed(() => queryFilter.value.category_id)
 
 const lastLocation = computed(() => {

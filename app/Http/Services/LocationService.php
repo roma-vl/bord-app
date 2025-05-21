@@ -37,7 +37,6 @@ class LocationService
     public function getCities(Location $region): Collection
     {
         return $region->descendants()
-            ->whereDepth(3)
             ->orderBy('name')
             ->take(300)
             ->get(['name', 'slug', 'id']);

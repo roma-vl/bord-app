@@ -64,7 +64,7 @@ const toggleFullscreen = () => {
                         <div class="hidden sm:ms-6 sm:flex sm:items-center">
 
 
-                            <div class="relative ms-3 px-2 py-[7px] bg-gray-100 dark:bg-gray-700 hover:bg-stone-200 rounded ">
+                            <div class="relative ms-3 px-2 py-[7px]  dark:bg-gray-700 hover:bg-stone-200 rounded ">
                                 <button @click="toggleFullscreen">
                                     <svg class="w-5 h-5 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 4H4m0 0v4m0-4 5 5m7-5h4m0 0v4m0-4-5 5M8 20H4m0 0v-4m0 4 5-5m7 5h4m0 0v-4m0 4-5-5"/>
@@ -76,7 +76,7 @@ const toggleFullscreen = () => {
                                 <Locale/>
                             </div>
                             <div class="relative ms-3">
-                                <button @click="toggleTheme" class="px-4 py-2 bg-gray-100 hover:bg-stone-200 dark:bg-gray-700  rounded">
+                                <button @click="toggleTheme" class="px-4 py-2  hover:bg-stone-200 dark:bg-gray-700  rounded">
                                     {{ theme === 'dark' ? '🌙' : '☀️' }}
                                 </button>
                             </div>

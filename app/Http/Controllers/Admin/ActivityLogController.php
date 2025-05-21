@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Requests\Admin\Logs\ActivityLogsRequest;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Spatie\Activitylog\Models\Activity;
 
 class ActivityLogController extends Controller
 {
-    public function index(Request $request)
+    public function index(ActivityLogsRequest $request)
     {
 
-        $validated = $request->all();
+        $validated = $request->validatedWithDefaults();
+
 
         $logs = Activity::query()
             ->with('causer', 'subject')

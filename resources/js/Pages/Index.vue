@@ -82,7 +82,7 @@ const fetchCities = async (regionId) => {
 
 const selectCity = (city) => {
     citySearchQuery.value = city.name;
-    cityIdSearchQuery.value = city.id;
+    cityIdSearchQuery.value = city.slug;
     showLocationDropdown.value = false;
 }
 const selectSuggestion = (query) => {
@@ -119,9 +119,14 @@ const subCategories = computed(() => {
 });
 const search = () => {
     if (searchQuery.value.trim() === "") return;
-    console.log(searchQuery.value, "searchQuery");
-    console.log(cityIdSearchQuery.value, "citySearchQuery");
-    router.get('/list', { query: searchQuery.value })
+    let slug = '';
+    if (cityIdSearchQuery.value.length > 1 ) {
+        slug = '/' +  cityIdSearchQuery.value
+    } else {
+        slug = '/list'
+    }
+
+    router.get(slug, { query: searchQuery.value })
 }
 watch(citySearchQuery, searchCities);
 onMounted(() => {

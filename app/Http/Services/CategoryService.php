@@ -41,10 +41,8 @@ class CategoryService
             }
 
             $currentLocation = $locations->first();
-            $parentLocations = $currentLocation?->ancestors()->orderBy('name')->get(['id', 'name', 'slug']) ?? collect();
-            $selectedLocation = $parentLocations->count() >= 2 ? $parentLocations[1] : null;
-
-            $locations = collect([$selectedLocation, $currentLocation])->filter();
+            $parentLocations = $currentLocation?->ancestors()->get(['id', 'name', 'slug'])->slice(0, -1) ?? collect();
+            $locations = $parentLocations->prepend($currentLocation)->reverse()->filter()->values();
 
             $categories = collect();
             foreach (array_reverse($categorySlugs) as $slug) {
