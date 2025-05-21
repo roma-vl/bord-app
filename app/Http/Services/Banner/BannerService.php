@@ -12,7 +12,6 @@ use App\Models\Banners\Banner;
 use App\Models\Location;
 use App\Models\User;
 use Elastic\Elasticsearch\Client;
-use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Storage;
@@ -197,7 +196,9 @@ class BannerService
             ->orderByRaw('FIELD(id,'.implode(',', $ids).')')
             ->first();
 
-        if (! $banner ) return null;
+        if (! $banner) {
+            return null;
+        }
 
         $banner->view();
 

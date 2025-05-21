@@ -14,7 +14,6 @@ use App\Models\Adverts\Advert;
 use App\Models\Adverts\Category;
 use App\Models\Location;
 use App\Models\User;
-use App\Notifications\Advert\ModerationPassedNotification;
 use App\Notifications\Advert\ModerationRejectNotification;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;

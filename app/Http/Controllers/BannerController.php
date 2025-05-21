@@ -12,21 +12,23 @@ use Illuminate\Routing\Redirector;
 
 class BannerController extends Controller
 {
-    public function __construct(private readonly BannerService $bannerService){}
+    public function __construct(private readonly BannerService $bannerService) {}
 
     public function get(GetRequest $request): JsonResponse
     {
         $banner = $this->bannerService->getRandomForView($request);
         $banner->width = $banner->getWidth();
         $banner->height = $banner->getHeight();
+
         return response()->json([
-            'banner' => $banner
+            'banner' => $banner,
         ]);
     }
 
     public function click(Banner $banner): Application|Redirector|RedirectResponse
     {
         $this->bannerService->click($banner);
+
         return redirect($banner->url);
     }
 }

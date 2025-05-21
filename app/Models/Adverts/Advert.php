@@ -46,7 +46,7 @@ use Spatie\Sluggable\SlugOptions;
  */
 class Advert extends Model implements Auditable
 {
-    use AuditableTrait, HasFactory, Searchable, SoftDeletes, HasSlug, LogsActivity;
+    use AuditableTrait, HasFactory, HasSlug, LogsActivity, Searchable, SoftDeletes;
 
     public const string STATUS_DRAFT = 'draft';
 
@@ -328,6 +328,6 @@ class Advert extends Model implements Auditable
             ->logAll() // логуються тільки ці поля
             ->logOnlyDirty() // тільки коли змінились
             ->useLogName('advert') // назва для фільтрації логів
-            ->setDescriptionForEvent(fn(string $eventName) => "Advert was {$eventName}");
+            ->setDescriptionForEvent(fn (string $eventName) => "Advert was {$eventName}");
     }
 }

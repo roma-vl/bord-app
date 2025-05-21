@@ -13,9 +13,7 @@ use App\Models\Adverts\Category;
 use App\Models\Location;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -32,6 +30,7 @@ class IndexController extends Controller
     public function changeLocale(string $locale): RedirectResponse
     {
         $this->localeService->changeLocale($locale);
+
         return redirect()->back();
     }
 
@@ -68,7 +67,7 @@ class IndexController extends Controller
         $regions = $this->locationService->search($region);
 
         return response()->json([
-            'regions' => $regions
+            'regions' => $regions,
         ]);
 
     }
@@ -114,7 +113,6 @@ class IndexController extends Controller
             'query' => $request->query(),
         ]);
     }
-
 
     private function formatCategoryWithAttributes(Category $category): array
     {
@@ -166,17 +164,16 @@ class IndexController extends Controller
 
     private function filterAvailableLocations($locations, $counts)
     {
-        return $locations->filter(fn(Location $loc) => isset($counts[$loc->id]) && $counts[$loc->id] > 0);
+        return $locations->filter(fn (Location $loc) => isset($counts[$loc->id]) && $counts[$loc->id] > 0);
     }
 
     private function filterAvailableCategories($categories, $counts)
     {
-        return $categories->filter(fn(Category $cat) => isset($counts[$cat->id]) && $counts[$cat->id] > 0);
+        return $categories->filter(fn (Category $cat) => isset($counts[$cat->id]) && $counts[$cat->id] > 0);
     }
+
     private function buildCategoryFilters($categoryTree)
     {
-        return $categoryTree->map(fn($cat) => $this->formatCategoryWithAttributes($cat));
+        return $categoryTree->map(fn ($cat) => $this->formatCategoryWithAttributes($cat));
     }
-
-
 }

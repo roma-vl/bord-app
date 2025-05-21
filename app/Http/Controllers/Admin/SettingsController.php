@@ -1,4 +1,5 @@
 <?php
+
 // app/Http/Controllers/Admin/SettingsController.php
 
 namespace App\Http\Controllers\Admin;
@@ -39,6 +40,7 @@ class SettingsController extends Controller
     public function updateGeneral(GeneralSettings $group, UpdateGeneralSettingsRequest $request)
     {
         SettingsService::saveGeneralData($group, $request);
+
         return redirect()->back();
 
     }
@@ -49,5 +51,4 @@ class SettingsController extends Controller
 
         return redirect()->back();
     }
-
 }

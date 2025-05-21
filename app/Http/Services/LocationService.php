@@ -9,6 +9,7 @@ use Illuminate\Support\Collection;
 class LocationService
 {
     public const int MIN_SEARCH_LENGTH = 3;
+
     public function search(string $query): Collection
     {
         if (strlen($query) < self::MIN_SEARCH_LENGTH) {

@@ -71,6 +71,7 @@ class TicketService
     {
         return Ticket::findOrFail($id);
     }
+
     public function getTickets(): LengthAwarePaginator
     {
         return Ticket::query()

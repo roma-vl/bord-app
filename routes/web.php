@@ -183,7 +183,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::put('/settings/user', [SettingsController::class, 'updateUser'])->name('settings.user');
         });
 
-
         Route::get('logs', [LogViewerController::class, 'index'])->name('logs');
         Route::get('activity-logs', [ActivityLogController::class, 'index'])->name('activity.logs');
 

@@ -9,7 +9,7 @@ class UpdateUserSettingsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'allow_registration' =>  ['required', 'boolean'],
+            'allow_registration' => ['required', 'boolean'],
             'require_email_verification' => ['required', 'boolean'],
         ];
     }

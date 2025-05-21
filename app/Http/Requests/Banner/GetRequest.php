@@ -21,5 +21,4 @@ class GetRequest extends FormRequest
             'format' => ['required', 'string', Rule::in(Banner::formatsList())],
         ];
     }
-
 }

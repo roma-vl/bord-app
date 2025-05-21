@@ -39,7 +39,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  */
 class User extends Authenticatable implements Auditable, MustVerifyEmail
 {
-    use AuditableTrait, Filterable, HasApiTokens, HasFactory, Notifiable, SoftDeletes, LogsActivity;
+    use AuditableTrait, Filterable, HasApiTokens, HasFactory, LogsActivity, Notifiable, SoftDeletes;
 
     protected $fillable = [
         'first_name',
@@ -190,6 +190,6 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
             ->logAll() // логуються тільки ці поля
             ->logOnlyDirty() // тільки коли змінились
             ->useLogName('user') // назва для фільтрації логів
-            ->setDescriptionForEvent(fn(string $eventName) => "User was {$eventName}");
+            ->setDescriptionForEvent(fn (string $eventName) => "User was {$eventName}");
     }
 }

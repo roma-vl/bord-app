@@ -5,10 +5,10 @@ namespace App\Jobs\Advert;
 use App\Models\Adverts\Advert;
 use App\Services\Search\AdvertIndexer;
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 
 class ReindexAdvert implements ShouldQueue
 {
