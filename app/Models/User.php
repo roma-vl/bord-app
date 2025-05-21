@@ -14,6 +14,8 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 use OwenIt\Auditing\Auditable as AuditableTrait;
 use OwenIt\Auditing\Contracts\Auditable;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 /**
  * @property int $id
@@ -37,7 +39,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  */
 class User extends Authenticatable implements Auditable, MustVerifyEmail
 {
-    use AuditableTrait, Filterable, HasApiTokens, HasFactory, Notifiable, SoftDeletes;
+    use AuditableTrait, Filterable, HasApiTokens, HasFactory, Notifiable, SoftDeletes, LogsActivity;
 
     protected $fillable = [
         'first_name',
@@ -180,5 +182,14 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
     public function findForPassport($identifier)
     {
         return self::where('email', $identifier)->whereNotNull('email_verified_at')->first();
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logAll() // логуються тільки ці поля
+            ->logOnlyDirty() // тільки коли змінились
+            ->useLogName('user') // назва для фільтрації логів
+            ->setDescriptionForEvent(fn(string $eventName) => "User was {$eventName}");
     }
 }

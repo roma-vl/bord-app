@@ -199,9 +199,6 @@ class BannerService
 
         if (! $banner ) return null;
 
-        $banner->width = $banner->getWidth();
-        $banner->height = $banner->getHeight();
-
         $banner->view();
 
         return $banner;

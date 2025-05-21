@@ -16,6 +16,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Auditable as AuditableTrait;
 use OwenIt\Auditing\Contracts\Auditable;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 
 /**
  * @property int $id
@@ -42,7 +46,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  */
 class Advert extends Model implements Auditable
 {
-    use AuditableTrait, HasFactory, Searchable, SoftDeletes;
+    use AuditableTrait, HasFactory, Searchable, SoftDeletes, HasSlug, LogsActivity;
 
     public const string STATUS_DRAFT = 'draft';
 
@@ -309,5 +313,21 @@ class Advert extends Model implements Auditable
             'content',
             'status',
         ];
+    }
+
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom('title')
+            ->saveSlugsTo('slug');
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logAll() // логуються тільки ці поля
+            ->logOnlyDirty() // тільки коли змінились
+            ->useLogName('advert') // назва для фільтрації логів
+            ->setDescriptionForEvent(fn(string $eventName) => "Advert was {$eventName}");
     }
 }

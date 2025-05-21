@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\Adverts\AdvertsController;
 use App\Http\Controllers\Admin\Adverts\AttributeController;
 use App\Http\Controllers\Admin\Adverts\CategoryController;
@@ -105,7 +106,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('/admin')->name('admin.')->group(function () {
         Route::get('/', [AdminIndexController::class, 'index'])->name('index');
-        Route::get('logs', [LogViewerController::class, 'index'])->name('logs');
         Route::controller(AdminUsersController::class)->prefix('users')->name('users.')->group(function () {
             Route::get('/search', 'search')->name('search');
             Route::put('/{user}/restore', 'restore')->name('restore');
@@ -181,8 +181,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('{group}', [SettingsController::class, 'edit'])->name('settings.edit');
             Route::put('/settings/general', [SettingsController::class, 'updateGeneral'])->name('settings.general');
             Route::put('/settings/user', [SettingsController::class, 'updateUser'])->name('settings.user');
-
         });
+
+
+        Route::get('logs', [LogViewerController::class, 'index'])->name('logs');
+        Route::get('activity-logs', [ActivityLogController::class, 'index'])->name('activity.logs');
 
     });
 

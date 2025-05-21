@@ -17,6 +17,8 @@ class BannerController extends Controller
     public function get(GetRequest $request): JsonResponse
     {
         $banner = $this->bannerService->getRandomForView($request);
+        $banner->width = $banner->getWidth();
+        $banner->height = $banner->getHeight();
         return response()->json([
             'banner' => $banner
         ]);

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('region_id')->constrained('locations')->onDelete('cascade');
 
             $table->string('title');
+            $table->string('slug')->unique();
             $table->integer('price');
             $table->text('address');
             $table->text('content');

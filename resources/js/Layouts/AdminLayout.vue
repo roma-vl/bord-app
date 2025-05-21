@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import NavLink from '@/Components/NavLink.vue';
 import { Link } from '@inertiajs/vue3';
@@ -8,7 +8,30 @@ import Notifications from "@/Layouts/Partials/Notifications.vue";
 import AdminResponsiveNavigationMenu from "@/Layouts/Partials/AdminResponsiveNavigationMenu.vue";
 import SideMenu from "@/Layouts/Partials/SideMenu.vue";
 import ArrowLeftIcon from "@/Components/Icon/ArrowLeftIcon.vue";
+import { onMounted, ref } from 'vue';
 
+const theme = ref('light');
+
+onMounted(() => {
+    // Витягуємо з localStorage або виставляємо за замовчуванням
+    theme.value = localStorage.getItem('theme') || 'light';
+    applyTheme();
+});
+
+function toggleTheme() {
+    theme.value = theme.value === 'light' ? 'dark' : 'light';
+    localStorage.setItem('theme', theme.value);
+    applyTheme();
+}
+
+function applyTheme() {
+    const html = document.documentElement;
+    if (theme.value === 'dark') {
+        html.classList.add('dark');
+    } else {
+        html.classList.remove('dark');
+    }
+}
 const showingNavigationDropdown = ref(false);
 const toggleFullscreen = () => {
     if (document.fullscreenElement) {
@@ -26,7 +49,7 @@ const toggleFullscreen = () => {
                     <div class="flex h-16 justify-between">
                         <div class="flex">
                             <div class="flex shrink-0 items-center">
-                                <Link :href="route('main')">
+                                <Link :href="route('admin.index')">
                                     <ApplicationLogo class="block h-9 w-auto fill-current text-gray-800"/>
                                 </Link>
                             </div>
@@ -50,6 +73,11 @@ const toggleFullscreen = () => {
                             </div>
                             <div class="relative ms-3">
                                 <Locale/>
+                            </div>
+                            <div class="relative ms-3">
+                                <button @click="toggleTheme" class="px-4 py-2 bg-gray-300 dark:bg-gray-700 rounded">
+                                    {{ theme === 'dark' ? '🌙 Темна' : '☀️ Світла' }}
+                                </button>
                             </div>
 
                             <div class="relative ms-3">
