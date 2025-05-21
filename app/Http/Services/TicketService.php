@@ -6,6 +6,9 @@ use App\Http\Requests\Ticket\CreateRequest;
 use App\Http\Requests\Ticket\EditRequest;
 use App\Http\Requests\Ticket\MessageRequest;
 use App\Models\Ticket\Ticket;
+use DomainException;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
 
 class TicketService
 {
@@ -52,7 +55,7 @@ class TicketService
         $ticket = $this->getTicket($id);
 
         if (! $ticket->canBeRemoved()) {
-            throw new \DomainException('Unable to remove active ticket');
+            throw new DomainException('Unable to remove active ticket');
         }
 
         $ticket->delete();
@@ -64,8 +67,15 @@ class TicketService
         $ticket->delete();
     }
 
-    private function getTicket($id): Ticket
+    public function getTicket($id): Ticket
     {
         return Ticket::findOrFail($id);
+    }
+    public function getTickets(): LengthAwarePaginator
+    {
+        return Ticket::query()
+            ->forUser(Auth::user())
+            ->orderByDesc('updated_at')
+            ->paginate(20);
     }
 }

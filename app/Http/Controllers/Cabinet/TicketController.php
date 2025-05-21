@@ -17,9 +17,7 @@ class TicketController extends Controller
 
     public function index()
     {
-        $tickets = Ticket::forUser(Auth::user())
-            ->orderByDesc('updated_at')
-            ->paginate(20);
+        $tickets = $this->ticketService->getTickets();
 
         return Inertia::render('Account/Ticket/Index', [
             'tickets' => $tickets,

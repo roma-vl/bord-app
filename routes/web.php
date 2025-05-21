@@ -104,7 +104,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('/admin')->name('admin.')->group(function () {
         Route::get('/', [AdminIndexController::class, 'index'])->name('index');
-        Route::get('logs', [LogViewerController::class, 'index']);
+        Route::get('logs', [LogViewerController::class, 'index'])->name('logs');
         Route::controller(AdminUsersController::class)->prefix('users')->name('users.')->group(function () {
             Route::get('/search', 'search')->name('search');
             Route::put('/{user}/restore', 'restore')->name('restore');
