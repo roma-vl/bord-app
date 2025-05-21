@@ -1,8 +1,7 @@
 <script setup>
-import {computed, onBeforeUnmount, onMounted, ref, watch} from "vue";
+import {computed, ref} from "vue";
 import {Head, Link, router, usePage} from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import axios from "axios";
 import {fullPath, getFullPathForImage} from "@/helpers.js";
 import HeartIcon from "@/Components/Icon/HeartIcon.vue";
 import HeartSolidIcon from "@/Components/Icon/HeartSolidIcon.vue";
@@ -13,21 +12,19 @@ const categories = usePage().props.categories;
 const news = usePage().props.news;
 const vip = usePage().props.vip;
 
-const selectedRegion = ref(null);
-const selectedCity = ref(null);
-const regions = ref([]);
-const cities = ref([]);
-const searchQuery = ref("");
-const searchHistory = ref(["Пилосос", "Квартира", "Машина", "Квартира у Києві"]);
-const searchRecommendations = ref(["iPhone 13", "Ноутбук Dell", "Годинник Apple", "Квартира у Києві"]);
-const showSuggestions = ref(false);
+import { useSearch } from '@/composables/useSearch.js';
+import SearchInput from '@/Components/Search/SearchInput.vue';
+import LocationSelector from '@/Components/Search/LocationSelector.vue';
+
+const { searchQuery, cityIdSearchQuery, search } = useSearch();
+const handleCitySelect = (slug) => {
+    cityIdSearchQuery.value = slug;
+};
+const handleSearch = (text) => {
+    searchQuery.value = text;
+};
+
 const openCategory = ref(null);
-const showLocationDropdown = ref(false);
-const loadingRegions = ref(false);
-const loadingCities = ref(false);
-const citySearchQuery = ref("");
-const cityIdSearchQuery = ref("");
-const filteredCities = ref([]);
 const flash = computed(() => usePage().props.flash);
 const toggleLike = (advert) => {
     if (advert.is_favorited === true) {
@@ -38,68 +35,6 @@ const toggleLike = (advert) => {
     advert.is_favorited = !advert.is_favorited;
 };
 
-const searchCities = async () => {
-    if (citySearchQuery.value.length < 2) {
-        filteredCities.value = [];
-        return;
-    }
-    cities.value = [];
-    regions.value = [];
-    loadingCities.value = true;
-    try {
-        const response = await axios.get(route("adverts.regions.search", { region: citySearchQuery.value }));
-        filteredCities.value = response.data.regions;
-    } finally {
-        loadingCities.value = false;
-    }
-};
-const fetchRegions = async () => {
-    if (regions.value && citySearchQuery.value.length === 0) {
-        loadingRegions.value = true;
-        try {
-            const response = await axios.get(route("adverts.regions"));
-            regions.value = response.data.regions;
-        } finally {
-            loadingRegions.value = false;
-        }
-    }
-    showLocationDropdown.value = true;
-};
-const fetchCities = async (regionId) => {
-    selectedRegion.value = regions.value.find(r => r.id === regionId);
-    selectedCity.value = null;
-    cities.value = [];
-    loadingCities.value = true;
-
-    try {
-        const response = await axios.get(route("adverts.cities", { region: regionId }));
-        cities.value = response.data.cities;
-    } finally {
-        loadingCities.value = false;
-    }
-    showLocationDropdown.value = true;
-};
-
-const selectCity = (city) => {
-    citySearchQuery.value = city.name;
-    cityIdSearchQuery.value = city.slug;
-    showLocationDropdown.value = false;
-}
-const selectSuggestion = (query) => {
-    searchQuery.value = query;
-    showSuggestions.value = false;
-};
-const removeSuggestion = (index) => {
-    searchHistory.value.splice(index, 1);
-};
-
-const handleClickOutside = (event) => {
-    if (!event.target.closest(".search-container")) {
-        cities.value = [];
-        regions.value = [];
-        showLocationDropdown.value = false;
-    }
-};
 const toggleCategory = (categoryId) => {
     if (openCategory.value === categoryId) {
         openCategory.value = null;
@@ -117,25 +52,7 @@ const subCategories = computed(() => {
     const category = categories.find(c => c.id === openCategory.value);
     return category ? category.children : [];
 });
-const search = () => {
-    if (searchQuery.value.trim() === "") return;
-    let slug = '';
-    if (cityIdSearchQuery.value.length > 1 ) {
-        slug = '/' +  cityIdSearchQuery.value
-    } else {
-        slug = '/list'
-    }
 
-    router.get(slug, { query: searchQuery.value })
-}
-watch(citySearchQuery, searchCities);
-onMounted(() => {
-    document.addEventListener("click", handleClickOutside);
-});
-
-onBeforeUnmount(() => {
-    document.removeEventListener("click", handleClickOutside);
-});
 
 </script>
 
@@ -148,70 +65,10 @@ onBeforeUnmount(() => {
                     <div class="container mx-auto p-4">
                         <FlashMessage :flash="flash" />
                         <div class="flex items-center gap-4 bg-gray-100 p-4 rounded-lg shadow-md search-container">
-                            <div class="relative w-full">
-                                <input v-model="searchQuery" @focus="showSuggestions = true" type="text" placeholder="Що шукаєте?"
-                                    class="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-green-600"/>
-                                <ul v-if="showSuggestions && searchHistory.length"
-                                    class="absolute left-0 w-full bg-white border mt-1 rounded-lg shadow-lg z-10">
-                                    <div class="text-sm text-gray-400 uppercase p-1 pl-4">
-                                        Ви нещодавно шукали
-                                    </div>
-                                    <li v-for="(suggestion, index) in searchHistory" :key="index" @click="selectSuggestion(suggestion)"
-                                        class="flex justify-between items-center px-4 py-2 cursor-pointer hover:bg-gray-200 transition duration-200">
-                                        {{ suggestion }}
-                                        <button @click.stop="removeSuggestion(index)" class="text-red-500 text-lg hover:text-red-700 transition duration-200">
-                                            ×
-                                        </button>
-                                    </li>
-
-                                    <div class="text-sm text-gray-400 uppercase p-1 pl-4">
-                                        Рекомендації
-                                    </div>
-                                    <li v-for="(suggestion, index) in searchRecommendations" :key="index" @click="selectSuggestion(suggestion)"
-                                        class="flex justify-between items-center px-4 py-2 cursor-pointer hover:bg-gray-200 transition duration-200">
-                                        {{ suggestion }}
-                                    </li>
-                                </ul>
-                            </div>
-
+                            <SearchInput v-model="searchQuery" @select-suggestion="handleSearch"/>
                             <div class="flex items-center gap-4">
-                                <div class="relative w-[250px]">
-                                    <input v-model="citySearchQuery" @focus="fetchRegions" type="text" placeholder="Оберіть область"
-                                           class="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-green-600 transition duration-200"/>
-
-                                    <div v-if="showLocationDropdown" class="absolute left-0 w-full bg-white border mt-1 rounded-lg shadow-lg z-10 h-[400px] overflow-y-auto">
-                                        <ul v-if="filteredCities.length">
-                                            <li v-for="city in filteredCities" :key="city.id" @click="selectCity(city)"
-                                                class="px-4 py-2 cursor-pointer hover:bg-gray-200 transition duration-200">
-                                                {{ city.name }}
-                                            </li>
-                                        </ul>
-
-                                        <ul v-if="(regions && cities.length === 0)">
-                                            <li v-if="loadingRegions" class="px-4 py-2 text-gray-400">
-                                                Завантаження...
-                                            </li>
-                                            <li v-for="region in regions" :key="region.id" @click="fetchCities(region.id)"
-                                                class="px-4 py-2 cursor-pointer hover:bg-gray-200 transition duration-200">
-                                                {{ region.name }}
-                                            </li>
-                                        </ul>
-
-                                        <ul v-else>
-                                            <li v-if="loadingCities" class="px-4 py-2 text-gray-400">
-                                                Завантаження міст...
-                                            </li>
-                                            <li v-for="city in cities" :key="city.id" @click="selectCity(city)"
-                                                class="px-4 py-2 cursor-pointer hover:bg-gray-200 transition duration-200">
-                                                {{ city.name }}
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-
-                                <button @click="search"
-                                    class="px-8 focus:outline-none hover:bg-green-700 transition duration-300 py-2 my-8 text-lg
-                                     bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl text-white hover:shadow-2xl">
+                                <LocationSelector @select-city="handleCitySelect" />
+                                <button @click="search" class="px-8 py-2 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-xl hover:shadow-2xl transition">
                                     Пошук
                                 </button>
                             </div>
