@@ -16,14 +16,23 @@ class SettingsController extends Controller
     public function index()
     {
         $groups = SettingsService::listGroups();
-        return Inertia::render('Admin/Settings/Index', compact('groups'));
+
+        return Inertia::render('Admin/Settings/Edit', [
+            'group' => 'general',
+            'settings' => [],
+            'groups' => $groups,
+        ]);
     }
+
     public function edit(string $group)
     {
+        $groups = SettingsService::listGroups();
         $data = SettingsService::getGroupData($group);
+
         return Inertia::render('Admin/Settings/Edit', [
             'group' => $group,
             'settings' => $data,
+            'groups' => $groups,
         ]);
     }
 
