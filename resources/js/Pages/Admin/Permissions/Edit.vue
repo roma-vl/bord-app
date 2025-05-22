@@ -9,7 +9,7 @@ const props = defineProps({
     }
 });
 const emit = defineEmits(["permissionUpdated"]);
- console.log(props.data.permission);
+
 const form = useForm({
     key: props.data.permission.key,
     description: props.data.permission.description,

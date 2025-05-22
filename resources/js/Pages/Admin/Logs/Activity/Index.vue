@@ -5,7 +5,7 @@ import AdminLayout from "@/Layouts/AdminLayout.vue";
 import Grid from "@/Components/Grid.vue";
 
 const logs =  computed(() => usePage().props.logs.data);
-console.log(logs, 'logs')
+
 const pagination = computed(() => usePage().props.logs);
 
 const headings = [

@@ -12,8 +12,7 @@ const props = defineProps({
     attributes: Array,
     parentAttributes: Array,
 });
-console.log(props.attributes, 'props.attributes');
-console.log(props.parentAttributes, 'props.parentAttributes');
+
 const flash = usePage().props.flash;
 const isCreateModalOpen = ref(false);
 const selectedCategory = ref(null)

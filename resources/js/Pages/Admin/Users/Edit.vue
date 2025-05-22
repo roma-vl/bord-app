@@ -11,7 +11,6 @@ const props = defineProps({
     userRoles: { type: Array, required: true }
 });
 
-console.log(props, 'props.user')
 const emit = defineEmits(["userUpdated"]);
 
 const form = useForm({

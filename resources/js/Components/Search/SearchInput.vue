@@ -8,7 +8,6 @@ const {
     searchHistory,
     searchRecommendations,
     removeSuggestion,
-    // selectSuggestion
 } = useSearch();
 
 defineExpose({ searchQuery });

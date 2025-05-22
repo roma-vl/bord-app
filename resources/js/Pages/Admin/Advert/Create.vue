@@ -5,7 +5,6 @@ import {computed, defineEmits} from "vue";
 const emit = defineEmits(["categoryCreated"]);
 const categories = usePage().props.categories;
 
-console.log(categories, "categories");
 const form = useForm({
     name: "",
     parent_id: null,

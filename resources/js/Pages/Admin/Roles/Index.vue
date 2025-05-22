@@ -42,13 +42,11 @@ const openCreateModal = async () => {
     } catch (error) {
         showForbidden.value = true;
         errorForbidden.value = error.response;
-        console.log('dd')
     }
 };
 
 
 const openEditModal = async (id) => {
-    console.log(id, 'id')
     try {
         const response = await axios.get(route("admin.roles.edit", id));
         if (response.status === 200) {
@@ -59,7 +57,6 @@ const openEditModal = async (id) => {
     } catch (error) {
         showForbidden.value = true;
         errorForbidden.value = error.response;
-        console.log('dd')
     }
 };
 const restoreRole = (id) => {

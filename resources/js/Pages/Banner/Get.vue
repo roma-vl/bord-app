@@ -6,7 +6,6 @@ import {getFullPathForImage} from "@/helpers.js";
 const props = defineProps({
     banner: Object
 });
-console.log(props.banner, 'banner')
 </script>
 
 <template>

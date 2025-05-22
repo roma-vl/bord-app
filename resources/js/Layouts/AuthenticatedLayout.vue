@@ -27,7 +27,6 @@ const messages = () => {
 
 const showRatingPopup = ref(false);
 const handleSubmit = (message) => {
-    console.log('Rated with message:', message);
     showRatingPopup.value = false;
 };
 // onMounted(() => {

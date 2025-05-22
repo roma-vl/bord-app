@@ -7,7 +7,6 @@ const props = defineProps({
     messages: Object,
     statuses: Object
 });
-console.log(props)
 
 const newComment = ref('');
 

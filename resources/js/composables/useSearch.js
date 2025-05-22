@@ -1,4 +1,3 @@
-// composables/useSearch.js
 import { ref } from 'vue';
 import { router } from '@inertiajs/vue3';
 
@@ -10,7 +9,6 @@ export function useSearch() {
     const searchRecommendations = ref(["iPhone 13", "Ноутбук Dell", "Годинник Apple", "Квартира у Києві"]);
 
     const selectSuggestion = (query) => {
-        console.log('query', query)
         searchQuery.value = query;
         showSuggestions.value = false;
     };
@@ -20,13 +18,19 @@ export function useSearch() {
         searchHistory.value.splice(index, 1);
     };
 
-    const search = () => {
-        console.log(searchQuery.value, 'searchQuery')
-        console.log(cityIdSearchQuery.value, 'cityIdSearchQuery')
+    const search = (params) => {
+        const path = window.location.pathname
+
+        const cleanPath = path
+            .split('/')
+            .filter(segment => segment && params.includes(segment))
+            .join('/');
+
         if (searchQuery.value.trim() === '') return;
-        const slug = cityIdSearchQuery.value ? `/${cityIdSearchQuery.value}` : '/list';
-        console.log(slug, 'slug')
-        router.get(slug, { query: searchQuery.value });
+
+        const category = cleanPath ? `/${cleanPath}` : '';
+        const region = cityIdSearchQuery.value ? `/${cityIdSearchQuery.value}` : '';
+        router.get( category + region , { query: searchQuery.value });
     };
 
     return {

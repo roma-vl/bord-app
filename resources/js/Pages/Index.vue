@@ -67,7 +67,7 @@ const subCategories = computed(() => {
                         <div class="flex items-center gap-4 bg-gray-100 p-4 rounded-lg shadow-md search-container">
                             <SearchInput v-model="searchQuery" @select-suggestion="handleSearch"/>
                             <div class="flex items-center gap-4">
-                                <LocationSelector @select-city="handleCitySelect" />
+                                <LocationSelector  v-model="cityIdSearchQuery" @select-city="handleCitySelect" />
                                 <button @click="search" class="px-8 py-2 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-xl hover:shadow-2xl transition">
                                     Пошук
                                 </button>

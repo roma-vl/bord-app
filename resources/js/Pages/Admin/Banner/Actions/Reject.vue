@@ -6,7 +6,7 @@ import InputError from "@/Components/InputError.vue";
 const props = defineProps({
     bannerId: Number,
 });
-console.log(props, 'props')
+
 const form = useForm({
     reject_reason: '',
 });

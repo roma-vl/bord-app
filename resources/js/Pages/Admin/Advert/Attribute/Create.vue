@@ -6,7 +6,6 @@ import TagInput from "@/Components/TagInput.vue";
 const props = defineProps({
     data: Object,
 });
-console.log(props.data, 'sds')
 const emit = defineEmits(["attributeCreated"]);
 
 const form = useForm({

@@ -18,10 +18,21 @@ const props = defineProps({
     categoriesCounts:Object,
     attributes: Object,
     categoryFilters: Object,
+    activeCategory: Object,
+    activeRegion: Object,
 });
 
-console.log(props.categories, 'props.categories')
-console.log(props.locations, 'props.locations')
+import { useSearch } from '@/composables/useSearch.js';
+import SearchInput from '@/Components/Search/SearchInput.vue';
+import LocationSelector from '@/Components/Search/LocationSelector.vue';
+
+const { searchQuery, cityIdSearchQuery, search } = useSearch();
+const handleCitySelect = (slug) => {
+    cityIdSearchQuery.value = slug;
+};
+const handleSearch = (text) => {
+    searchQuery.value = text;
+};
 
 const selectedCategoryId = computed(() => queryFilter.value.category_id)
 
@@ -37,19 +48,6 @@ const selectedCategoryAttributes = computed(() => {
     return selected?.attributes ?? [];
 });
 
-function submit() {
-    const filteredQuery = { ...queryFilter.value };
-
-    Object.keys(filteredQuery).forEach((key) => {
-        const val = filteredQuery[key];
-        if (val === null || val === '' || typeof val === 'undefined') {
-            delete filteredQuery[key];
-        }
-    });
-    const currentPath = window.location.pathname;
-    router.get(currentPath, filteredQuery);
-}
-
 function findCategoryById(categories, id) {
     for (const category of categories) {
         if (category.id === id) return category;
@@ -61,32 +59,55 @@ function findCategoryById(categories, id) {
     return null;
 }
 const handleCategoryChange = (category) => {
-    const fullPathArray = getCategoryPathById(props.categoryFilters, category.id);
-    const fullPath = fullPathArray.map(c => c.slug).join('/');
-    const newPath = `/${fullPath}`;
 
-    if (window.location.pathname === newPath) return; // ⚠️ Запобігає циклу
+    const fullPath = getCategorySlugsPathById(props.categoryFilters, category.id);
+    const categories = getCategorySlugs(props.categoryFilters);
+    const path = window.location.pathname
 
-    router.visit(newPath);
+    const cleanPath = path
+        .split('/')
+        .filter(segment => segment && !categories.includes(segment))
+        .filter(segment => segment && segment !== 'list')
+        .join('/');
+
+    const newPath = `/${fullPath.join('/')}`;
+
+    if (window.location.pathname === newPath + '/' + cleanPath) return;
+
+    router.visit(newPath + '/' + cleanPath +  window.location.search);
 }
 
 watch(() => queryFilter.value.category_id, (newVal) => {
     if (!newVal) return;
     const selected = findCategoryById(props.categoryFilters, Number(newVal))
-    console.log(selected,'selected')
     if (selected) {
         handleCategoryChange(selected)
     }
 })
 
-function getCategoryPathById(categories, id, path = []) {
+function getCategorySlugs(categories) {
+    const slugs = [];
+
     for (const category of categories) {
-        const newPath = [...path, category];
+        slugs.push(category.slug);
+
+        if (category.children?.length) {
+            slugs.push(...getCategorySlugs(category.children));
+        }
+    }
+
+    return slugs;
+}
+
+
+function getCategorySlugsPathById(categories, id, path = []) {
+    for (const category of categories) {
+        const newPath = [...path, category.slug];
         if (category.id === id) {
             return newPath;
         }
         if (category.children?.length) {
-            const result = getCategoryPathById(category.children, id, newPath);
+            const result = getCategorySlugsPathById(category.children, id, newPath);
             if (result) {
                 return result;
             }
@@ -97,26 +118,20 @@ function getCategoryPathById(categories, id, path = []) {
 
 onMounted(() => {
     const pathParts = window.location.pathname.split('/').filter(Boolean);
+
     if (!pathParts.length) return;
 
-    const categorySlug = pathParts[pathParts.length - 1]; // або зробити весь шлях
-    const category = findCategoryBySlug(props.categoryFilters, categorySlug);
+    cityIdSearchQuery.value = props.activeRegion;
 
-    if (category) {
-        queryFilter.value.category_id = category.id;
+    if (queryFilter.value.category_id !== props.activeCategory.id) {
+        queryFilter.value.category_id = props.activeCategory.id;
     }
+
+    if (queryFilter.value.query) {
+        searchQuery.value = queryFilter.value.query;
+    }
+
 });
-
-function findCategoryBySlug(categories, slug) {
-    for (const category of categories) {
-        if (category.slug === slug) return category;
-        if (category.children?.length) {
-            const found = findCategoryBySlug(category.children, slug);
-            if (found) return found;
-        }
-    }
-    return null;
-}
 
 const banner = ref(null)
 
@@ -131,7 +146,6 @@ onMounted(async () => {
     banner.value = res.data.banner;
 })
 
-
 </script>
 
 <template>
@@ -141,15 +155,16 @@ onMounted(async () => {
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 bg-white">
-                        <form @submit.prevent="submit" class="mb-6">
-                            <div class="flex gap-4 items-center mb-4">
-                                <input v-model="queryFilter.query" placeholder="Що шукаєш?"
-                                    class="flex-1 px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"/>
-                                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">
+
+                        <div class="flex items-center gap-4 bg-gray-100 p-4 rounded-lg shadow-md search-container">
+                            <SearchInput v-model="searchQuery" @select-suggestion="handleSearch"/>
+                            <div class="flex items-center gap-4">
+                                <LocationSelector  v-model="cityIdSearchQuery" @select-city="handleCitySelect" />
+                                <button @click="search(getCategorySlugs(props.categoryFilters))" class="px-8 py-2 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-xl hover:shadow-2xl transition">
                                     Пошук
                                 </button>
                             </div>
-                        </form>
+                        </div>
 
                         <h2 class="text-lg font-semibold text-gray-800 mb-4">Фільтри</h2>
                         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-4">

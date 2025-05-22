@@ -41,8 +41,6 @@ const submitFiles = async () => {
     for (const fileObj of Object.values(files.value)) {
         formData.append("files[]", fileObj.file);
     }
-
-    console.log(files, 'formData')
 };
 
 const dragEnterHandler = () => (isDraggedOver.value = true);

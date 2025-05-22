@@ -11,8 +11,6 @@ const props = defineProps({
 const emit = defineEmits(["pageUpdated"]);
 const pages = usePage().props.pages;
 
-console.log(pages, "pages");
-console.log(props.page, "page");
 
 const form = useForm({
     title: props.page.title,
@@ -31,7 +29,7 @@ const submit = () => {
 
 const getPagesOptions = (pages, prefix = "") => {
     let options = [];
-    console.log(pages, 'pages')
+
     pages.forEach((page) => {
         options.push({ id: page.id, title: prefix + page.title });
 

@@ -11,7 +11,6 @@ import PayBanner from "@/Pages/Account/Banner/Actions/PayBanner.vue";
 const props = defineProps({
     banner: Object,
 });
-console.log(props.banner, 'banner')
 
 const flash = computed(() => usePage().props.flash);
 const isRejectModalOpen = ref(false);
@@ -45,7 +44,6 @@ const activate = async () => {
     router.post(route("admin.banners.moderate", { banner: props.banner.id }), {
         onSuccess: () => router.replace(route("admin.banners.index")),
     });
-    console.log(id, "id");
 };
 
 const rejectAdvert = () => {

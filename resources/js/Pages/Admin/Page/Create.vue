@@ -5,7 +5,7 @@ import Editor from "@/Components/Editor.vue";
 
 const emit = defineEmits(["pageCreated"]);
 const pages = usePage().props.pages;
-console.log(pages, "pages");
+
 const form = useForm({
     title: "",
     menu_title: "",

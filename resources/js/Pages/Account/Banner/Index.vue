@@ -7,7 +7,6 @@ import FlashMessage from "@/Components/FlashMessage.vue";
 import AdvertList from "@/Components/Advert/Banner/AdvertList.vue";
 
 const banners = usePage().props.banners;
-console.log(banners, 'banners')
 
 const routes = {
         edit: "account.banners.edit",

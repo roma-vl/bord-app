@@ -1,4 +1,3 @@
-// composables/useLocationSearch.js
 import { ref } from 'vue';
 import axios from 'axios';
 
@@ -14,14 +13,12 @@ export function useLocationSearch() {
     const showLocationDropdown = ref(false);
 
     const fetchRegions = async () => {
-        if (!regions.value.length && !citySearchQuery.value.length) {
-            loadingRegions.value = true;
-            try {
-                const response = await axios.get(route("adverts.regions"));
-                regions.value = response.data.regions;
-            } finally {
-                loadingRegions.value = false;
-            }
+        loadingRegions.value = true;
+        try {
+            const response = await axios.get(route("adverts.regions"));
+            regions.value = response.data.regions;
+        } finally {
+            loadingRegions.value = false;
         }
         showLocationDropdown.value = true;
     };
@@ -60,6 +57,13 @@ export function useLocationSearch() {
         return city.slug;
     };
 
+    const resetLocation = () => {
+        selectedRegion.value = null;
+        selectedCity.value = null;
+        cities.value = [];
+        fetchRegions();
+    };
+
     return {
         selectedRegion,
         selectedCity,
@@ -70,6 +74,7 @@ export function useLocationSearch() {
         loadingRegions,
         loadingCities,
         showLocationDropdown,
+        resetLocation,
         fetchRegions,
         fetchCities,
         searchCities,

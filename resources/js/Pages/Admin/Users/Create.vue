@@ -7,7 +7,6 @@ import TextInput from "@/Components/TextInput.vue";
 const props = defineProps({
     roles: Array, // Передані ролі з контролера
 });
-console.log(props.roles, 'props.roles')
 const form = useForm({
     name: "",
     email: "",
