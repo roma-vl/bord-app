@@ -74,7 +74,6 @@ class IndexController extends Controller
 
     public function searchAdvert(SearchRequest $request, ?string $urlPath = ''): Response
     {
-        \Cache::flush();
         $data = $this->categoryService->parseCategoryAndLocationFromUrl($urlPath);
         $pagination = $this->preparePaginationData($request);
 
