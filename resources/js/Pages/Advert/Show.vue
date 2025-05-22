@@ -8,6 +8,7 @@ import Reject from "@/Pages/Admin/Advert/Actions/Reject.vue";
 import Modal from "@/Components/Modal.vue";
 import FlashMessage from "@/Components/FlashMessage.vue";
 import {getDateFormatFromLocale, getFullPathForImage} from "@/helpers.js";
+import axios from "axios";
 const props = defineProps({
     advert: Object,
     values: Array,
@@ -15,12 +16,15 @@ const props = defineProps({
     category: Object,
     isFavorited: Boolean
 });
-
+const user = usePage().props.auth.user;
 const flash = computed(() => usePage().props.flash);
 const isLiked = ref(false);
 const userPhone = ref(false);
 const isRejectModalOpen = ref(false);
 const advertId = ref(null);
+const isMessengerOpen = ref(false);
+const messages = ref([]);
+
 const toggleLike = () => {
     if (props.isFavorited === true) {
         router.delete(route("account.favorites.remove", {advert: props.advert.id}));
@@ -86,6 +90,48 @@ const deleteAdvert = () => {
         router.delete(route("account.adverts.destroy", props.advert.id));
     }
 };
+const toggleMessenger = async () => {
+    isMessengerOpen.value = !isMessengerOpen.value;
+    try {
+        if (messages.value.length === 0) {
+            const response = await axios.get(route("account.chats.get.dialog", props.advert.id ));
+            messages.value = response.data;
+        }
+    } catch (error) {
+        console.log(error)
+    }
+};
+
+const sendMessage = () => {
+    const text = messageForm.message.trim()
+    if (!text) return
+
+    messageForm.post(route("account.chats.store", props.advert.id), {
+        onSuccess: () => {
+            console.log('Send Message!!!!!!!!!')
+        }
+    });
+}
+
+const handleFileUpload = (event) => {
+    const file = event.target.files[0]
+    if (file) {
+        messages.messages.value.push({
+            id: Date.now(),
+            text: `📎 Файл: ${file.name}`,
+            isMine: true
+        })
+    }
+}
+
+const openEmojis = () => {
+    alert('🤪 Тут має бути emoji picker.')
+}
+
+const messageForm = useForm({
+    message: "",
+    advert_id: props.advert.id,
+});
 
 </script>
 
@@ -209,7 +255,7 @@ const deleteAdvert = () => {
                                     Договірна
                                 </span>
                             </div>
-                            <button class=" h-14 rounded-md border-2 hover:border-[5px] hover:bg-white hover:text-blue-500
+                            <button @click="toggleMessenger" class=" h-14 rounded-md border-2 hover:border-[5px] hover:bg-white hover:text-blue-500
                                 border-blue-500  bg-blue-500 w-full mt-5 mb-5 text-neutral-50 after:absolute after:left-0 after:top-0 after:-z-10 after:h-full after:w-full after:rounded-md">
                                 <span class="text-lg font-bold">
                                     Повідомлення
@@ -255,6 +301,59 @@ const deleteAdvert = () => {
                                 <img src="https://inweb.ua/blog/wp-content/uploads/2020/09/vstavte-etot-kod-na-svoyu-html-stranitsu-ili-vidzhet.jpg" alt="">
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                v-if="isMessengerOpen"
+                class="fixed bottom-20 right-6 h-[400px] bg-white border border-gray-300 rounded-lg shadow-lg z-50 flex flex-col">
+                <div class="bg-blue-600 text-white px-4 py-2 rounded-t-lg flex justify-between items-center">
+                    <span>Чат з автором</span>
+                    <button @click="toggleMessenger" class="text-white text-xl font-bold leading-none">×</button>
+                </div>
+                <div class="flex flex-col h-full bg-white border rounded shadow-sm">
+                    <div v-if="messages.messages?.length" class="flex-1 overflow-y-auto p-4 space-y-2 max-w-[340px]">
+                        <div v-for="message in messages.messages" :key="message.id" class="flex items-end"
+                             :class="message.user.id === user.id ? 'justify-end' : 'justify-start'">
+
+                            <template v-if="message.user.id === user.id">
+                                <div class="flex items-end gap-2 ml-auto">
+                                    <div class="px-4 py-2 rounded-lg max-w-xs break-words bg-blue-100 text-right">
+                                        {{ message.message }}
+                                    </div>
+                                    <img class="w-10 h-10 rounded-full" :src="message.user.avatar_url" alt="Аватар">
+                                </div>
+                            </template>
+
+                            <template v-else>
+                                <div class="flex items-end gap-2 mr-auto">
+                                    <img class="w-10 h-10 rounded-full" :src="message.user.avatar_url" alt="Аватар">
+                                    <div class="px-4 py-2 rounded-lg max-w-xs break-words bg-gray-100 text-left">
+                                        {{ message.message }}
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <div class="flex-1 overflow-y-auto p-4 space-y-2 text-center" v-else>
+                        Повідомлень ще немає
+                    </div>
+                    <div class="border-t p-3 flex items-center gap-2 w-full">
+                        <form @submit.prevent="sendMessage">
+                            <button @click="openEmojis" class="text-gray-500 hover:text-yellow-400 transition" title="Смайли">
+                                😊
+                            </button>
+                            <label class="cursor-pointer text-gray-500 hover:text-blue-500">
+                                <input type="file" class="hidden" @change="handleFileUpload" />   📎
+                            </label>
+                            <input v-model="messageForm.message" @keyup.enter="sendMessage" type="text" placeholder="Написати..."
+                                   class="flex-1 border rounded-lg px-4 py-2 mr-2 focus:outline-none focus:ring-2 focus:ring-blue-400"/>
+                            <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition">
+                                ⤊
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>

@@ -100,6 +100,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::prefix('/chats')->name('chats.')->group(function () {
             Route::get('/', [ChatController::class, 'index'])->name('index');
+            Route::post('/create-dialog', [ChatController::class, 'createDialog'])->name('dialog.create');
+            Route::get('/chats/{chat}/messages', [ChatController::class, 'show'])->name('show');
+            Route::get('/{advert}/messages', [ChatController::class, 'getDialogByAdvert'])->name('get.dialog');
+            Route::post('/chats/{advert}/messages', [ChatController::class, 'store'])->name('store');
         });
 
     });
