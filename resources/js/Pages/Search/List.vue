@@ -26,11 +26,17 @@ import SearchInput from '@/Components/Search/SearchInput.vue';
 import LocationSelector from '@/Components/Search/LocationSelector.vue';
 
 const { searchQuery, cityIdSearchQuery, search } = useSearch();
+
+const toggle = ref('');
 const handleCitySelect = (slug) => {
   cityIdSearchQuery.value = slug;
 };
 const handleSearch = (text) => {
   searchQuery.value = text;
+};
+
+const handleModel = (newToggle) => {
+    toggle.value = newToggle
 };
 
 const selectedCategoryId = computed(() => queryFilter.value.category_id);
@@ -58,6 +64,16 @@ function findCategoryById(categories, id) {
   return null;
 }
 const handleCategoryChange = (category) => {
+
+    const filteredQuery = { ...queryFilter.value };
+
+    Object.keys(filteredQuery).forEach((key) => {
+        const val = filteredQuery[key];
+        if (val === null || val === '' || typeof val === 'undefined') {
+            delete filteredQuery[key];
+        }
+    });
+
   const fullPath = getCategorySlugsPathById(props.categoryFilters, category.id);
   const categories = getCategorySlugs(props.categoryFilters);
   const path = window.location.pathname;
@@ -80,7 +96,7 @@ watch(
   (newVal) => {
     if (!newVal) return;
     const selected = findCategoryById(props.categoryFilters, Number(newVal));
-    if (selected) {
+    if (selected && toggle &&  toggle?.value === 'open') {
       handleCategoryChange(selected);
     }
   }
@@ -176,6 +192,7 @@ onMounted(async () => {
                 </label>
                 <CategoryDropdown
                   v-model="queryFilter.category_id"
+                  @toggle="handleModel"
                   :categoryFilters="props.categoryFilters"
                 />
               </div>

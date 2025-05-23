@@ -1,10 +1,11 @@
 import { ref } from 'vue';
-import { router } from '@inertiajs/vue3';
+import {router, usePage} from '@inertiajs/vue3';
 
 export function useSearch() {
   const searchQuery = ref('');
   const cityIdSearchQuery = ref('');
   const showSuggestions = ref(false);
+  const queryFilter = ref(usePage().props.query || {});
   const searchHistory = ref(['Пилосос', 'Квартира', 'Машина', 'Квартира у Києві']);
   const searchRecommendations = ref([
     'iPhone 13',
@@ -21,7 +22,6 @@ export function useSearch() {
   const removeSuggestion = (index) => {
     searchHistory.value.splice(index, 1);
   };
-
   const search = (params) => {
     const path = window.location.pathname;
 
@@ -34,7 +34,20 @@ export function useSearch() {
 
     const category = cleanPath ? `/${cleanPath}` : '';
     const region = cityIdSearchQuery.value ? `/${cityIdSearchQuery.value}` : '';
-    router.get(category + region, { query: searchQuery.value });
+
+  const filteredQuery = { ...queryFilter.value };
+
+  Object.keys(filteredQuery).forEach((key) => {
+      const val = filteredQuery[key];
+      if (val === null || val === '' || typeof val === 'undefined') {
+          delete filteredQuery[key];
+      }
+  });
+
+  let searchParams = new URLSearchParams(filteredQuery).toString();
+  if (searchParams) searchParams = '?' +  searchParams
+
+    router.visit(category + region +  searchParams );
   };
 
   return {

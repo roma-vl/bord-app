@@ -6,7 +6,7 @@ const props = defineProps({
   modelValue: [Number, String, null],
   categoryFilters: Array,
 });
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue', 'toggle']);
 
 const isOpen = ref(false);
 const selectedCategory = ref(null);
@@ -18,6 +18,7 @@ function toggleDropdown() {
 function selectCategory(category) {
   selectedCategory.value = category;
   emit('update:modelValue', category.id);
+  emit('toggle', 'open');
   isOpen.value = false;
 }
 
