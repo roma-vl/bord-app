@@ -3,8 +3,14 @@ import { getDateFormatFromLocale, getFullPathForImage } from '@/helpers.js';
 import { router } from '@inertiajs/vue3';
 
 const props = defineProps({
-  adverts: Object,
-  routes: Object,
+  adverts: {
+    type: Object,
+    default: () => ({}),
+  },
+  routes: {
+    type: Object,
+    default: () => ({}),
+  },
 });
 const remove = (advertId) => {
   router.delete(route(props.routes.remove, { advert: advertId }));
@@ -13,7 +19,10 @@ const remove = (advertId) => {
 
 <template>
   <div class="bg-white rounded shadow overflow-hidden mb-4">
-    <div v-if="props.adverts.data.length" class="divide-y divide-gray-100">
+    <div
+      v-if="props.adverts.data.length"
+      class="divide-y divide-gray-100"
+    >
       <div
         v-for="advert in adverts.data"
         :key="advert.id"
@@ -25,18 +34,23 @@ const remove = (advertId) => {
               :src="getFullPathForImage(advert.first_photo?.file)"
               :alt="advert.title"
               class="w-full h-40"
-            />
+            >
           </div>
           <div class="flex-grow flex flex-col justify-between">
             <div>
-              <a :href="route('adverts.show', advert.id)" class="block group">
+              <a
+                :href="route('adverts.show', advert.id)"
+                class="block group"
+              >
                 <h3
                   class="text-2xl font-semibold text-gray-800 group-hover:text-violet-600 transition-colors duration-200"
                 >
                   {{ advert.title }}
                 </h3>
               </a>
-              <p class="text-xl font-medium text-violet-600">{{ advert.price }} ₴</p>
+              <p class="text-xl font-medium text-violet-600">
+                {{ advert.price }} ₴
+              </p>
             </div>
             <div class="flex items-center gap-6 text-sm mt-4">
               <span class="flex items-center gap-2 text-gray-600">
@@ -84,7 +98,10 @@ const remove = (advertId) => {
             >
               {{ advert.status }}
             </span>
-            <div v-if="props.routes" class="flex items-center gap-3 mt-auto">
+            <div
+              v-if="props.routes"
+              class="flex items-center gap-3 mt-auto"
+            >
               <a
                 v-if="props.routes.edit"
                 :href="route(props.routes.edit, advert.id)"
@@ -139,9 +156,9 @@ const remove = (advertId) => {
               </a>
               <button
                 v-if="props.routes.remove"
-                @click="remove(advert.id)"
                 title="Видалити"
                 class="p-1.5 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition duration-150 group relative"
+                @click="remove(advert.id)"
               >
                 <span
                   class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 text-sm text-white bg-gray-800 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap"
@@ -166,7 +183,12 @@ const remove = (advertId) => {
         </div>
       </div>
     </div>
-    <p v-else class="py-12 text-center text-gray-500 text-lg">У вас немає оголошень.</p>
+    <p
+      v-else
+      class="py-12 text-center text-gray-500 text-lg"
+    >
+      У вас немає оголошень.
+    </p>
   </div>
 </template>
 <style scoped></style>

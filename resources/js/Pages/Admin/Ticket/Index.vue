@@ -34,9 +34,16 @@ const routes = [
           <FlashMessage :flash="flash" />
           <div class="px-4">
             <div class="grid grid-cols-2 gap-4 items-start mb-3">
-              <h2 class="text-xl font-bold mb-4">Мої Тікети</h2>
+              <h2 class="text-xl font-bold mb-4">
+                Мої Тікети
+              </h2>
             </div>
-            <Grid :items="tickets" :pagination="pagination" :headings="headings" :routes="routes">
+            <Grid
+              :items="tickets"
+              :pagination="pagination"
+              :headings="headings"
+              :routes="routes"
+            >
               <template #column-author="{ row }">
                 <a class="text-sm hover:underline cursor-pointer">
                   {{ row.user.name }} {{ row.user.first_name }}

@@ -1,5 +1,5 @@
 import { ref } from 'vue';
-import {router, usePage} from '@inertiajs/vue3';
+import { router, usePage } from '@inertiajs/vue3';
 
 export function useSearch() {
   const searchQuery = ref('');
@@ -35,19 +35,19 @@ export function useSearch() {
     const category = cleanPath ? `/${cleanPath}` : '';
     const region = cityIdSearchQuery.value ? `/${cityIdSearchQuery.value}` : '';
 
-  const filteredQuery = { ...queryFilter.value };
+    const filteredQuery = { ...queryFilter.value };
 
-  Object.keys(filteredQuery).forEach((key) => {
+    Object.keys(filteredQuery).forEach((key) => {
       const val = filteredQuery[key];
       if (val === null || val === '' || typeof val === 'undefined') {
-          delete filteredQuery[key];
+        delete filteredQuery[key];
       }
-  });
+    });
 
-  let searchParams = new URLSearchParams(filteredQuery).toString();
-  if (searchParams) searchParams = '?' +  searchParams
+    let searchParams = new URLSearchParams(filteredQuery).toString();
+    if (searchParams) searchParams = '?' + searchParams;
 
-    router.visit(category + region +  searchParams );
+    router.visit(category + region + searchParams);
   };
 
   return {

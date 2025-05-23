@@ -10,9 +10,11 @@ import { Head, Link, useForm } from '@inertiajs/vue3';
 defineProps({
   canResetPassword: {
     type: Boolean,
+    default: false,
   },
   status: {
     type: String,
+    default: '',
   },
 });
 
@@ -36,14 +38,17 @@ const loginWithGoogle = () => {
   <GuestLayout>
     <Head :title="$t('login')" />
 
-    <div v-if="status" class="mb-4 text-sm font-medium text-green-600">
+    <div
+      v-if="status"
+      class="mb-4 text-sm font-medium text-green-600"
+    >
       {{ status }}
     </div>
     <form @submit.prevent="submit">
       <div class="flex flex-col w-full gap-y-5 pb-6">
         <button
-          @click.stop="loginWithGoogle"
           class="bg-white flex items-center text-gray-700 dark:text-gray-300 justify-center gap-x-3 text-sm sm:text-base dark:bg-gray-900 dark:border-gray-700 dark:hover:bg-gray-800 rounded-lg hover:bg-gray-100 duration-300 transition-colors border px-8 py-2.5"
+          @click.stop="loginWithGoogle"
         >
           <svg
             class="w-5 h-5 sm:h-6 sm:w-6"
@@ -71,7 +76,11 @@ const loginWithGoogle = () => {
             </g>
             <defs>
               <clipPath id="clip0_3033_94454">
-                <rect width="24" height="24" fill="white" />
+                <rect
+                  width="24"
+                  height="24"
+                  fill="white"
+                />
               </clipPath>
             </defs>
           </svg>
@@ -95,7 +104,11 @@ const loginWithGoogle = () => {
             </g>
             <defs>
               <clipPath id="clip0_3033_94669">
-                <rect width="24" height="24" fill="white" />
+                <rect
+                  width="24"
+                  height="24"
+                  fill="white"
+                />
               </clipPath>
             </defs>
           </svg>
@@ -103,35 +116,50 @@ const loginWithGoogle = () => {
         </button>
       </div>
       <div>
-        <InputLabel for="email" :value="$t('email')" />
+        <InputLabel
+          for="email"
+          :value="$t('email')"
+        />
         <TextInput
           id="email"
+          v-model="form.email"
           type="email"
           class="mt-1 block w-full"
-          v-model="form.email"
           required
           autofocus
           autocomplete="username"
         />
-        <InputError class="mt-2" :message="form.errors.email" />
+        <InputError
+          class="mt-2"
+          :message="form.errors.email"
+        />
       </div>
 
       <div class="mt-4">
-        <InputLabel for="password" :value="$t('password')" />
+        <InputLabel
+          for="password"
+          :value="$t('password')"
+        />
         <TextInput
           id="password"
+          v-model="form.password"
           type="password"
           class="mt-1 block w-full"
-          v-model="form.password"
           required
           autocomplete="current-password"
         />
-        <InputError class="mt-2" :message="form.errors.password" />
+        <InputError
+          class="mt-2"
+          :message="form.errors.password"
+        />
       </div>
 
       <div class="mt-4 block">
         <label class="flex items-center">
-          <Checkbox name="remember" v-model:checked="form.remember" />
+          <Checkbox
+            v-model:checked="form.remember"
+            name="remember"
+          />
           <span class="ms-2 text-sm text-gray-600">{{ $t('remember') }} </span>
         </label>
       </div>

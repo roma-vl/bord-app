@@ -7,6 +7,7 @@ import { Head, Link, useForm } from '@inertiajs/vue3';
 const props = defineProps({
   status: {
     type: String,
+    default: '',
   },
 });
 
@@ -27,13 +28,19 @@ const verificationLinkSent = computed(() => props.status === 'verification-link-
       {{ $t('email.verify.text') }}
     </div>
 
-    <div class="mb-4 text-sm font-medium text-green-600" v-if="verificationLinkSent">
+    <div
+      v-if="verificationLinkSent"
+      class="mb-4 text-sm font-medium text-green-600"
+    >
       {{ $t('email.verify.text.send') }}
     </div>
 
     <form @submit.prevent="submit">
       <div class="mt-4 flex items-center justify-between">
-        <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+        <PrimaryButton
+          :class="{ 'opacity-25': form.processing }"
+          :disabled="form.processing"
+        >
           {{ $t('email.verify.resend') }}
         </PrimaryButton>
 

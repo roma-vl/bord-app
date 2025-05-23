@@ -35,11 +35,13 @@ const flash = usePage().props.flash;
                     stroke-linejoin="round"
                     stroke-width="2"
                     d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                  ></path>
+                  />
                 </svg>
               </div>
               <div class="text-right">
-                <p class="text-2xl">1,257</p>
+                <p class="text-2xl">
+                  1,257
+                </p>
                 <p>Visitors</p>
               </div>
             </div>
@@ -62,11 +64,13 @@ const flash = usePage().props.flash;
                     stroke-linejoin="round"
                     stroke-width="2"
                     d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                  ></path>
+                  />
                 </svg>
               </div>
               <div class="text-right">
-                <p class="text-2xl">557</p>
+                <p class="text-2xl">
+                  557
+                </p>
                 <p>Orders</p>
               </div>
             </div>
@@ -89,11 +93,13 @@ const flash = usePage().props.flash;
                     stroke-linejoin="round"
                     stroke-width="2"
                     d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-                  ></path>
+                  />
                 </svg>
               </div>
               <div class="text-right">
-                <p class="text-2xl">$11,257</p>
+                <p class="text-2xl">
+                  $11,257
+                </p>
                 <p>Sales</p>
               </div>
             </div>
@@ -116,11 +122,13 @@ const flash = usePage().props.flash;
                     stroke-linejoin="round"
                     stroke-width="2"
                     d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  ></path>
+                  />
                 </svg>
               </div>
               <div class="text-right">
-                <p class="text-2xl">$75,257</p>
+                <p class="text-2xl">
+                  $75,257
+                </p>
                 <p>Balances</p>
               </div>
             </div>
@@ -164,7 +172,7 @@ const flash = usePage().props.flash;
                         </th>
                         <th
                           class="px-4 bg-gray-100 dark:bg-gray-600 text-gray-500 dark:text-gray-100 align-middle border border-solid border-gray-200 dark:border-gray-500 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left min-w-140-px"
-                        ></th>
+                        />
                       </tr>
                     </thead>
                     <tbody>
@@ -189,7 +197,7 @@ const flash = usePage().props.flash;
                                 <div
                                   style="width: 70%"
                                   class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-600"
-                                ></div>
+                                />
                               </div>
                             </div>
                           </div>
@@ -216,7 +224,7 @@ const flash = usePage().props.flash;
                                 <div
                                   style="width: 40%"
                                   class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500"
-                                ></div>
+                                />
                               </div>
                             </div>
                           </div>
@@ -243,7 +251,7 @@ const flash = usePage().props.flash;
                                 <div
                                   style="width: 45%"
                                   class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-pink-500"
-                                ></div>
+                                />
                               </div>
                             </div>
                           </div>
@@ -270,7 +278,7 @@ const flash = usePage().props.flash;
                                 <div
                                   style="width: 60%"
                                   class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-red-500"
-                                ></div>
+                                />
                               </div>
                             </div>
                           </div>
@@ -297,7 +305,7 @@ const flash = usePage().props.flash;
                                 <div
                                   style="width: 30%"
                                   class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-700"
-                                ></div>
+                                />
                               </div>
                             </div>
                           </div>
@@ -339,10 +347,13 @@ const flash = usePage().props.flash;
                   <ul class="my-1">
                     <li class="flex px-4">
                       <div class="w-9 h-9 rounded-full flex-shrink-0 bg-indigo-500 my-2 mr-3">
-                        <svg class="w-9 h-9 fill-current text-indigo-50" viewBox="0 0 36 36">
+                        <svg
+                          class="w-9 h-9 fill-current text-indigo-50"
+                          viewBox="0 0 36 36"
+                        >
                           <path
                             d="M18 10c-4.4 0-8 3.1-8 7s3.6 7 8 7h.6l5.4 2v-4.4c1.2-1.2 2-2.8 2-4.6 0-3.9-3.6-7-8-7zm4 10.8v2.3L18.9 22H18c-3.3 0-6-2.2-6-5s2.7-5 6-5 6 2.2 6 5c0 2.2-2 3.8-2 3.8z"
-                          ></path>
+                          />
                         </svg>
                       </div>
                       <div
@@ -355,15 +366,13 @@ const flash = usePage().props.flash;
                               href="#"
                               style="outline: none"
                             >
-                              Nick Mark</a
-                            >mentioned
+                              Nick Mark</a>mentioned
                             <a
                               class="font-medium text-gray-800 dark:text-gray-50 dark:hover:text-gray-100"
                               href="#"
                               style="outline: none"
                             >
-                              Sara Smith</a
-                            >
+                              Sara Smith</a>
                             in a new post
                           </div>
                           <div class="flex-shrink-0 ml-2">
@@ -385,7 +394,7 @@ const flash = usePage().props.flash;
                                     fill-rule="evenodd"
                                     d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
                                     clip-rule="evenodd"
-                                  ></path>
+                                  />
                                 </svg>
                               </span>
                             </a>
@@ -395,10 +404,13 @@ const flash = usePage().props.flash;
                     </li>
                     <li class="flex px-4">
                       <div class="w-9 h-9 rounded-full flex-shrink-0 bg-red-500 my-2 mr-3">
-                        <svg class="w-9 h-9 fill-current text-red-50" viewBox="0 0 36 36">
+                        <svg
+                          class="w-9 h-9 fill-current text-red-50"
+                          viewBox="0 0 36 36"
+                        >
                           <path
                             d="M25 24H11a1 1 0 01-1-1v-5h2v4h12v-4h2v5a1 1 0 01-1 1zM14 13h8v2h-8z"
-                          ></path>
+                          />
                         </svg>
                       </div>
                       <div
@@ -419,8 +431,7 @@ const flash = usePage().props.flash;
                               class="font-medium text-gray-800 hover:text-gray-900 dark:text-gray-50 dark:hover:text-gray-100"
                               href="#"
                               style="outline: none"
-                              >Nick Mark</a
-                            >
+                            >Nick Mark</a>
                           </div>
                           <div class="flex-shrink-0 ml-2">
                             <a
@@ -428,20 +439,18 @@ const flash = usePage().props.flash;
                               href="#0"
                               style="outline: none"
                             >
-                              View<span
-                                ><svg
-                                  width="20"
-                                  height="20"
-                                  viewBox="0 0 20 20"
-                                  fill="currentColor"
-                                  class="transform transition-transform duration-500 ease-in-out"
-                                >
-                                  <path
-                                    fill-rule="evenodd"
-                                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                                    clip-rule="evenodd"
-                                  ></path></svg
-                              ></span>
+                              View<span><svg
+                                width="20"
+                                height="20"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                                class="transform transition-transform duration-500 ease-in-out"
+                              >
+                                <path
+                                  fill-rule="evenodd"
+                                  d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                  clip-rule="evenodd"
+                                /></svg></span>
                             </a>
                           </div>
                         </div>
@@ -456,10 +465,13 @@ const flash = usePage().props.flash;
                   <ul class="my-1">
                     <li class="flex px-4">
                       <div class="w-9 h-9 rounded-full flex-shrink-0 bg-green-500 my-2 mr-3">
-                        <svg class="w-9 h-9 fill-current text-light-blue-50" viewBox="0 0 36 36">
+                        <svg
+                          class="w-9 h-9 fill-current text-light-blue-50"
+                          viewBox="0 0 36 36"
+                        >
                           <path
                             d="M23 11v2.085c-2.841.401-4.41 2.462-5.8 4.315-1.449 1.932-2.7 3.6-5.2 3.6h-1v2h1c3.5 0 5.253-2.338 6.8-4.4 1.449-1.932 2.7-3.6 5.2-3.6h3l-4-4zM15.406 16.455c.066-.087.125-.162.194-.254.314-.419.656-.872 1.033-1.33C15.475 13.802 14.038 13 12 13h-1v2h1c1.471 0 2.505.586 3.406 1.455zM24 21c-1.471 0-2.505-.586-3.406-1.455-.066.087-.125.162-.194.254-.316.422-.656.873-1.028 1.328.959.878 2.108 1.573 3.628 1.788V25l4-4h-3z"
-                          ></path>
+                          />
                         </svg>
                       </div>
                       <div
@@ -471,15 +483,13 @@ const flash = usePage().props.flash;
                               class="font-medium text-gray-800 hover:text-gray-900 dark:text-gray-50 dark:hover:text-gray-100"
                               href="#0"
                               style="outline: none"
-                              >240+</a
-                            >
+                            >240+</a>
                             users have subscribed to
                             <a
                               class="font-medium text-gray-800 dark:text-gray-50 dark:hover:text-gray-100"
                               href="#0"
                               style="outline: none"
-                              >Newsletter #1</a
-                            >
+                            >Newsletter #1</a>
                           </div>
                           <div class="flex-shrink-0 ml-2">
                             <a
@@ -487,20 +497,18 @@ const flash = usePage().props.flash;
                               href="#0"
                               style="outline: none"
                             >
-                              View<span
-                                ><svg
-                                  width="20"
-                                  height="20"
-                                  viewBox="0 0 20 20"
-                                  fill="currentColor"
-                                  class="transform transition-transform duration-500 ease-in-out"
-                                >
-                                  <path
-                                    fill-rule="evenodd"
-                                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                                    clip-rule="evenodd"
-                                  ></path></svg
-                              ></span>
+                              View<span><svg
+                                width="20"
+                                height="20"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                                class="transform transition-transform duration-500 ease-in-out"
+                              >
+                                <path
+                                  fill-rule="evenodd"
+                                  d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                  clip-rule="evenodd"
+                                /></svg></span>
                             </a>
                           </div>
                         </div>
@@ -518,12 +526,16 @@ const flash = usePage().props.flash;
             class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 p-4 gap-4 text-black dark:text-white"
           >
             <div class="md:col-span-2 xl:col-span-3">
-              <h3 class="text-lg font-semibold">Task summaries of recent sprints</h3>
+              <h3 class="text-lg font-semibold">
+                Task summaries of recent sprints
+              </h3>
             </div>
             <div class="md:col-span-2 xl:col-span-1">
               <div class="rounded bg-gray-200 dark:bg-gray-800 p-3">
                 <div class="flex justify-between py-1 text-black dark:text-white">
-                  <h3 class="text-sm font-semibold">Tasks in TO DO</h3>
+                  <h3 class="text-sm font-semibold">
+                    Tasks in TO DO
+                  </h3>
                   <svg
                     class="h-4 fill-current text-gray-600 dark:text-gray-500 cursor-pointer"
                     xmlns="http://www.w3.org/2000/svg"
@@ -564,7 +576,11 @@ const flash = usePage().props.flash;
                         </svg>
                         3/5
                       </span>
-                      <img src="https://i.imgur.com/OZaT7jl.png" class="rounded-full" alt="" />
+                      <img
+                        src="https://i.imgur.com/OZaT7jl.png"
+                        class="rounded-full"
+                        alt=""
+                      >
                     </div>
                   </div>
                   <div
@@ -593,14 +609,18 @@ const flash = usePage().props.flash;
                       </span>
                     </div>
                   </div>
-                  <p class="mt-3 text-gray-600 dark:text-gray-400">Add a card...</p>
+                  <p class="mt-3 text-gray-600 dark:text-gray-400">
+                    Add a card...
+                  </p>
                 </div>
               </div>
             </div>
             <div>
               <div class="rounded bg-gray-200 dark:bg-gray-800 p-3">
                 <div class="flex justify-between py-1 text-black dark:text-white">
-                  <h3 class="text-sm font-semibold">Tasks in DEVELOPMENT</h3>
+                  <h3 class="text-sm font-semibold">
+                    Tasks in DEVELOPMENT
+                  </h3>
                   <svg
                     class="h-4 fill-current text-gray-600 dark:text-gray-500 cursor-pointer"
                     xmlns="http://www.w3.org/2000/svg"
@@ -665,14 +685,18 @@ const flash = usePage().props.flash;
                       </span>
                     </div>
                   </div>
-                  <p class="mt-3 text-gray-600 dark:text-gray-400">Add a card...</p>
+                  <p class="mt-3 text-gray-600 dark:text-gray-400">
+                    Add a card...
+                  </p>
                 </div>
               </div>
             </div>
             <div>
               <div class="rounded bg-gray-200 dark:bg-gray-800 p-3">
                 <div class="flex justify-between py-1 text-black dark:text-white">
-                  <h3 class="text-sm font-semibold">Tasks in QA</h3>
+                  <h3 class="text-sm font-semibold">
+                    Tasks in QA
+                  </h3>
                   <svg
                     class="h-4 fill-current text-gray-600 dark:text-gray-500 cursor-pointer"
                     xmlns="http://www.w3.org/2000/svg"
@@ -725,7 +749,9 @@ const flash = usePage().props.flash;
                       </span>
                     </div>
                   </div>
-                  <p class="mt-3 text-gray-600 dark:text-gray-400">Add a card...</p>
+                  <p class="mt-3 text-gray-600 dark:text-gray-400">
+                    Add a card...
+                  </p>
                 </div>
               </div>
             </div>
@@ -741,10 +767,18 @@ const flash = usePage().props.flash;
                     <tr
                       class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
                     >
-                      <th class="px-4 py-3">Client</th>
-                      <th class="px-4 py-3">Amount</th>
-                      <th class="px-4 py-3">Status</th>
-                      <th class="px-4 py-3">Date</th>
+                      <th class="px-4 py-3">
+                        Client
+                      </th>
+                      <th class="px-4 py-3">
+                        Amount
+                      </th>
+                      <th class="px-4 py-3">
+                        Status
+                      </th>
+                      <th class="px-4 py-3">
+                        Date
+                      </th>
                     </tr>
                   </thead>
                   <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
@@ -759,17 +793,23 @@ const flash = usePage().props.flash;
                               src="https://images.unsplash.com/flagged/photo-1570612861542-284f4c12e75f?ixlib=rb-1.2.1&amp;q=80&amp;fm=jpg&amp;crop=entropy&amp;cs=tinysrgb&amp;w=200&amp;fit=max&amp;ixid=eyJhcHBfaWQiOjE3Nzg0fQ"
                               alt=""
                               loading="lazy"
-                            />
+                            >
                             <!--                                                        <div class="absolute inset-0 rounded-full shadow-inner"-->
                             <!--                                                             aria-hidden="true"></div>-->
                           </div>
                           <div>
-                            <p class="font-semibold">Hans Burger</p>
-                            <p class="text-xs text-gray-600 dark:text-gray-400">10x Developer</p>
+                            <p class="font-semibold">
+                              Hans Burger
+                            </p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400">
+                              10x Developer
+                            </p>
                           </div>
                         </div>
                       </td>
-                      <td class="px-4 py-3 text-sm">$855.85</td>
+                      <td class="px-4 py-3 text-sm">
+                        $855.85
+                      </td>
                       <td class="px-4 py-3 text-xs">
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
@@ -777,7 +817,9 @@ const flash = usePage().props.flash;
                           Approved
                         </span>
                       </td>
-                      <td class="px-4 py-3 text-sm">15-01-2021</td>
+                      <td class="px-4 py-3 text-sm">
+                        15-01-2021
+                      </td>
                     </tr>
                     <tr
                       class="bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-900 text-gray-700 dark:text-gray-400"
@@ -790,17 +832,23 @@ const flash = usePage().props.flash;
                               src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-0.3.5&amp;q=80&amp;fm=jpg&amp;crop=entropy&amp;cs=tinysrgb&amp;w=200&amp;facepad=3&amp;fit=facearea&amp;s=707b9c33066bf8808c934c8ab394dff6"
                               alt=""
                               loading="lazy"
-                            />
+                            >
                             <!--                                                        <div class="absolute inset-0 rounded-full shadow-inner"-->
                             <!--                                                             aria-hidden="true"></div>-->
                           </div>
                           <div>
-                            <p class="font-semibold">Jolina Angelie</p>
-                            <p class="text-xs text-gray-600 dark:text-gray-400">Unemployed</p>
+                            <p class="font-semibold">
+                              Jolina Angelie
+                            </p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400">
+                              Unemployed
+                            </p>
                           </div>
                         </div>
                       </td>
-                      <td class="px-4 py-3 text-sm">$369.75</td>
+                      <td class="px-4 py-3 text-sm">
+                        $369.75
+                      </td>
                       <td class="px-4 py-3 text-xs">
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-yellow-700 bg-yellow-100 rounded-full"
@@ -808,7 +856,9 @@ const flash = usePage().props.flash;
                           Pending
                         </span>
                       </td>
-                      <td class="px-4 py-3 text-sm">23-03-2021</td>
+                      <td class="px-4 py-3 text-sm">
+                        23-03-2021
+                      </td>
                     </tr>
                     <tr
                       class="bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-900 text-gray-700 dark:text-gray-400"
@@ -821,17 +871,23 @@ const flash = usePage().props.flash;
                               src="https://images.unsplash.com/photo-1502720705749-871143f0e671?ixlib=rb-0.3.5&amp;q=80&amp;fm=jpg&amp;crop=entropy&amp;cs=tinysrgb&amp;w=200&amp;fit=max&amp;s=b8377ca9f985d80264279f277f3a67f5"
                               alt=""
                               loading="lazy"
-                            />
+                            >
                             <!--                                                        <div class="absolute inset-0 rounded-full shadow-inner"-->
                             <!--                                                             aria-hidden="true"></div>-->
                           </div>
                           <div>
-                            <p class="font-semibold">Dave Li</p>
-                            <p class="text-xs text-gray-600 dark:text-gray-400">Influencer</p>
+                            <p class="font-semibold">
+                              Dave Li
+                            </p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400">
+                              Influencer
+                            </p>
                           </div>
                         </div>
                       </td>
-                      <td class="px-4 py-3 text-sm">$775.45</td>
+                      <td class="px-4 py-3 text-sm">
+                        $775.45
+                      </td>
                       <td class="px-4 py-3 text-xs">
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-gray-700 bg-gray-100 rounded-full dark:text-gray-100 dark:bg-gray-700"
@@ -839,7 +895,9 @@ const flash = usePage().props.flash;
                           Expired
                         </span>
                       </td>
-                      <td class="px-4 py-3 text-sm">09-02-2021</td>
+                      <td class="px-4 py-3 text-sm">
+                        09-02-2021
+                      </td>
                     </tr>
                     <tr
                       class="bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-900 text-gray-700 dark:text-gray-400"
@@ -852,17 +910,23 @@ const flash = usePage().props.flash;
                               src="https://images.unsplash.com/photo-1551006917-3b4c078c47c9?ixlib=rb-1.2.1&amp;q=80&amp;fm=jpg&amp;crop=entropy&amp;cs=tinysrgb&amp;w=200&amp;fit=max&amp;ixid=eyJhcHBfaWQiOjE3Nzg0fQ"
                               alt=""
                               loading="lazy"
-                            />
+                            >
                             <!--                                                        <div class="absolute inset-0 rounded-full shadow-inner"-->
                             <!--                                                             aria-hidden="true"></div>-->
                           </div>
                           <div>
-                            <p class="font-semibold">Rulia Joberts</p>
-                            <p class="text-xs text-gray-600 dark:text-gray-400">Actress</p>
+                            <p class="font-semibold">
+                              Rulia Joberts
+                            </p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400">
+                              Actress
+                            </p>
                           </div>
                         </div>
                       </td>
-                      <td class="px-4 py-3 text-sm">$1276.75</td>
+                      <td class="px-4 py-3 text-sm">
+                        $1276.75
+                      </td>
                       <td class="px-4 py-3 text-xs">
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
@@ -870,7 +934,9 @@ const flash = usePage().props.flash;
                           Approved
                         </span>
                       </td>
-                      <td class="px-4 py-3 text-sm">17-04-2021</td>
+                      <td class="px-4 py-3 text-sm">
+                        17-04-2021
+                      </td>
                     </tr>
                     <tr
                       class="bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-900 text-gray-700 dark:text-gray-400"
@@ -883,17 +949,23 @@ const flash = usePage().props.flash;
                               src="https://images.unsplash.com/photo-1566411520896-01e7ca4726af?ixlib=rb-1.2.1&amp;q=80&amp;fm=jpg&amp;crop=entropy&amp;cs=tinysrgb&amp;w=200&amp;fit=max&amp;ixid=eyJhcHBfaWQiOjE3Nzg0fQ"
                               alt=""
                               loading="lazy"
-                            />
+                            >
                             <!--                                                        <div class="absolute inset-0 rounded-full shadow-inner"-->
                             <!--                                                             aria-hidden="true"></div>-->
                           </div>
                           <div>
-                            <p class="font-semibold">Hitney Wouston</p>
-                            <p class="text-xs text-gray-600 dark:text-gray-400">Singer</p>
+                            <p class="font-semibold">
+                              Hitney Wouston
+                            </p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400">
+                              Singer
+                            </p>
                           </div>
                         </div>
                       </td>
-                      <td class="px-4 py-3 text-sm">$863.45</td>
+                      <td class="px-4 py-3 text-sm">
+                        $863.45
+                      </td>
                       <td class="px-4 py-3 text-xs">
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-red-700 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-700"
@@ -901,7 +973,9 @@ const flash = usePage().props.flash;
                           Denied
                         </span>
                       </td>
-                      <td class="px-4 py-3 text-sm">11-01-2021</td>
+                      <td class="px-4 py-3 text-sm">
+                        11-01-2021
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -910,7 +984,7 @@ const flash = usePage().props.flash;
                 class="grid px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 bg-gray-50 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800"
               >
                 <span class="flex items-center col-span-3"> Showing 21-30 of 100 </span>
-                <span class="col-span-2"></span>
+                <span class="col-span-2" />
                 <!-- Pagination -->
                 <span class="flex col-span-4 mt-2 sm:mt-auto sm:justify-end">
                   <nav aria-label="Table navigation">
@@ -920,12 +994,16 @@ const flash = usePage().props.flash;
                           class="px-3 py-1 rounded-md rounded-l-lg focus:outline-none focus:shadow-outline-purple"
                           aria-label="Previous"
                         >
-                          <svg aria-hidden="true" class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                          <svg
+                            aria-hidden="true"
+                            class="w-4 h-4 fill-current"
+                            viewBox="0 0 20 20"
+                          >
                             <path
                               d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
                               clip-rule="evenodd"
                               fill-rule="evenodd"
-                            ></path>
+                            />
                           </svg>
                         </button>
                       </li>
@@ -979,12 +1057,16 @@ const flash = usePage().props.flash;
                           class="px-3 py-1 rounded-md rounded-r-lg focus:outline-none focus:shadow-outline-purple"
                           aria-label="Next"
                         >
-                          <svg class="w-4 h-4 fill-current" aria-hidden="true" viewBox="0 0 20 20">
+                          <svg
+                            class="w-4 h-4 fill-current"
+                            aria-hidden="true"
+                            viewBox="0 0 20 20"
+                          >
                             <path
                               d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
                               clip-rule="evenodd"
                               fill-rule="evenodd"
-                            ></path>
+                            />
                           </svg>
                         </button>
                       </li>

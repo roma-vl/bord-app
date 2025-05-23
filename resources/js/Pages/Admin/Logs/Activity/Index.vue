@@ -29,9 +29,16 @@ const routes = [
       <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg p-3">
           <div class="p-6 space-y-4">
-            <h1 class="text-2xl font-bold text-gray-800">Журнал активностей</h1>
+            <h1 class="text-2xl font-bold text-gray-800">
+              Журнал активностей
+            </h1>
 
-            <Grid :items="logs" :pagination="pagination" :headings="headings" :routes="routes">
+            <Grid
+              :items="logs"
+              :pagination="pagination"
+              :headings="headings"
+              :routes="routes"
+            >
               <template #column-subject="{ row }">
                 <span class="p-3">{{ row.subject_type }} #{{ row.subject_id }}</span>
               </template>
@@ -41,7 +48,10 @@ const routes = [
                     <div v-if="row.changes.attributes">
                       <strong>Нові:</strong>
                       <ul class="list-disc ml-5">
-                        <li v-for="(value, key) in row.changes.attributes" :key="key">
+                        <li
+                          v-for="(value, key) in row.changes.attributes"
+                          :key="key"
+                        >
                           {{ key }}: <span class="text-green-700">{{ value }}</span>
                         </li>
                       </ul>
@@ -49,13 +59,19 @@ const routes = [
                     <div v-if="row.changes.old">
                       <strong>Старі:</strong>
                       <ul class="list-disc ml-5 text-red-700">
-                        <li v-for="(value, key) in row.changes.old" :key="key">
+                        <li
+                          v-for="(value, key) in row.changes.old"
+                          :key="key"
+                        >
                           {{ key }}: {{ value }}
                         </li>
                       </ul>
                     </div>
                   </div>
-                  <span v-else class="italic text-gray-400">Без змін</span>
+                  <span
+                    v-else
+                    class="italic text-gray-400"
+                  >Без змін</span>
                 </td>
               </template>
             </Grid>

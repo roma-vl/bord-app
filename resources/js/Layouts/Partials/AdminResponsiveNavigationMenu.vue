@@ -27,8 +27,14 @@ defineProps({
       </div>
 
       <div class="mt-3 space-y-1">
-        <ResponsiveNavLink :href="route('account.profile.settings')"> Profile </ResponsiveNavLink>
-        <ResponsiveNavLink :href="route('logout')" method="post" as="button">
+        <ResponsiveNavLink :href="route('account.profile.settings')">
+          Profile
+        </ResponsiveNavLink>
+        <ResponsiveNavLink
+          :href="route('logout')"
+          method="post"
+          as="button"
+        >
           Log Out
         </ResponsiveNavLink>
       </div>

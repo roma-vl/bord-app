@@ -3,8 +3,14 @@ import { ref, watch } from 'vue';
 import CategoryDropdownItem from '@/Components/CategoryDropdownItem.vue';
 
 const props = defineProps({
-  modelValue: [Number, String, null],
-  categoryFilters: Array,
+  modelValue: {
+    type: [Number, String],
+    default: null,
+  },
+  categoryFilters: {
+    type: Array,
+    default: () => [],
+  },
 });
 const emit = defineEmits(['update:modelValue', 'toggle']);
 
@@ -44,7 +50,10 @@ watch(
 
 <template>
   <div class="relative inline-block w-full">
-    <div @click="toggleDropdown" class="cursor-pointer border px-4 py-2 rounded bg-white shadow">
+    <div
+      class="cursor-pointer border px-4 py-2 rounded bg-white shadow"
+      @click="toggleDropdown"
+    >
       {{ selectedCategory?.name || 'Обрати категорію' }}
     </div>
 

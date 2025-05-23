@@ -91,7 +91,9 @@ const formatFileSize = (size) => {
             />
           </svg>
         </i>
-        <p class="text-lg text-blue-700">Drop files to upload</p>
+        <p class="text-lg text-blue-700">
+          Drop files to upload
+        </p>
       </div>
 
       <section class="h-full overflow-auto p-8 w-full flex flex-col">
@@ -101,7 +103,13 @@ const formatFileSize = (size) => {
           <p class="mb-3 font-semibold text-gray-900 flex flex-wrap justify-center">
             <span>Drag and drop your</span>&nbsp;<span>files anywhere or</span>
           </p>
-          <input ref="fileInput" type="file" multiple class="hidden" @change="handleFileInput" />
+          <input
+            ref="fileInput"
+            type="file"
+            multiple
+            class="hidden"
+            @change="handleFileInput"
+          >
           <button
             class="mt-2 rounded-sm px-3 py-1 bg-gray-200 hover:bg-gray-300 focus:shadow-outline focus:outline-none"
             @click="triggerFileInput"
@@ -110,9 +118,14 @@ const formatFileSize = (size) => {
           </button>
         </header>
 
-        <h1 class="pt-8 pb-3 font-semibold sm:text-lg text-gray-900">To Upload</h1>
+        <h1 class="pt-8 pb-3 font-semibold sm:text-lg text-gray-900">
+          To Upload
+        </h1>
 
-        <ul id="gallery" class="flex flex-column flex-wrap -m-1">
+        <ul
+          id="gallery"
+          class="flex flex-column flex-wrap -m-1"
+        >
           <li
             v-if="!Object.keys(files).length"
             id="empty"
@@ -122,7 +135,7 @@ const formatFileSize = (size) => {
               class="mx-auto w-32"
               src="https://user-images.githubusercontent.com/507615/54591670-ac0a0180-4a65-11e9-846c-e55ffce0fe7b.png"
               alt="no data"
-            />
+            >
             <span class="text-small text-gray-500">No files selected</span>
           </li>
           <li
@@ -138,14 +151,18 @@ const formatFileSize = (size) => {
                 :src="url"
                 :alt="file.name"
                 class="img-preview w-full h-full sticky object-cover rounded-md bg-fixed"
-              />
+              >
 
               <section
                 class="flex flex-col rounded-md text-xs break-words w-full h-full z-20 absolute top-0 py-2 px-3"
               >
-                <h1 class="flex-1 group-hover:text-blue-800">{{ file.name }}</h1>
+                <h1 class="flex-1 group-hover:text-blue-800">
+                  {{ file.name }}
+                </h1>
                 <div class="flex">
-                  <p class="p-1 size text-xs text-gray-700">{{ formatFileSize(file.size) }}</p>
+                  <p class="p-1 size text-xs text-gray-700">
+                    {{ formatFileSize(file.size) }}
+                  </p>
                   <button
                     class="delete ml-auto focus:outline-none hover:bg-gray-300 p-1 rounded-md text-gray-800"
                     @click="removeFile(url)"

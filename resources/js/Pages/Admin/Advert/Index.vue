@@ -33,21 +33,32 @@ const refreshCategories = () => {
         <FlashMessage :flash="flash" />
         <div class="mb-2 flex justify-end">
           <button
-            @click="openCreateModal"
             class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-500"
+            @click="openCreateModal"
           >
             + Додати категорію
           </button>
         </div>
         <div class="min-w-full bg-white rounded-lg shadow p-6 min-h-[700px]">
           <ul class="space-y-2">
-            <CategoryItem v-for="category in categories" :key="category.id" :category="category" />
+            <CategoryItem
+              v-for="category in categories"
+              :key="category.id"
+              :category="category"
+            />
           </ul>
         </div>
       </div>
     </div>
-    <Modal :show="isCreateModalOpen" maxWidth="2xl" @close="isCreateModalOpen = false">
-      <Create :categories="selectedCategory" @categoryCreated="refreshCategories" />
+    <Modal
+      :show="isCreateModalOpen"
+      max-width="2xl"
+      @close="isCreateModalOpen = false"
+    >
+      <Create
+        :categories="selectedCategory"
+        @category-created="refreshCategories"
+      />
     </Modal>
   </AdminLayout>
 </template>

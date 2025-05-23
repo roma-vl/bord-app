@@ -8,7 +8,10 @@ const isEditModalOpen = ref(false);
 const selectedPage = ref(null);
 
 const props = defineProps({
-  page: Object,
+  page: {
+    type: Object,
+    default: () => ({}),
+  },
   prefix: {
     type: String,
     default: '',
@@ -90,24 +93,71 @@ const moveToBottom = (id) => {
     >
       <span class="font-semibold">{{ props.prefix }}{{ props.page.title }}</span>
       <div class="flex items-right">
-        <button @click.stop="moveToTop(page.id)" class="text-purple-500 pr-2">⏫</button>
-        <button @click.stop="moveUp(page.id)" class="text-green-500 pr-2">🔼</button>
-        <button @click.stop="moveDown(page.id)" class="text-orange-500 pr-2">🔽</button>
-        <button @click.stop="moveToBottom(page.id)" class="text-purple-500 pr-2">⏬</button>
-        <Link :href="route('admin.pages.show', page.id)" class="text-blue-500 pr-2"> Show </Link>
-        <button @click.stop="openEditModal(page.id)" class="text-blue-500 pr-2">Редагувати</button>
-        <button @click.stop="deletePage(page.id)" class="text-red-500 hover:underline">
+        <button
+          class="text-purple-500 pr-2"
+          @click.stop="moveToTop(page.id)"
+        >
+          ⏫
+        </button>
+        <button
+          class="text-green-500 pr-2"
+          @click.stop="moveUp(page.id)"
+        >
+          🔼
+        </button>
+        <button
+          class="text-orange-500 pr-2"
+          @click.stop="moveDown(page.id)"
+        >
+          🔽
+        </button>
+        <button
+          class="text-purple-500 pr-2"
+          @click.stop="moveToBottom(page.id)"
+        >
+          ⏬
+        </button>
+        <Link
+          :href="route('admin.pages.show', page.id)"
+          class="text-blue-500 pr-2"
+        >
+          Show
+        </Link>
+        <button
+          class="text-blue-500 pr-2"
+          @click.stop="openEditModal(page.id)"
+        >
+          Редагувати
+        </button>
+        <button
+          class="text-red-500 hover:underline"
+          @click.stop="deletePage(page.id)"
+        >
           Видалити
         </button>
       </div>
     </div>
 
-    <div v-if="page.children_recursive?.length" class="ml-6">
-      <PageItem v-for="child in page.children_recursive" :key="child.id" :page="child" />
+    <div
+      v-if="page.children_recursive?.length"
+      class="ml-6"
+    >
+      <PageItem
+        v-for="child in page.children_recursive"
+        :key="child.id"
+        :page="child"
+      />
     </div>
   </li>
 
-  <Modal :show="isEditModalOpen" maxWidth="5xl" @close="isEditModalOpen = false">
-    <Edit :page="selectedPage" @pageUpdated="refreshPages" />
+  <Modal
+    :show="isEditModalOpen"
+    max-width="5xl"
+    @close="isEditModalOpen = false"
+  >
+    <Edit
+      :page="selectedPage"
+      @page-updated="refreshPages"
+    />
   </Modal>
 </template>

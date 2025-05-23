@@ -33,21 +33,32 @@ const refreshPages = () => {
         <FlashMessage :flash="flash" />
         <div class="mb-2 flex justify-end">
           <button
-            @click="openCreateModal"
             class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-500"
+            @click="openCreateModal"
           >
             + Додати pages
           </button>
         </div>
         <div class="min-w-full bg-white rounded-lg shadow p-6 min-h-[700px]">
           <ul class="space-y-2">
-            <PageItem v-for="page in pages" :key="page.id" :page="page" />
+            <PageItem
+              v-for="page in pages"
+              :key="page.id"
+              :page="page"
+            />
           </ul>
         </div>
       </div>
     </div>
-    <Modal :show="isCreateModalOpen" maxWidth="5xl" @close="isCreateModalOpen = false">
-      <Create :pages="selectedPages" @pageCreated="refreshPages" />
+    <Modal
+      :show="isCreateModalOpen"
+      max-width="5xl"
+      @close="isCreateModalOpen = false"
+    >
+      <Create
+        :pages="selectedPages"
+        @page-created="refreshPages"
+      />
     </Modal>
   </AdminLayout>
 </template>

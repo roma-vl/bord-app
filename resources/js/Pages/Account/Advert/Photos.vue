@@ -61,32 +61,47 @@ const setMainPhoto = (photo) => {
     <div class="py-2">
       <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div class="bg-white shadow-sm sm:rounded-lg p-5">
-          <h2 class="text-xl font-semibold mb-4">Редагувати Фото Оголошення</h2>
+          <h2 class="text-xl font-semibold mb-4">
+            Редагувати Фото Оголошення
+          </h2>
 
-          <div v-if="mainPhoto" class="mb-4">
-            <h3 class="text-lg font-medium">Головне фото</h3>
-            <img :src="mainPhoto" alt="Головне фото" class="w-full max-w-sm rounded-lg shadow-md" />
+          <div
+            v-if="mainPhoto"
+            class="mb-4"
+          >
+            <h3 class="text-lg font-medium">
+              Головне фото
+            </h3>
+            <img
+              :src="mainPhoto"
+              alt="Головне фото"
+              class="w-full max-w-sm rounded-lg shadow-md"
+            >
           </div>
 
           <div class="grid grid-cols-3 gap-3 mb-4">
-            <div v-for="photo in photos" :key="photo.id" class="relative group">
+            <div
+              v-for="photo in photos"
+              :key="photo.id"
+              class="relative group"
+            >
               <img
                 :src="photo.file"
                 alt="Фото"
                 class="w-full h-40 object-cover rounded-md shadow-md"
-              />
+              >
               <div
                 class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center space-x-2 transition"
               >
                 <button
-                  @click="setMainPhoto(photo)"
                   class="bg-green-500 text-white px-2 py-1 rounded-md z-50"
+                  @click="setMainPhoto(photo)"
                 >
                   Головне
                 </button>
                 <button
-                  @click="removePhoto(photo.id)"
                   class="bg-red-500 text-white px-2 py-1 rounded-md"
+                  @click="removePhoto(photo.id)"
                 >
                   Видалити
                 </button>
@@ -97,8 +112,17 @@ const setMainPhoto = (photo) => {
           <div
             class="p-4 border-dashed border-2 border-gray-300 rounded-md text-center cursor-pointer hover:bg-gray-100"
           >
-            <input type="file" multiple @change="addPhoto" class="hidden" id="photoUpload" />
-            <label for="photoUpload" class="text-blue-500 cursor-pointer">Додати фото</label>
+            <input
+              id="photoUpload"
+              type="file"
+              multiple
+              class="hidden"
+              @change="addPhoto"
+            >
+            <label
+              for="photoUpload"
+              class="text-blue-500 cursor-pointer"
+            >Додати фото</label>
           </div>
         </div>
       </div>

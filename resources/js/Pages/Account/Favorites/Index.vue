@@ -21,13 +21,18 @@ const routes = {
       <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg p-3">
           <FlashMessage :flash="flash" />
-          <ProfileMenu :activeTab="'account.favorites.index'" />
+          <ProfileMenu :active-tab="'account.favorites.index'" />
           <div class="px-4">
             <div class="grid grid-cols-2 gap-4 items-start mb-3">
-              <h2 class="text-xl font-bold mb-4">Збережені оголошення</h2>
+              <h2 class="text-xl font-bold mb-4">
+                Збережені оголошення
+              </h2>
             </div>
 
-            <AdvertList :adverts="favoriteAdverts" :routes="routes"></AdvertList>
+            <AdvertList
+              :adverts="favoriteAdverts"
+              :routes="routes"
+            />
           </div>
         </div>
       </div>

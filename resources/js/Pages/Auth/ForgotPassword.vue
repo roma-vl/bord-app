@@ -9,6 +9,7 @@ import { Head, useForm } from '@inertiajs/vue3';
 defineProps({
   status: {
     type: String,
+    default: '',
   },
 });
 
@@ -29,29 +30,41 @@ const submit = () => {
       {{ $t('text.forgot.password') }}
     </div>
 
-    <div v-if="status" class="mb-4 text-sm font-medium text-green-600">
+    <div
+      v-if="status"
+      class="mb-4 text-sm font-medium text-green-600"
+    >
       {{ status }}
     </div>
 
     <form @submit.prevent="submit">
       <div>
-        <InputLabel for="email" :value="$t('email')" />
+        <InputLabel
+          for="email"
+          :value="$t('email')"
+        />
 
         <TextInput
           id="email"
+          v-model="form.email"
           type="email"
           class="mt-1 block w-full"
-          v-model="form.email"
           required
           autofocus
           autocomplete="username"
         />
 
-        <InputError class="mt-2" :message="form.errors.email" />
+        <InputError
+          class="mt-2"
+          :message="form.errors.email"
+        />
       </div>
 
       <div class="mt-4 flex items-center justify-end">
-        <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+        <PrimaryButton
+          :class="{ 'opacity-25': form.processing }"
+          :disabled="form.processing"
+        >
           {{ $t('email.password.reset') }}
         </PrimaryButton>
       </div>

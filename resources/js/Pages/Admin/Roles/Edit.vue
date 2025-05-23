@@ -25,29 +25,57 @@ const submit = () => {
 
 <template>
   <div>
-    <h2 class="text-lg font-semibold">Edit Role</h2>
+    <h2 class="text-lg font-semibold">
+      Edit Role
+    </h2>
     <form @submit.prevent="submit">
-      <input v-model="form.name" placeholder="Role name" required class="border p-2 w-full my-2" />
+      <input
+        v-model="form.name"
+        placeholder="Role name"
+        required
+        class="border p-2 w-full my-2"
+      >
       <label>
-        <input type="checkbox" v-model="form.is_enabled" />
+        <input
+          v-model="form.is_enabled"
+          type="checkbox"
+        >
         Enabled
       </label>
 
-      <h3 class="text-md font-semibold mt-4">Permissions</h3>
-      <div v-for="permission in props.data.permissions" :key="permission.id">
+      <h3 class="text-md font-semibold mt-4">
+        Permissions
+      </h3>
+      <div
+        v-for="permission in props.data.permissions"
+        :key="permission.id"
+      >
         <label>
-          <input type="checkbox" v-model="form.permissions" :value="permission.id" />
+          <input
+            v-model="form.permissions"
+            type="checkbox"
+            :value="permission.id"
+          >
           {{ permission.key }}
         </label>
       </div>
 
-      <button type="submit" class="bg-blue-500 px-4 py-2 text-white rounded">Update</button>
+      <button
+        type="submit"
+        class="bg-blue-500 px-4 py-2 text-white rounded"
+      >
+        Update
+      </button>
     </form>
 
     <div class="max-w-screen-xl mx-auto px-5 bg-white min-h-sceen">
       <div class="flex flex-col items-center">
-        <h2 class="font-bold text-5xl mt-5 tracking-tight">FAQ</h2>
-        <p class="text-neutral-500 text-xl mt-3">Frequenty asked questions</p>
+        <h2 class="font-bold text-5xl mt-5 tracking-tight">
+          FAQ
+        </h2>
+        <p class="text-neutral-500 text-xl mt-3">
+          Frequenty asked questions
+        </p>
       </div>
       <div class="grid divide-y divide-neutral-200 max-w-xl mx-auto mt-8">
         <div class="py-5">
@@ -66,7 +94,7 @@ const submit = () => {
                   viewBox="0 0 24 24"
                   width="24"
                 >
-                  <path d="M6 9l6 6 6-6"></path>
+                  <path d="M6 9l6 6 6-6" />
                 </svg>
               </span>
             </summary>
@@ -92,7 +120,7 @@ const submit = () => {
                   viewBox="0 0 24 24"
                   width="24"
                 >
-                  <path d="M6 9l6 6 6-6"></path>
+                  <path d="M6 9l6 6 6-6" />
                 </svg>
               </span>
             </summary>

@@ -7,8 +7,14 @@ import InputError from '@/Components/InputError.vue';
 import AdvertFileUpload from '@/Pages/Account/Advert/Partials/AdvertFileUpload.vue';
 
 const props = defineProps({
-  categories: Array,
-  regions: Array,
+  categories: {
+    type: Array,
+    default: () => [],
+  },
+  regions: {
+    type: Array,
+    default: () => [],
+  },
 });
 const showLocationDropdown = ref(false);
 const loadingCities = ref(false);
@@ -137,9 +143,12 @@ onBeforeUnmount(() => {
                   v-model="form.title"
                   type="text"
                   class="w-full border-gray-300 p-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                />
+                >
               </div>
-              <InputError class="mt-2" :message="form.errors.title" />
+              <InputError
+                class="mt-2"
+                :message="form.errors.title"
+              />
 
               <div class="mb-4">
                 <label class="block text-sm font-medium mb-2">Ціна</label>
@@ -148,9 +157,12 @@ onBeforeUnmount(() => {
                   type="number"
                   required
                   class="w-full border-gray-300 p-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                />
+                >
               </div>
-              <InputError class="mt-2" :message="form.errors.price" />
+              <InputError
+                class="mt-2"
+                :message="form.errors.price"
+              />
 
               <div class="mb-4">
                 <label class="block text-sm font-medium mb-2">Категорія</label>
@@ -167,7 +179,10 @@ onBeforeUnmount(() => {
                   </option>
                 </select>
               </div>
-              <InputError class="mt-2" :message="form.errors.category_id" />
+              <InputError
+                class="mt-2"
+                :message="form.errors.category_id"
+              />
 
               <div class="mb-4">
                 <label class="block text-sm font-medium mb-2">Фото</label>
@@ -182,7 +197,7 @@ onBeforeUnmount(() => {
                     type="text"
                     class="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-green-600 transition duration-200"
                     placeholder="Почніть вводити адресу"
-                  />
+                  >
 
                   <div
                     v-if="showLocationDropdown"
@@ -192,8 +207,8 @@ onBeforeUnmount(() => {
                       <li
                         v-for="city in filteredCities"
                         :key="city.id"
-                        @click="selectCity(city)"
                         class="px-4 py-2 cursor-pointer hover:bg-gray-200 transition duration-200"
+                        @click="selectCity(city)"
                       >
                         {{ city.name }}
                       </li>
@@ -209,7 +224,7 @@ onBeforeUnmount(() => {
                   type="text"
                   required
                   class="w-full border-gray-300 p-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                />
+                >
               </div>
 
               <div class="mb-4">
@@ -217,14 +232,26 @@ onBeforeUnmount(() => {
                 <textarea
                   v-model="form.content"
                   class="w-full border-gray-300 p-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                ></textarea>
+                />
               </div>
-              <InputError class="mt-2" :message="form.errors.content" />
+              <InputError
+                class="mt-2"
+                :message="form.errors.content"
+              />
 
               <div v-if="attributes && attributes.length > 0">
-                <h3 class="text-lg font-medium">Атрибути</h3>
-                <div v-for="attribute in attributes" :key="attribute.id" class="mb-4">
-                  <label :for="'attribute_' + attribute.id" class="block text-sm font-medium mb-2">
+                <h3 class="text-lg font-medium">
+                  Атрибути
+                </h3>
+                <div
+                  v-for="attribute in attributes"
+                  :key="attribute.id"
+                  class="mb-4"
+                >
+                  <label
+                    :for="'attribute_' + attribute.id"
+                    class="block text-sm font-medium mb-2"
+                  >
                     {{ attribute.name }}
                   </label>
 
@@ -234,8 +261,12 @@ onBeforeUnmount(() => {
                       v-model="form.attributes[attribute.id]"
                       class="w-full border-gray-300 p-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
                     >
-                      <option value=""></option>
-                      <option v-for="variant in attribute.variants" :key="variant" :value="variant">
+                      <option value="" />
+                      <option
+                        v-for="variant in attribute.variants"
+                        :key="variant"
+                        :value="variant"
+                      >
                         {{ variant }}
                       </option>
                     </select>
@@ -244,19 +275,19 @@ onBeforeUnmount(() => {
                   <template v-else-if="attribute.type === 'integer' || attribute.type === 'float'">
                     <input
                       :id="'attribute_' + attribute.id"
-                      type="number"
                       v-model="form.attributes[attribute.id]"
+                      type="number"
                       class="w-full border-gray-300 p-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                    />
+                    >
                   </template>
 
                   <template v-else>
                     <input
                       :id="'attribute_' + attribute.id"
-                      type="text"
                       v-model="form.attributes[attribute.id]"
+                      type="text"
                       class="w-full border-gray-300 p-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                    />
+                    >
                   </template>
                 </div>
               </div>

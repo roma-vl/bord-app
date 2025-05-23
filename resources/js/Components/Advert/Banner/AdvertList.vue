@@ -3,8 +3,14 @@ import { getDateFormatFromLocale, getFullPathForImage } from '@/helpers.js';
 import { router } from '@inertiajs/vue3';
 
 const props = defineProps({
-  banners: Object,
-  routes: Object,
+  banners: {
+    type: Object,
+    default: () => ({ data: [] }),
+  },
+  routes: {
+    type: Object,
+    default: () => ({}),
+  },
 });
 const remove = (bannerId) => {
   router.delete(route(props.routes.remove, { banner: bannerId }));
@@ -13,7 +19,10 @@ const remove = (bannerId) => {
 
 <template>
   <div class="bg-white rounded shadow overflow-hidden mb-4">
-    <div v-if="props.banners.data.length" class="divide-y divide-gray-100">
+    <div
+      v-if="props.banners.data.length"
+      class="divide-y divide-gray-100"
+    >
       <div
         v-for="banner in banners.data"
         :key="banner.id"
@@ -21,11 +30,18 @@ const remove = (bannerId) => {
       >
         <div class="flex justify-between gap-6 min-h-36">
           <div class="w-48">
-            <img class="w-full h-40" :src="getFullPathForImage(banner.file)" :alt="banner.title" />
+            <img
+              class="w-full h-40"
+              :src="getFullPathForImage(banner.file)"
+              :alt="banner.title"
+            >
           </div>
           <div class="flex-grow flex flex-col justify-between">
             <div>
-              <a :href="route('account.banners.show', banner.id)" class="block group">
+              <a
+                :href="route('account.banners.show', banner.id)"
+                class="block group"
+              >
                 <h3
                   class="text-xl font-semibold text-gray-800 group-hover:text-violet-600 transition-colors duration-200"
                 >
@@ -81,7 +97,10 @@ const remove = (bannerId) => {
               {{ banner.status }}
             </span>
 
-            <div v-if="props.routes" class="flex items-center gap-3 mt-auto">
+            <div
+              v-if="props.routes"
+              class="flex items-center gap-3 mt-auto"
+            >
               <a
                 v-if="props.routes.edit"
                 :href="route(props.routes.edit, banner.id)"
@@ -136,9 +155,9 @@ const remove = (bannerId) => {
               </a>
               <button
                 v-if="props.routes.remove"
-                @click="remove(banner.id)"
                 class="p-1.5 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition duration-150 group relative"
                 title="Видалити"
+                @click="remove(banner.id)"
               >
                 <span
                   class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 text-sm text-white bg-gray-800 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap"
@@ -163,7 +182,12 @@ const remove = (bannerId) => {
         </div>
       </div>
     </div>
-    <p v-else class="py-12 text-center text-gray-500 text-lg">У вас немає оголошень.</p>
+    <p
+      v-else
+      class="py-12 text-center text-gray-500 text-lg"
+    >
+      У вас немає оголошень.
+    </p>
   </div>
 </template>
 

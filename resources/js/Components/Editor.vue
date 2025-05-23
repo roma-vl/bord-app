@@ -25,7 +25,10 @@ import MenuBar from './MenuBar.vue';
 import { watch } from 'vue';
 
 const props = defineProps({
-  modelValue: String,
+  modelValue: {
+    type: String,
+    default: '',
+  },
 });
 const emit = defineEmits(['update:modelValue']);
 
@@ -72,7 +75,13 @@ watch(
 </script>
 <template>
   <div class="border border-gray-300 rounded p-4">
-    <menu-bar v-if="editor" :editor="editor" />
-    <editor-content :editor="editor" class="min-h-[200px] h-auto p-2 focus:outline-none" />
+    <menu-bar
+      v-if="editor"
+      :editor="editor"
+    />
+    <editor-content
+      :editor="editor"
+      class="min-h-[200px] h-auto p-2 focus:outline-none"
+    />
   </div>
 </template>

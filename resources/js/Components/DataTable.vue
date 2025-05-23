@@ -3,10 +3,22 @@ import ArrowUpDownIcon from '@/Components/Icon/ArrowUpDownIcon.vue';
 import { computed } from 'vue';
 
 const props = defineProps({
-  items: Array,
-  headings: Array,
-  uniqueKey: { type: String, default: 'id' },
-  searchQuery: String,
+  items: {
+    type: Array,
+    required: true,
+  },
+  headings: {
+    type: Array,
+    required: true,
+  },
+  uniqueKey: {
+    type: String,
+    default: 'id',
+  },
+  searchQuery: {
+    type: String,
+    default: '',
+  },
 });
 
 const emit = defineEmits(['sort']);
@@ -37,13 +49,13 @@ const processedItems = computed(() => {
         <th
           v-for="heading in props.headings"
           :key="heading.key"
-          @click="emit('sort', heading.key)"
           class="border-b px-3 py-3 text-gray-700 uppercase text-xs flex-col"
           :class="{
             'border-b bg-gray-100 border-gray-900 text-gray-900 font-bold ':
               sortField === heading.key && heading.sortable === true,
             'cursor-pointer hover:bg-gray-100': heading.sortable === true,
           }"
+          @click="emit('sort', heading.key)"
         >
           <div class="flex gap-2">
             <span class="inline-flex items-center gap-1">
@@ -53,17 +65,37 @@ const processedItems = computed(() => {
               class="flex items-end gap-1 cursor-pointer text-gray-400 hover:text-gray-600"
               :class="{ 'text-gray-900 font-bold': sortField === heading.key }"
             >
-              <ArrowUpDownIcon class="w-4 h-4" v-if="heading.sortable" />
+              <ArrowUpDownIcon
+                v-if="heading.sortable"
+                class="w-4 h-4"
+              />
             </span>
           </div>
         </th>
       </tr>
     </thead>
     <tbody class="divide-y divide-gray-200 border-t border-gray-100">
-      <tr v-for="item in processedItems" :key="item[uniqueKey]" class="hover:bg-gray-50">
-        <td v-for="heading in headings" :key="heading.key" class="px-6 py-4 text-gray-600">
-          <slot :name="`column-${heading.key}`" :row="item">
-            <span v-if="heading.highlight" v-html="item[heading.key]"></span>
+      <tr
+        v-for="item in processedItems"
+        :key="item[uniqueKey]"
+        class="hover:bg-gray-50"
+      >
+        <td
+          v-for="heading in headings"
+          :key="heading.key"
+          class="px-6 py-4 text-gray-600"
+        >
+          <slot
+            :name="`column-${heading.key}`"
+            :row="item"
+          >
+            <!-- eslint-disable vue/no-v-html -->
+
+            <span
+              v-if="heading.highlight"
+              v-html="item[heading.key]"
+            />
+            <!-- eslint-enable vue/no-v-html -->
             <span v-else>{{ item[heading.key] }}</span>
           </slot>
         </td>

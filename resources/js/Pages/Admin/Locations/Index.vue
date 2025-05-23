@@ -130,19 +130,25 @@ loadCountries();
   <AdminLayout>
     <div class="py-2">
       <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-        <FlashMessage v-if="flash" :flash="flash" />
+        <FlashMessage
+          v-if="flash"
+          :flash="flash"
+        />
         <div class="mb-4 flex justify-end">
           <button
-            @click="openModal('country', null)"
             type="submit"
             class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-500"
+            @click="openModal('country', null)"
           >
             + Додати Країну
           </button>
         </div>
         <div class="min-w-full bg-white rounded-lg shadow p-6 min-h-[700px]">
           <ul class="space-y-2">
-            <li v-for="country in countries" :key="country.id">
+            <li
+              v-for="country in countries"
+              :key="country.id"
+            >
               <div
                 class="flex justify-between items-center bg-white-100 hover:bg-gray-100 p-4 mb-2 rounded cursor-pointer shadow-md"
                 @click="loadRegions(country.id)"
@@ -151,21 +157,31 @@ loadCountries();
                   {{ country.name }}
                 </span>
                 <div class="flex items-right">
-                  <button @click.stop="openModal('region', country.id)" class="text-green-500 pr-2">
+                  <button
+                    class="text-green-500 pr-2"
+                    @click.stop="openModal('region', country.id)"
+                  >
                     Додати область
                   </button>
                   <button
                     v-if="country.id !== 1"
-                    @click.stop="deleteLocation(country.id, 'country')"
                     class="text-red-500 hover:underline"
+                    @click.stop="deleteLocation(country.id, 'country')"
                   >
                     Видалити
                   </button>
                 </div>
               </div>
 
-              <ul v-if="expanded.country === country.id" class="ml-6">
-                <li v-for="region in regions[country.id] || []" :key="region.id" class="pt-1">
+              <ul
+                v-if="expanded.country === country.id"
+                class="ml-6"
+              >
+                <li
+                  v-for="region in regions[country.id] || []"
+                  :key="region.id"
+                  class="pt-1"
+                >
                   <div
                     class="flex justify-between items-center bg-white-100 hover:bg-gray-100 p-3 mb-2 rounded cursor-pointer shadow-md"
                     @click="loadAreas(region.id)"
@@ -173,22 +189,29 @@ loadCountries();
                     <span class="ml-3"> {{ region.name }}</span>
                     <div class="flex items-right">
                       <button
-                        @click.stop="openModal('area', region.id)"
                         class="text-green-500 pr-2"
+                        @click.stop="openModal('area', region.id)"
                       >
                         Додати район
                       </button>
                       <button
-                        @click.stop="deleteLocation(region.id, 'region')"
                         class="text-red-500 hover:underline"
+                        @click.stop="deleteLocation(region.id, 'region')"
                       >
                         Видалити
                       </button>
                     </div>
                   </div>
 
-                  <ul v-if="expanded.region === region.id" class="ml-6">
-                    <li v-for="area in areas[region.id] || []" :key="area.id" class="pt-1">
+                  <ul
+                    v-if="expanded.region === region.id"
+                    class="ml-6"
+                  >
+                    <li
+                      v-for="area in areas[region.id] || []"
+                      :key="area.id"
+                      class="pt-1"
+                    >
                       <div
                         class="flex justify-between items-center bg-white-100 hover:bg-gray-100 p-2 ml-3 mb-2 rounded cursor-pointer shadow-md"
                         @click="loadVillages(area.id)"
@@ -196,21 +219,24 @@ loadCountries();
                         <span class="ml-3"> {{ area.name }}</span>
                         <div class="flex items-right">
                           <button
-                            @click.stop="openModal('village', area.id)"
                             class="text-green-500 pr-2"
+                            @click.stop="openModal('village', area.id)"
                           >
                             Додати село
                           </button>
                           <button
-                            @click.stop="deleteLocation(area.id, 'area')"
                             class="text-red-500 hover:underline"
+                            @click.stop="deleteLocation(area.id, 'area')"
                           >
                             Видалити
                           </button>
                         </div>
                       </div>
 
-                      <ul v-if="expanded.area === area.id" class="ml-6">
+                      <ul
+                        v-if="expanded.area === area.id"
+                        class="ml-6"
+                      >
                         <li
                           v-for="village in villages[area.id] || []"
                           :key="village.id"
@@ -221,8 +247,8 @@ loadCountries();
                           >
                             <span class="ml-3"> {{ village.name }}</span>
                             <button
-                              @click.stop="deleteLocation(village.id, 'village')"
                               class="text-red-500 hover:underline"
+                              @click.stop="deleteLocation(village.id, 'village')"
                             >
                               Видалити
                             </button>
@@ -241,13 +267,25 @@ loadCountries();
             class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
           >
             <div class="bg-white p-6 rounded shadow-lg">
-              <h2 class="text-xl font-bold mb-4">{{ modalInfo }}</h2>
-              <input v-model="form.name" placeholder="Назва" class="border p-2 w-full mb-4" />
+              <h2 class="text-xl font-bold mb-4">
+                {{ modalInfo }}
+              </h2>
+              <input
+                v-model="form.name"
+                placeholder="Назва"
+                class="border p-2 w-full mb-4"
+              >
               <div class="flex gap-2">
-                <button @click="submitForm" class="bg-blue-500 text-white px-4 py-2 rounded">
+                <button
+                  class="bg-blue-500 text-white px-4 py-2 rounded"
+                  @click="submitForm"
+                >
                   Зберегти
                 </button>
-                <button @click="closeModal" class="bg-gray-500 text-white px-4 py-2 rounded">
+                <button
+                  class="bg-gray-500 text-white px-4 py-2 rounded"
+                  @click="closeModal"
+                >
                   Скасувати
                 </button>
               </div>

@@ -45,74 +45,109 @@ const submit = () => {
 
 <template>
   <div class="max-w-md mx-auto mt-8">
-    <h2 class="text-2xl font-semibold text-gray-700 text-center">Edit User</h2>
-    <form @submit.prevent="submit" class="space-y-4 mt-4 mb-10">
+    <h2 class="text-2xl font-semibold text-gray-700 text-center">
+      Edit User
+    </h2>
+    <form
+      class="space-y-4 mt-4 mb-10"
+      @submit.prevent="submit"
+    >
       <div>
-        <InputLabel for="name" value="Name" />
+        <InputLabel
+          for="name"
+          value="Name"
+        />
         <TextInput
           id="name"
-          type="text"
           v-model="form.name"
+          type="text"
           class="w-full mt-1 p-2 border rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200"
           placeholder="Enter name"
         />
         <InputError :message="form.errors.name" />
       </div>
       <div>
-        <InputLabel for="email" value="Email" />
+        <InputLabel
+          for="email"
+          value="Email"
+        />
         <TextInput
           id="email"
-          type="email"
           v-model="form.email"
+          type="email"
           class="w-full mt-1 p-2 border rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200"
           placeholder="Enter email"
         />
         <InputError :message="form.errors.email" />
       </div>
       <div>
-        <InputLabel for="password" value="New Password (optional)" />
+        <InputLabel
+          for="password"
+          value="New Password (optional)"
+        />
         <TextInput
           id="password"
-          type="password"
           v-model="form.password"
+          type="password"
           class="w-full mt-1 p-2 border rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200"
           placeholder="Enter password"
         />
         <InputError :message="form.errors.password" />
       </div>
       <div>
-        <InputLabel for="active" value="Status" />
+        <InputLabel
+          for="active"
+          value="Status"
+        />
         <select
           id="active"
           v-model="form.active"
           class="w-full mt-1 p-2 border rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200"
         >
-          <option :value="true">Active</option>
-          <option :value="false">Inactive</option>
+          <option :value="true">
+            Active
+          </option>
+          <option :value="false">
+            Inactive
+          </option>
         </select>
         <InputError :message="form.errors.active" />
       </div>
       <div>
-        <InputLabel for="locale" value="Locale" />
+        <InputLabel
+          for="locale"
+          value="Locale"
+        />
         <select
           id="locale"
           v-model="form.locale"
           class="w-full mt-1 p-2 border rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200"
         >
-          <option value="en">English</option>
-          <option value="uk">Українська</option>
+          <option value="en">
+            English
+          </option>
+          <option value="uk">
+            Українська
+          </option>
         </select>
         <InputError :message="form.errors.locale" />
       </div>
       <div>
-        <InputLabel for="roles" value="Roles" />
+        <InputLabel
+          for="roles"
+          value="Roles"
+        />
         <select
           id="roles"
           v-model="form.roles"
           multiple
           class="w-full mt-1 p-2 border rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200"
         >
-          <option v-for="role in props.roles" :key="role.id" :value="role.id">
+          <option
+            v-for="role in props.roles"
+            :key="role.id"
+            :value="role.id"
+          >
             {{ role.name }}
           </option>
         </select>
@@ -120,17 +155,20 @@ const submit = () => {
       </div>
 
       <div class="max-w-md mx-auto">
-        <label for="select" class="font-semibold block py-2">Select Input:</label>
+        <label
+          for="select"
+          class="font-semibold block py-2"
+        >Select Input:</label>
 
         <div class="relative">
           <div class="h-10 bg-white flex border border-gray-200 rounded items-center">
             <input
+              id="select"
               value="Javascript"
               name="select"
-              id="select"
               class="px-4 appearance-none outline-none text-gray-800 w-full"
               checked
-            />
+            >
 
             <button
               class="cursor-pointer outline-none focus:outline-none transition-all text-gray-300 hover:text-gray-600"
@@ -144,8 +182,18 @@ const submit = () => {
                 stroke-linecap="round"
                 stroke-linejoin="round"
               >
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
+                <line
+                  x1="18"
+                  y1="6"
+                  x2="6"
+                  y2="18"
+                />
+                <line
+                  x1="6"
+                  y1="6"
+                  x2="18"
+                  y2="18"
+                />
               </svg>
             </button>
             <label
@@ -161,38 +209,39 @@ const submit = () => {
                 stroke-linecap="round"
                 stroke-linejoin="round"
               >
-                <polyline points="18 15 12 9 6 15"></polyline>
+                <polyline points="18 15 12 9 6 15" />
               </svg>
             </label>
           </div>
 
-          <input type="checkbox" name="show_more" id="show_more" class="hidden peer" />
+          <input
+            id="show_more"
+            type="checkbox"
+            name="show_more"
+            class="hidden peer"
+          >
           <div
             class="absolute rounded shadow bg-white overflow-hidden hidden peer-checked:flex flex-col w-full mt-1 border border-gray-200"
           >
             <div class="cursor-pointer group">
               <a
                 class="block p-2 border-transparent border-l-4 group-hover:border-blue-600 group-hover:bg-gray-100"
-                >Python</a
-              >
+              >Python</a>
             </div>
             <div class="cursor-pointer group border-t">
               <a
                 class="block p-2 border-transparent border-l-4 group-hover:border-blue-600 border-blue-600 group-hover:bg-gray-100"
-                >Javascript</a
-              >
+              >Javascript</a>
             </div>
             <div class="cursor-pointer group border-t">
               <a
                 class="block p-2 border-transparent border-l-4 group-hover:border-blue-600 group-hover:bg-gray-100"
-                >Node</a
-              >
+              >Node</a>
             </div>
             <div class="cursor-pointer group border-t">
               <a
                 class="block p-2 border-transparent border-l-4 group-hover:border-blue-600 group-hover:bg-gray-100"
-                >PHP</a
-              >
+              >PHP</a>
             </div>
           </div>
         </div>

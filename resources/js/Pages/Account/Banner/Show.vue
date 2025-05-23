@@ -9,7 +9,10 @@ import { getDateFormatFromLocale, getFullPathForImage } from '@/helpers.js';
 import PayBanner from '@/Pages/Account/Banner/Actions/PayBanner.vue';
 
 const props = defineProps({
-  banner: Object,
+  banner: {
+    type: Object,
+    default: () => ({}),
+  },
 });
 
 const flash = computed(() => usePage().props.flash);
@@ -68,39 +71,38 @@ const deleteAdvert = () => {
             <a
               :href="route('account.banners.edit', props.banner.id)"
               class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded"
-              >Редагувати</a
-            >
+            >Редагувати</a>
             <button
               v-if="isDraft"
-              @click="publish"
               class="bg-green-500 hover:bg-green-600 text-white px-4 py-1 rounded"
+              @click="publish"
             >
               Публікувати
             </button>
             <button
               v-if="isActive"
-              @click="submitAction('adverts.adverts.close')"
               class="bg-green-500 hover:bg-green-600 text-white px-4 py-1 rounded"
+              @click="submitAction('adverts.adverts.close')"
             >
               Закрити
             </button>
             <button
               v-if="isOnModeration || isActive"
-              @click="toDraft"
               class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-1 rounded"
+              @click="toDraft"
             >
               Повернути в чорновик
             </button>
             <button
-              @click="deleteAdvert"
               class="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded"
+              @click="deleteAdvert"
             >
               Видалити
             </button>
             <button
               v-if="isModerated"
-              @click="payBanner()"
               class="bg-green-500 hover:bg-green-600 text-white px-4 py-1 rounded"
+              @click="payBanner()"
             >
               Order for Payment
             </button>
@@ -109,15 +111,15 @@ const deleteAdvert = () => {
           <div class="flex flex-row gap-2 items-center">
             <button
               v-if="isOnModeration"
-              @click="activate"
               class="bg-green-500 hover:bg-green-600 text-white px-4 py-1 rounded"
+              @click="activate"
             >
               Опублікувати
             </button>
             <button
               v-if="isOnModeration || isActive"
-              @click="rejectAdvert"
               class="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded"
+              @click="rejectAdvert"
             >
               Відхилити
             </button>
@@ -126,13 +128,22 @@ const deleteAdvert = () => {
       </div>
       <div class="mx-auto max-w-7xl sm:px-6 lg:px-8 p-6 bg-white-50">
         <FlashMessage :flash="flash" />
-        <div v-if="isDraft" class="bg-yellow-100 text-yellow-800 p-3 rounded mb-4">
+        <div
+          v-if="isDraft"
+          class="bg-yellow-100 text-yellow-800 p-3 rounded mb-4"
+        >
           Це чернетка.
         </div>
-        <div v-if="isOnModeration" class="bg-yellow-100 text-yellow-800 p-3 rounded mb-4">
+        <div
+          v-if="isOnModeration"
+          class="bg-yellow-100 text-yellow-800 p-3 rounded mb-4"
+        >
           На модерації.
         </div>
-        <div v-if="banner.reject_reason" class="bg-red-100 text-red-800 p-3 rounded mb-4">
+        <div
+          v-if="banner.reject_reason"
+          class="bg-red-100 text-red-800 p-3 rounded mb-4"
+        >
           Причина відмови: {{ banner.reject_reason }}
         </div>
         <div class="flex gap-6">
@@ -143,7 +154,7 @@ const deleteAdvert = () => {
                   :src="getFullPathForImage(banner.file)"
                   class="w-full h-full object-contain"
                   alt=""
-                />
+                >
               </div>
             </div>
           </div>
@@ -153,19 +164,34 @@ const deleteAdvert = () => {
               <p class="mt-4 text-gray-800 text-sm">
                 Опубліковано {{ getDateFormatFromLocale(banner.created_at) }}
               </p>
-              <h1 class="text-2xl font-bold text-gray-900">{{ banner.name }}</h1>
+              <h1 class="text-2xl font-bold text-gray-900">
+                {{ banner.name }}
+              </h1>
               <div class="mt-4 flex flex-row items-center">
                 Показів залишилось :
-                <h2 class="text-xl font-bold text-green-600 pl-3">{{ banner.limit }}</h2>
+                <h2 class="text-xl font-bold text-green-600 pl-3">
+                  {{ banner.limit }}
+                </h2>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <Modal :show="isRejectModalOpen" maxWidth="2xl" @close="isRejectModalOpen = false">
-        <Reject :bannerId="bannerId" @rejectCreated="isRejectModalOpen = false" />
+      <Modal
+        :show="isRejectModalOpen"
+        max-width="2xl"
+        @close="isRejectModalOpen = false"
+      >
+        <Reject
+          :banner-id="bannerId"
+          @reject-created="isRejectModalOpen = false"
+        />
       </Modal>
-      <Modal :show="isPayModalOpen" maxWidth="2xl" @close="isPayModalOpen = false">
+      <Modal
+        :show="isPayModalOpen"
+        max-width="2xl"
+        @close="isPayModalOpen = false"
+      >
         <PayBanner />
       </Modal>
     </div>

@@ -1,3 +1,5 @@
 #XDEBUG_MODE=off ./vendor/bin/sail artisan test
 #./vendor/bin/phpunit
 
+ docker exec bord-app-laravel.test-1 npm run format
+  docker exec bord-app-laravel.test-1 ./vendor/bin/pint

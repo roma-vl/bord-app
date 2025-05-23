@@ -110,22 +110,34 @@ const restoreUser = (id) => {
   <AdminLayout>
     <div class="py-2">
       <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-        <FlashMessage v-if="flash" :flash="flash" />
+        <FlashMessage
+          v-if="flash"
+          :flash="flash"
+        />
         <div class="mb-2 flex justify-end">
           <button
             v-can="'user.create'"
-            @click="openCreateModal"
             class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-500"
+            @click="openCreateModal"
           >
             + New User
           </button>
         </div>
-        <Grid :items="users" :pagination="pagination" :headings="headings" :routes="routes">
+        <Grid
+          :items="users"
+          :pagination="pagination"
+          :headings="headings"
+          :routes="routes"
+        >
           <template #column-name="{ row }">
             <div class="flex gap-2 font-normal">
               <div class="relative h-10 w-10">
                 <div v-if="row.avatar_url">
-                  <img :src="row.avatar_url" :alt="row.name" class="rounded" />
+                  <img
+                    :src="row.avatar_url"
+                    :alt="row.name"
+                    class="rounded"
+                  >
                 </div>
                 <div v-else>
                   <AvatarIcon />
@@ -133,8 +145,8 @@ const restoreUser = (id) => {
               </div>
               <div class="text-sm flex justify-center items-center">
                 <a
-                  @click.prevent="openShowModal(row.id)"
                   class="font-medium hover:underline cursor-pointer"
+                  @click.prevent="openShowModal(row.id)"
                 >
                   {{ row.name }}
                 </a>
@@ -143,8 +155,8 @@ const restoreUser = (id) => {
           </template>
           <template #column-email="{ row }">
             <a
-              @click.prevent="openShowModal(row.id)"
               class="text-sm hover:underline cursor-pointer"
+              @click.prevent="openShowModal(row.id)"
             >
               {{ row.email }}
             </a>
@@ -154,21 +166,21 @@ const restoreUser = (id) => {
               <span
                 class="inline-flex items-center gap-1 rounded-full bg-red-50 px-2 py-1 text-xs font-semibold text-red-600"
               >
-                <span class="h-1.5 w-1.5 rounded-full bg-red-600"></span> Deleted
+                <span class="h-1.5 w-1.5 rounded-full bg-red-600" /> Deleted
               </span>
             </div>
             <div v-else-if="row.status">
               <span
                 class="inline-flex items-center gap-1 rounded-full bg-green-50 px-2 py-1 text-xs font-semibold text-green-600"
               >
-                <span class="h-1.5 w-1.5 rounded-full bg-green-600"></span> Active
+                <span class="h-1.5 w-1.5 rounded-full bg-green-600" /> Active
               </span>
             </div>
             <div v-else>
               <span
                 class="inline-flex items-center gap-1 rounded-full bg-yellow-50 px-2 py-1 text-xs font-semibold text-yellow-600"
               >
-                <span class="h-1.5 w-1.5 rounded-full bg-yellow-600"></span> Inactive
+                <span class="h-1.5 w-1.5 rounded-full bg-yellow-600" /> Inactive
               </span>
             </div>
           </template>
@@ -189,15 +201,15 @@ const restoreUser = (id) => {
                 <div v-can="'user.delete'">
                   <a
                     v-if="!row.deleted_at"
-                    @click.prevent="deleteUser(row.id)"
                     class="text-red-600 hover:text-red-900 cursor-pointer"
+                    @click.prevent="deleteUser(row.id)"
                   >
                     <TrashIcon />
                   </a>
                   <a
                     v-else
-                    @click.prevent="restoreUser(row.id)"
                     class="text-green-600 hover:text-green-900 cursor-pointer"
+                    @click.prevent="restoreUser(row.id)"
                   >
                     <RefreshIcon />
                   </a>
@@ -205,8 +217,8 @@ const restoreUser = (id) => {
                 <div v-can="'user.edit'">
                   <a
                     v-if="!row.deleted_at"
-                    @click.prevent="openEditModal(row.id)"
                     class="text-blue-600 hover:text-blue-900 cursor-pointer"
+                    @click.prevent="openEditModal(row.id)"
                   >
                     <PencilIcon />
                   </a>
@@ -215,22 +227,44 @@ const restoreUser = (id) => {
             </div>
           </template>
         </Grid>
-        <Modal :show="isCreateModalOpen" maxWidth="2xl" @close="isCreateModalOpen = false">
-          <Create v-if="selectedUser" @userCreated="refreshUsers" :roles="selectedUser.roles" />
+        <Modal
+          :show="isCreateModalOpen"
+          max-width="2xl"
+          @close="isCreateModalOpen = false"
+        >
+          <Create
+            v-if="selectedUser"
+            :roles="selectedUser.roles"
+            @user-created="refreshUsers"
+          />
         </Modal>
-        <Modal :show="isEditModalOpen" @close="isEditModalOpen = false">
+        <Modal
+          :show="isEditModalOpen"
+          @close="isEditModalOpen = false"
+        >
           <Edit
             v-if="selectedUser"
             :user="selectedUser.user"
             :roles="selectedUser.roles"
             :user-roles="selectedUser.userRoles"
-            @userUpdated="refreshUsers"
+            @user-updated="refreshUsers"
           />
         </Modal>
-        <Modal :show="isShowModalOpen" @close="isShowModalOpen = false" maxWidth="2xl">
-          <Show v-if="selectedUser" :user="selectedUser" />
+        <Modal
+          :show="isShowModalOpen"
+          max-width="2xl"
+          @close="isShowModalOpen = false"
+        >
+          <Show
+            v-if="selectedUser"
+            :user="selectedUser"
+          />
         </Modal>
-        <Modal :show="showForbidden" @close="showForbidden = false" maxWidth="2xl">
+        <Modal
+          :show="showForbidden"
+          max-width="2xl"
+          @close="showForbidden = false"
+        >
           <Forbidden :data="errorForbidden" />
         </Modal>
       </div>

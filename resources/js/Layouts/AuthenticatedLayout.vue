@@ -60,17 +60,20 @@ const handleSubmit = (message) => {
                   Додати Оголошення
                   <span
                     class="absolute left-0 top-0 h-full w-[3px] bg-violet-600 scale-y-0 transition-transform duration-300 ease-in-out group-hover:scale-y-100 origin-top"
-                  ></span>
+                  />
                   <span
                     class="absolute right-0 top-0 h-full w-[3px] bg-violet-600 scale-y-0 transition-transform duration-300 ease-in-out group-hover:scale-y-100 origin-bottom"
-                  ></span>
+                  />
                 </a>
               </div>
               <div class="relative ms-3">
                 <Locale />
               </div>
               <div class="relative ms-3">
-                <Dropdown align="right" width="72">
+                <Dropdown
+                  align="right"
+                  width="72"
+                >
                   <template #trigger>
                     <div
                       class="flex items-center justify-center rounded-lg p-2 font-sans text-xs cursor-pointer font-bold uppercase text-pink-500 transition-all hover:bg-pink-500/10 active:bg-pink-500/30 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
@@ -104,7 +107,7 @@ const handleSubmit = (message) => {
                           alt="tania andrew"
                           src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1480&amp;q=80"
                           class="relative inline-block h-12 w-12 !rounded-full object-cover object-center"
-                        />
+                        >
                         <div class="flex flex-col gap-1">
                           <p
                             class="block font-sans text-sm font-normal leading-normal text-gray-700 antialiased"
@@ -128,7 +131,7 @@ const handleSubmit = (message) => {
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
                                 d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                              ></path>
+                              />
                             </svg>
                             13 minutes ago
                           </p>
@@ -141,7 +144,7 @@ const handleSubmit = (message) => {
                           alt="natali craig"
                           src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1061&amp;q=80"
                           class="relative inline-block h-12 w-12 !rounded-full object-cover object-center"
-                        />
+                        >
                         <div class="flex flex-col gap-1">
                           <p
                             class="block font-sans text-sm font-normal leading-normal text-gray-700 antialiased"
@@ -165,7 +168,7 @@ const handleSubmit = (message) => {
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
                                 d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                              ></path>
+                              />
                             </svg>
                             a hour ago
                           </p>
@@ -176,7 +179,10 @@ const handleSubmit = (message) => {
                 </Dropdown>
               </div>
               <div class="relative ms-3 z-20">
-                <Dropdown align="right" width="96">
+                <Dropdown
+                  align="right"
+                  width="96"
+                >
                   <template #trigger>
                     <span class="inline-flex rounded-md">
                       <button
@@ -206,13 +212,19 @@ const handleSubmit = (message) => {
                       <div
                         class="w-full max-w-sm rounded-lg bg-white p-3 drop-shadow-xl divide-y divide-gray-200"
                       >
-                        <div aria-label="header" class="flex space-x-4 items-center p-4">
-                          <div aria-label="avatar" class="flex mr-auto items-center space-x-4">
+                        <div
+                          aria-label="header"
+                          class="flex space-x-4 items-center p-4"
+                        >
+                          <div
+                            aria-label="avatar"
+                            class="flex mr-auto items-center space-x-4"
+                          >
                             <img
                               :src="$page.props.auth?.user?.avatar_url"
                               :alt="$page.props.auth?.user?.name"
                               class="w-16 h-16 shrink-0 rounded-full"
-                            />
+                            >
                             <div class="space-y-2 flex flex-col flex-1 truncate">
                               <div class="font-medium relative text-xl leading-tight text-gray-900">
                                 <span class="flex">
@@ -234,7 +246,10 @@ const handleSubmit = (message) => {
                           </div>
                           <UpDownIcon />
                         </div>
-                        <div aria-label="navigation" class="py-2">
+                        <div
+                          aria-label="navigation"
+                          class="py-2"
+                        >
                           <nav class="grid gap-1">
                             <a
                               v-can="'admin'"
@@ -287,7 +302,10 @@ const handleSubmit = (message) => {
                         <!--                                                        </button>-->
                         <!--                                                    </div>-->
                         <!--                                                </div>-->
-                        <div aria-label="footer" class="pt-2">
+                        <div
+                          aria-label="footer"
+                          class="pt-2"
+                        >
                           <Link
                             :href="route('logout')"
                             method="post"
@@ -307,10 +325,15 @@ const handleSubmit = (message) => {
             <!-- Hamburger -->
             <div class="-me-2 flex items-center sm:hidden">
               <button
-                @click="showingNavigationDropdown = !showingNavigationDropdown"
                 class="inline-flex items-center justify-center rounded-md p-2 text-gray-400 transition duration-150 ease-in-out hover:bg-gray-100 hover:text-gray-500 focus:bg-gray-100 focus:text-gray-500 focus:outline-none"
+                @click="showingNavigationDropdown = !showingNavigationDropdown"
               >
-                <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                <svg
+                  class="h-6 w-6"
+                  stroke="currentColor"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
                   <path
                     :class="{
                       hidden: showingNavigationDropdown,
@@ -359,7 +382,11 @@ const handleSubmit = (message) => {
               <ResponsiveNavLink :href="route('account.profile.settings')">
                 Profile
               </ResponsiveNavLink>
-              <ResponsiveNavLink :href="route('logout')" method="post" as="button">
+              <ResponsiveNavLink
+                :href="route('logout')"
+                method="post"
+                as="button"
+              >
                 Log Out
               </ResponsiveNavLink>
             </div>
@@ -368,7 +395,10 @@ const handleSubmit = (message) => {
       </nav>
 
       <!-- Page Heading -->
-      <header class="bg-white shadow" v-if="$slots.header">
+      <header
+        v-if="$slots.header"
+        class="bg-white shadow"
+      >
         <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           <slot name="header" />
         </div>
@@ -379,11 +409,14 @@ const handleSubmit = (message) => {
         <slot />
       </main>
 
-      <footer class="bg-gray-100" aria-labelledby="footer-heading">
+      <footer
+        class="bg-gray-100"
+        aria-labelledby="footer-heading"
+      >
         <div>
           <button
-            @click="messages"
             class="z-20 text-white flex flex-col shrink-0 grow-0 justify-around fixed bottom-0 right-1 rounded-lgmr-3 mb-3"
+            @click="messages"
           >
             <div class="p-3 rounded-full border-4 border-white bg-green-600">
               <svg
@@ -396,7 +429,7 @@ const handleSubmit = (message) => {
                   fill-rule="evenodd"
                   d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z"
                   clip-rule="evenodd"
-                ></path>
+                />
               </svg>
             </div>
           </button>
@@ -413,7 +446,10 @@ const handleSubmit = (message) => {
                   <button
                     class="-mr-1 bg-slate-100 hover:bg-slate-200 text-slate-400 hover:text-slate-600 h-5 w-5 rounded-full flex justify-center items-center"
                   >
-                    <svg class="h-2 w-2 fill-current items-center" viewBox="0 0 20 20">
+                    <svg
+                      class="h-2 w-2 fill-current items-center"
+                      viewBox="0 0 20 20"
+                    >
                       <path
                         d="M10 8.586L2.929 1.515 1.515 2.929 8.586 10l-7.071 7.071 1.414 1.414L10 11.414l7.071 7.071 1.414-1.414L11.414 10l7.071-7.071-1.414-1.414L10 8.586z"
                       />
@@ -422,18 +458,22 @@ const handleSubmit = (message) => {
                 </div>
                 <div class="flex items-center mt-2 rounded-lg px-1 py-1 cursor-pointer">
                   <div class="relative flex flex-shrink-0 items-end">
-                    <img class="h-16 w-16 rounded-full" src="https://i.pravatar.cc/300" alt="" />
+                    <img
+                      class="h-16 w-16 rounded-full"
+                      src="https://i.pravatar.cc/300"
+                      alt=""
+                    >
                     <span
                       class="absolute h-4 w-4 bg-green-400 rounded-full bottom-0 right-0 border-2 border-white"
-                    ></span>
+                    />
                   </div>
                   <div class="ml-3">
                     <span class="font-semibold tracking-tight text-xs">John Doe</span>
                     <span class="text-xs leading-none opacity-50"> reacted to your comment:</span>
-                    <p class="text-xs leading-4 pt-2 italic opacity-70">"This is the comment..."</p>
-                    <span class="text-[10px] text-blue-500 font-medium leading-4 opacity-75"
-                      >a few seconds ago</span
-                    >
+                    <p class="text-xs leading-4 pt-2 italic opacity-70">
+                      "This is the comment..."
+                    </p>
+                    <span class="text-[10px] text-blue-500 font-medium leading-4 opacity-75">a few seconds ago</span>
                   </div>
                 </div>
               </div>
@@ -453,9 +493,17 @@ const handleSubmit = (message) => {
                   <Link :href="route('main')">
                     <ApplicationLogo class="block fill-current w-24" />
                   </Link>
-                  <a href="#" class="text-gray-400 hover:text-gray-500">
+                  <a
+                    href="#"
+                    class="text-gray-400 hover:text-gray-500"
+                  >
                     <span class="sr-only">Facebook</span>
-                    <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <svg
+                      class="h-6 w-6"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
                       <path
                         fill-rule="evenodd"
                         d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"
@@ -463,9 +511,17 @@ const handleSubmit = (message) => {
                       />
                     </svg>
                   </a>
-                  <a href="#" class="text-gray-400 hover:text-gray-500">
+                  <a
+                    href="#"
+                    class="text-gray-400 hover:text-gray-500"
+                  >
                     <span class="sr-only">GitHub</span>
-                    <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <svg
+                      class="h-6 w-6"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
                       <path
                         fill-rule="evenodd"
                         d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
@@ -473,9 +529,17 @@ const handleSubmit = (message) => {
                       />
                     </svg>
                   </a>
-                  <a href="#" class="text-gray-400 hover:text-gray-500">
+                  <a
+                    href="#"
+                    class="text-gray-400 hover:text-gray-500"
+                  >
                     <span class="sr-only">YouTube</span>
-                    <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <svg
+                      class="h-6 w-6"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
                       <path
                         fill-rule="evenodd"
                         d="M19.812 5.418c.861.23 1.538.907 1.768 1.768C21.998 8.746 22 12 22 12s0 3.255-.418 4.814a2.504 2.504 0 0 1-1.768 1.768c-1.56.419-7.814.419-7.814.419s-6.255 0-7.814-.419a2.505 2.505 0 0 1-1.768-1.768C2 15.255 2 12 2 12s0-3.255.417-4.814a2.507 2.507 0 0 1 1.768-1.768C5.744 5 11.998 5 11.998 5s6.255 0 7.814.418ZM15.194 12 10 15V9l5.194 3Z"
@@ -488,81 +552,110 @@ const handleSubmit = (message) => {
               <div class="grid grid-cols-2 gap-8 xl:col-span-2 xl:mt-0">
                 <div class="md:grid md:grid-cols-2 md:gap-8">
                   <div>
-                    <h3 class="text-sm font-semibold leading-6 text-gray-900">Solutions</h3>
-                    <ul role="list" class="mt-6 space-y-4">
+                    <h3 class="text-sm font-semibold leading-6 text-gray-900">
+                      Solutions
+                    </h3>
+                    <ul
+                      role="list"
+                      class="mt-6 space-y-4"
+                    >
                       <li>
-                        <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900"
-                          >Marketing</a
-                        >
+                        <a
+                          href="#"
+                          class="text-sm leading-6 text-gray-600 hover:text-gray-900"
+                        >Marketing</a>
                       </li>
                       <li>
-                        <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900"
-                          >Analytics</a
-                        >
+                        <a
+                          href="#"
+                          class="text-sm leading-6 text-gray-600 hover:text-gray-900"
+                        >Analytics</a>
                       </li>
                       <li>
-                        <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900"
-                          >Commerce</a
-                        >
+                        <a
+                          href="#"
+                          class="text-sm leading-6 text-gray-600 hover:text-gray-900"
+                        >Commerce</a>
                       </li>
                     </ul>
                   </div>
                   <div class="mt-10 md:mt-0">
-                    <h3 class="text-sm font-semibold leading-6 text-gray-900">Support</h3>
-                    <ul role="list" class="mt-6 space-y-4">
+                    <h3 class="text-sm font-semibold leading-6 text-gray-900">
+                      Support
+                    </h3>
+                    <ul
+                      role="list"
+                      class="mt-6 space-y-4"
+                    >
                       <li>
-                        <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900"
-                          >Pricing</a
-                        >
+                        <a
+                          href="#"
+                          class="text-sm leading-6 text-gray-600 hover:text-gray-900"
+                        >Pricing</a>
                       </li>
                       <li>
-                        <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900"
-                          >Documentation</a
-                        >
+                        <a
+                          href="#"
+                          class="text-sm leading-6 text-gray-600 hover:text-gray-900"
+                        >Documentation</a>
                       </li>
                       <li>
-                        <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900"
-                          >Guides</a
-                        >
+                        <a
+                          href="#"
+                          class="text-sm leading-6 text-gray-600 hover:text-gray-900"
+                        >Guides</a>
                       </li>
                     </ul>
                   </div>
                 </div>
                 <div class="md:grid md:grid-cols-2 md:gap-8">
                   <div>
-                    <h3 class="text-sm font-semibold leading-6 text-gray-900">Company</h3>
-                    <ul role="list" class="mt-6 space-y-4">
+                    <h3 class="text-sm font-semibold leading-6 text-gray-900">
+                      Company
+                    </h3>
+                    <ul
+                      role="list"
+                      class="mt-6 space-y-4"
+                    >
                       <li>
                         <a
                           :href="route('contact')"
                           class="text-sm leading-6 text-gray-600 hover:text-gray-900"
-                          >Contact</a
-                        >
+                        >Contact</a>
                       </li>
                       <li>
-                        <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900"
-                          >Blog</a
-                        >
+                        <a
+                          href="#"
+                          class="text-sm leading-6 text-gray-600 hover:text-gray-900"
+                        >Blog</a>
                       </li>
                     </ul>
                   </div>
                   <div class="mt-10 md:mt-0">
-                    <h3 class="text-sm font-semibold leading-6 text-gray-900">Legal</h3>
-                    <ul role="list" class="mt-6 space-y-4">
+                    <h3 class="text-sm font-semibold leading-6 text-gray-900">
+                      Legal
+                    </h3>
+                    <ul
+                      role="list"
+                      class="mt-6 space-y-4"
+                    >
                       <li>
-                        <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900"
-                          >Claim</a
-                        >
+                        <a
+                          href="#"
+                          class="text-sm leading-6 text-gray-600 hover:text-gray-900"
+                        >Claim</a>
                       </li>
                       <li>
-                        <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900"
-                          >Privacy</a
-                        >
+                        <a
+                          href="#"
+                          class="text-sm leading-6 text-gray-600 hover:text-gray-900"
+                        >Privacy</a>
                       </li>
                       <li>
-                        <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900"
-                          >Terms</a
-                        >
+                        <a
+                          href="#"
+                          class="text-sm leading-6 text-gray-600 hover:text-gray-900"
+                        >Terms</a>
                       </li>
                     </ul>
                   </div>
@@ -579,5 +672,8 @@ const handleSubmit = (message) => {
       </footer>
     </div>
   </div>
-  <RattingPopup v-model:visible="showRatingPopup" @submit="handleSubmit" />
+  <RattingPopup
+    v-model:visible="showRatingPopup"
+    @submit="handleSubmit"
+  />
 </template>

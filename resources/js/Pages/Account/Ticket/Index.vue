@@ -34,24 +34,36 @@ const routes = {};
       <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg p-3">
           <FlashMessage :flash="flash" />
-          <ProfileMenu :activeTab="'account.tickets.index'" />
+          <ProfileMenu :active-tab="'account.tickets.index'" />
           <div class="px-4">
             <div class="grid grid-cols-2 gap-4 items-start mb-3">
-              <h2 class="text-xl font-bold mb-4">Мої Тікети</h2>
+              <h2 class="text-xl font-bold mb-4">
+                Мої Тікети
+              </h2>
               <button
-                @click="openCreateModal"
                 class="justify-self-end w-48 h-12 flex items-center justify-center text-md font-medium text-violet-400 hover:text-violet-700"
+                @click="openCreateModal"
               >
                 + Додати Тікет
               </button>
             </div>
-            <TicketList :tickets="tickets" :routes="routes"></TicketList>
+            <TicketList
+              :tickets="tickets"
+              :routes="routes"
+            />
           </div>
         </div>
       </div>
     </div>
-    <Modal :show="isCreateModalOpen" maxWidth="2xl" @close="isCreateModalOpen = false">
-      <Create :pages="selectedPages" @pageCreated="refreshPages" />
+    <Modal
+      :show="isCreateModalOpen"
+      max-width="2xl"
+      @close="isCreateModalOpen = false"
+    >
+      <Create
+        :pages="selectedPages"
+        @page-created="refreshPages"
+      />
     </Modal>
   </AuthenticatedLayout>
 </template>

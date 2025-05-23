@@ -3,36 +3,36 @@
     <!-- Текстове форматування -->
     <button
       type="button"
-      @click="editor.chain().focus().toggleBold().run()"
       :class="btnClass(editor.isActive('bold'))"
+      @click="editor.chain().focus().toggleBold().run()"
     >
       B
     </button>
     <button
       type="button"
-      @click="editor.chain().focus().toggleItalic().run()"
       :class="btnClass(editor.isActive('italic'))"
+      @click="editor.chain().focus().toggleItalic().run()"
     >
       I
     </button>
     <button
       type="button"
-      @click="editor.chain().focus().toggleUnderline().run()"
       :class="btnClass(editor.isActive('underline'))"
+      @click="editor.chain().focus().toggleUnderline().run()"
     >
       U
     </button>
     <button
       type="button"
-      @click="editor.chain().focus().toggleHeading({ level: 1 }).run()"
       :class="btnClass(editor.isActive('heading', { level: 1 }))"
+      @click="editor.chain().focus().toggleHeading({ level: 1 }).run()"
     >
       H1
     </button>
     <button
       type="button"
-      @click="editor.chain().focus().toggleHeading({ level: 2 }).run()"
       :class="btnClass(editor.isActive('heading', { level: 2 }))"
+      @click="editor.chain().focus().toggleHeading({ level: 2 }).run()"
     >
       H2
     </button>
@@ -40,15 +40,15 @@
     <!-- Списки -->
     <button
       type="button"
-      @click="editor.chain().focus().toggleBulletList().run()"
       :class="btnClass(editor.isActive('bulletList'))"
+      @click="editor.chain().focus().toggleBulletList().run()"
     >
       •
     </button>
     <button
       type="button"
-      @click="editor.chain().focus().toggleOrderedList().run()"
       :class="btnClass(editor.isActive('orderedList'))"
+      @click="editor.chain().focus().toggleOrderedList().run()"
     >
       1.
     </button>
@@ -56,34 +56,40 @@
     <!-- Вирівнювання -->
     <button
       type="button"
-      @click="editor.chain().focus().setTextAlign('left').run()"
       :class="btnClass(editor.isActive({ textAlign: 'left' }))"
+      @click="editor.chain().focus().setTextAlign('left').run()"
     >
       ⬅️
     </button>
     <button
       type="button"
-      @click="editor.chain().focus().setTextAlign('center').run()"
       :class="btnClass(editor.isActive({ textAlign: 'center' }))"
+      @click="editor.chain().focus().setTextAlign('center').run()"
     >
       ⬅️➡️
     </button>
     <button
       type="button"
-      @click="editor.chain().focus().setTextAlign('right').run()"
       :class="btnClass(editor.isActive({ textAlign: 'right' }))"
+      @click="editor.chain().focus().setTextAlign('right').run()"
     >
       ➡️
     </button>
 
     <!-- Колір -->
-    <button type="button" @click="setColor(editor)" :class="btnClass(false)">🎨</button>
+    <button
+      type="button"
+      :class="btnClass(false)"
+      @click="setColor(editor)"
+    >
+      🎨
+    </button>
 
     <!-- Цитата -->
     <button
       type="button"
-      @click="editor.chain().focus().toggleBlockquote().run()"
       :class="btnClass(editor.isActive('blockquote'))"
+      @click="editor.chain().focus().toggleBlockquote().run()"
     >
       ❝
     </button>
@@ -91,30 +97,57 @@
     <!-- Код-блок -->
     <button
       type="button"
-      @click="editor.chain().focus().toggleCodeBlock().run()"
       :class="btnClass(editor.isActive('codeBlock'))"
+      @click="editor.chain().focus().toggleCodeBlock().run()"
     >
       ⌨️
     </button>
 
     <!-- Таблиця -->
-    <button type="button" @click="insertTable(editor)" :class="btnClass(false)">🧮</button>
+    <button
+      type="button"
+      :class="btnClass(false)"
+      @click="insertTable(editor)"
+    >
+      🧮
+    </button>
 
     <!-- Зображення -->
-    <button type="button" @click="insertImage(editor)" :class="btnClass(false)">🖼️</button>
+    <button
+      type="button"
+      :class="btnClass(false)"
+      @click="insertImage(editor)"
+    >
+      🖼️
+    </button>
 
     <!-- Undo / Redo -->
-    <button type="button" @click="editor.chain().focus().undo().run()" :class="btnClass(false)">
+    <button
+      type="button"
+      :class="btnClass(false)"
+      @click="editor.chain().focus().undo().run()"
+    >
       ↺
     </button>
-    <button type="button" @click="editor.chain().focus().redo().run()" :class="btnClass(false)">
+    <button
+      type="button"
+      :class="btnClass(false)"
+      @click="editor.chain().focus().redo().run()"
+    >
       ↻
     </button>
   </div>
 </template>
 
 <script setup>
-defineProps(['editor']);
+import { defineProps } from 'vue';
+
+const props = defineProps({
+  editor: {
+    type: Object,
+    default: () => ({}),
+  },
+});
 
 const btnClass = (active) =>
   `px-2 py-1 border rounded text-sm transition

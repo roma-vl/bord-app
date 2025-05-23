@@ -10,11 +10,26 @@ import FlashMessage from '@/Components/FlashMessage.vue';
 import { getDateFormatFromLocale, getFullPathForImage } from '@/helpers.js';
 import axios from 'axios';
 const props = defineProps({
-  advert: Object,
-  values: Array,
-  photos: Array,
-  category: Object,
-  isFavorited: Boolean,
+  advert: {
+    type: Object,
+    default: () => ({}),
+  },
+  values: {
+    type: Array,
+    default: () => [],
+  },
+  photos: {
+    type: Array,
+    default: () => [],
+  },
+  category: {
+    type: Object,
+    default: () => ({}),
+  },
+  isFavorited: {
+    type: Boolean,
+    default: false,
+  },
 });
 const user = usePage().props.auth.user;
 const flash = computed(() => usePage().props.flash);
@@ -116,7 +131,7 @@ const sendMessage = () => {
 const handleFileUpload = (event) => {
   const file = event.target.files[0];
   if (file) {
-    messages.messages.value.push({
+    messages.value.messages.value.push({
       id: Date.now(),
       text: `📎 Файл: ${file.name}`,
       isMine: true,
@@ -154,44 +169,47 @@ const messageForm = useForm({
             </a>
             <button
               v-if="isDraft"
-              @click="publish"
               class="bg-green-500 hover:bg-green-600 text-white px-4 py-1 rounded"
+              @click="publish"
             >
               Публікувати
             </button>
             <button
               v-if="isActive"
-              @click="submitAction('adverts.adverts.close')"
               class="bg-green-500 hover:bg-green-600 text-white px-4 py-1 rounded"
+              @click="submitAction('adverts.adverts.close')"
             >
               Закрити
             </button>
             <button
               v-if="isOnModeration || isActive"
-              @click="toDraft"
               class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-1 rounded"
+              @click="toDraft"
             >
               Повернути в чорновик
             </button>
             <button
-              @click="deleteAdvert"
               class="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded"
+              @click="deleteAdvert"
             >
               Видалити
             </button>
           </div>
-          <div v-can="'admin'" class="flex flex-row gap-2 items-center">
+          <div
+            v-can="'admin'"
+            class="flex flex-row gap-2 items-center"
+          >
             <button
               v-if="isOnModeration"
-              @click="activate"
               class="bg-green-500 hover:bg-green-600 text-white px-4 py-1 rounded"
+              @click="activate"
             >
               Опублікувати
             </button>
             <button
               v-if="isOnModeration || isActive"
-              @click="rejectAdvert"
               class="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded"
+              @click="rejectAdvert"
             >
               Відхилити
             </button>
@@ -199,7 +217,10 @@ const messageForm = useForm({
         </div>
         <div class="list-disc list-inside text-gray-800">
           <span class="underline cursor-pointer"> Головна </span> /
-          <span v-for="ancestor in props.category.ancestors" :key="ancestor.id">
+          <span
+            v-for="ancestor in props.category.ancestors"
+            :key="ancestor.id"
+          >
             <span class="underline cursor-pointer">
               {{ ancestor.name }}
             </span>
@@ -216,30 +237,43 @@ const messageForm = useForm({
       </div>
       <div class="mx-auto max-w-7xl sm:px-6 lg:px-8 p-6 bg-white-50">
         <FlashMessage :flash="flash" />
-        <div v-if="isDraft" class="bg-yellow-100 text-yellow-800 p-3 rounded mb-4">
+        <div
+          v-if="isDraft"
+          class="bg-yellow-100 text-yellow-800 p-3 rounded mb-4"
+        >
           Це чернетка.
         </div>
-        <div v-if="isOnModeration" class="bg-yellow-100 text-yellow-800 p-3 rounded mb-4">
+        <div
+          v-if="isOnModeration"
+          class="bg-yellow-100 text-yellow-800 p-3 rounded mb-4"
+        >
           На модерації.
         </div>
-        <div v-if="advert.reject_reason" class="bg-red-100 text-red-800 p-3 rounded mb-4">
+        <div
+          v-if="advert.reject_reason"
+          class="bg-red-100 text-red-800 p-3 rounded mb-4"
+        >
           Причина відмови: {{ advert.reject_reason }}
         </div>
         <div class="flex gap-6">
           <div class="w-2/3">
             <div class="bg-white rounded-lg shadow p-3">
               <div class="w-full h-[600px] flex justify-center items-center">
-                <img :src="mainPhoto" class="w-full h-full object-contain" alt="" />
+                <img
+                  :src="mainPhoto"
+                  class="w-full h-full object-contain"
+                  alt=""
+                >
               </div>
               <div class="flex gap-2 mt-3 overflow-x-auto">
                 <img
                   v-for="photo in props.photos"
                   :key="photo.id"
-                  @click="setMainPhoto(getFullPathForImage(photo.file))"
                   :src="getFullPathForImage(photo.file)"
                   alt=""
                   class="w-24 h-24 object-cover rounded-lg cursor-pointer border-2 border-transparent hover:border-blue-500 transition"
-                />
+                  @click="setMainPhoto(getFullPathForImage(photo.file))"
+                >
               </div>
             </div>
             <div class="bg-white rounded-lg shadow p-3 mt-5">
@@ -252,11 +286,13 @@ const messageForm = useForm({
                   {{ item.attribute }} : {{ getValue(item.attribute) }}
                 </span>
               </div>
-              <p class="mt-4 text-gray-900 text-lg font-bold">Опис</p>
+              <p class="mt-4 text-gray-900 text-lg font-bold">
+                Опис
+              </p>
               <p class="mt-4 text-gray-800">
                 {{ advert.content }}
               </p>
-              <div class="my-4 border border-b-1 mx-3"></div>
+              <div class="my-4 border border-b-1 mx-3" />
               <div class="flex justify-end">
                 <button class="hover:underline hover:text-red-600 text-red-400 px-4 py-2 rounded">
                   Поскаржитися
@@ -273,28 +309,36 @@ const messageForm = useForm({
                 Закінчення {{ getDateFormatFromLocale(advert.expires_at) }}
               </p>
               <button
-                @click="toggleLike"
                 class="px-4 py-2 rounded text-gray-500 hover:text-red-500 transition"
+                @click="toggleLike"
               >
-                <HeartIcon v-if="!props.isFavorited" class="w-6 h-6" />
-                <HeartSolidIcon v-else class="w-6 h-6 text-red-500" />
+                <HeartIcon
+                  v-if="!props.isFavorited"
+                  class="w-6 h-6"
+                />
+                <HeartSolidIcon
+                  v-else
+                  class="w-6 h-6 text-red-500"
+                />
               </button>
               <h1 class="text-2xl font-bold text-gray-900">
                 {{ advert.title }}
               </h1>
               <div class="mt-4 flex flex-row items-center">
-                <h2 class="text-2xl font-bold text-green-600">{{ advert.price }} грн.</h2>
+                <h2 class="text-2xl font-bold text-green-600">
+                  {{ advert.price }} грн.
+                </h2>
                 <span class="pt-2 text-gray-800 text-sm pl-2"> Договірна </span>
               </div>
               <button
-                @click="toggleMessenger"
                 class="h-14 rounded-md border-2 hover:border-[5px] hover:bg-white hover:text-blue-500 border-blue-500 bg-blue-500 w-full mt-5 mb-5 text-neutral-50 after:absolute after:left-0 after:top-0 after:-z-10 after:h-full after:w-full after:rounded-md"
+                @click="toggleMessenger"
               >
                 <span class="text-lg font-bold"> Повідомлення </span>
               </button>
               <button
-                @click.prevent="getPhone(advert.id)"
                 class="h-14 rounded-md border-2 hover:border-[5px] border-blue-500 w-full mb-5 text-blue-500 after:absolute after:left-0 after:top-0 after:-z-10 after:h-full after:w-full after:rounded-md"
+                @click.prevent="getPhone(advert.id)"
               >
                 <span class="text-lg font-bold">
                   {{ userPhone ? userPhone : ' Показати телефон' }}
@@ -302,9 +346,15 @@ const messageForm = useForm({
               </button>
             </div>
             <div class="rounded-lg shadow p-3 bg-white mt-5">
-              <p class="font-bold pb-3">Користувач</p>
+              <p class="font-bold pb-3">
+                Користувач
+              </p>
               <div class="flex flex-row">
-                <img class="w-20 h-20 rounded-full" :src="advert.user?.avatar_url" alt="" />
+                <img
+                  class="w-20 h-20 rounded-full"
+                  :src="advert.user?.avatar_url"
+                  alt=""
+                >
                 <div class="mt-4">
                   <p class="text-gray-600 mt-1 text-lg font-bold">
                     {{ advert.user.name + ' ' + advert.user?.first_name }}
@@ -314,13 +364,18 @@ const messageForm = useForm({
                   </p>
                 </div>
               </div>
-              <div class="my-4 border border-b-1 mx-3"></div>
+              <div class="my-4 border border-b-1 mx-3" />
               <div class="flex items-center justify-center">
-                <a href="#" class="text-blue-500 hover:text-blue-600"> Всі оголошення автора > </a>
+                <a
+                  href="#"
+                  class="text-blue-500 hover:text-blue-600"
+                > Всі оголошення автора > </a>
               </div>
             </div>
             <div class="rounded-lg shadow p-3 bg-white mt-5">
-              <p class="font-bold pb-3">Місцезнаходження</p>
+              <p class="font-bold pb-3">
+                Місцезнаходження
+              </p>
               <p class="text-gray-600 mt-1">
                 Адреса: {{ advert.region?.name }} {{ advert.address }}
               </p>
@@ -328,7 +383,7 @@ const messageForm = useForm({
                 <img
                   src="https://inweb.ua/blog/wp-content/uploads/2020/09/vstavte-etot-kod-na-svoyu-html-stranitsu-ili-vidzhet.jpg"
                   alt=""
-                />
+                >
               </div>
             </div>
           </div>
@@ -343,7 +398,10 @@ const messageForm = useForm({
           class="bg-blue-600 text-white px-4 py-2 rounded-t-lg flex justify-between items-center"
         >
           <span>Чат з автором</span>
-          <button @click="toggleMessenger" class="text-white text-xl font-bold leading-none">
+          <button
+            class="text-white text-xl font-bold leading-none"
+            @click="toggleMessenger"
+          >
             ×
           </button>
         </div>
@@ -363,13 +421,21 @@ const messageForm = useForm({
                   <div class="px-4 py-2 rounded-lg max-w-xs break-words bg-blue-100 text-right">
                     {{ message.message }}
                   </div>
-                  <img class="w-10 h-10 rounded-full" :src="message.user.avatar_url" alt="Аватар" />
+                  <img
+                    class="w-10 h-10 rounded-full"
+                    :src="message.user.avatar_url"
+                    alt="Аватар"
+                  >
                 </div>
               </template>
 
               <template v-else>
                 <div class="flex items-end gap-2 mr-auto">
-                  <img class="w-10 h-10 rounded-full" :src="message.user.avatar_url" alt="Аватар" />
+                  <img
+                    class="w-10 h-10 rounded-full"
+                    :src="message.user.avatar_url"
+                    alt="Аватар"
+                  >
                   <div class="px-4 py-2 rounded-lg max-w-xs break-words bg-gray-100 text-left">
                     {{ message.message }}
                   </div>
@@ -378,28 +444,35 @@ const messageForm = useForm({
             </div>
           </div>
 
-          <div class="flex-1 overflow-y-auto p-4 space-y-2 text-center" v-else>
+          <div
+            v-else
+            class="flex-1 overflow-y-auto p-4 space-y-2 text-center"
+          >
             Повідомлень ще немає
           </div>
           <div class="border-t p-3 flex items-center gap-2 w-full">
             <form @submit.prevent="sendMessage">
               <button
-                @click="openEmojis"
                 class="text-gray-500 hover:text-yellow-400 transition"
                 title="Смайли"
+                @click="openEmojis"
               >
                 😊
               </button>
               <label class="cursor-pointer text-gray-500 hover:text-blue-500">
-                <input type="file" class="hidden" @change="handleFileUpload" /> 📎
+                <input
+                  type="file"
+                  class="hidden"
+                  @change="handleFileUpload"
+                > 📎
               </label>
               <input
                 v-model="messageForm.message"
-                @keyup.enter="sendMessage"
                 type="text"
                 placeholder="Написати..."
                 class="flex-1 border rounded-lg px-4 py-2 mr-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-              />
+                @keyup.enter="sendMessage"
+              >
               <button
                 type="submit"
                 class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition"
@@ -410,8 +483,15 @@ const messageForm = useForm({
           </div>
         </div>
       </div>
-      <Modal :show="isRejectModalOpen" maxWidth="2xl" @close="isRejectModalOpen = false">
-        <Reject :advertId="advertId" @rejectCreated="isRejectModalOpen = false" />
+      <Modal
+        :show="isRejectModalOpen"
+        max-width="2xl"
+        @close="isRejectModalOpen = false"
+      >
+        <Reject
+          :advert-id="advertId"
+          @reject-created="isRejectModalOpen = false"
+        />
       </Modal>
     </div>
   </AuthenticatedLayout>

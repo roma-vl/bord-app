@@ -27,18 +27,38 @@ const submit = () => {
 
 <template>
   <form @submit.prevent="submit">
-    <input v-model="form.name" placeholder="Role name" required class="border p-2 w-full my-2" />
+    <input
+      v-model="form.name"
+      placeholder="Role name"
+      required
+      class="border p-2 w-full my-2"
+    >
 
-    <label><input type="checkbox" v-model="form.is_enabled" />Enabled</label>
+    <label><input
+      v-model="form.is_enabled"
+      type="checkbox"
+    >Enabled</label>
 
     <h3>Permissions</h3>
-    <div v-for="permission in permissions" :key="permission.id">
+    <div
+      v-for="permission in permissions"
+      :key="permission.id"
+    >
       <label>
-        <input type="checkbox" v-model="form.permissions" :value="permission.id" />
+        <input
+          v-model="form.permissions"
+          type="checkbox"
+          :value="permission.id"
+        >
         {{ permission.key }}
       </label>
     </div>
 
-    <button type="submit" class="bg-blue-500 px-4 py-2 text-white rounded">Create</button>
+    <button
+      type="submit"
+      class="bg-blue-500 px-4 py-2 text-white rounded"
+    >
+      Create
+    </button>
   </form>
 </template>

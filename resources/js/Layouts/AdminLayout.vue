@@ -54,7 +54,10 @@ const toggleFullscreen = () => {
             </div>
 
             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-              <NavLink :href="route('main')" class="dark:text-white">
+              <NavLink
+                :href="route('main')"
+                class="dark:text-white"
+              >
                 <ArrowLeftIcon /> Повернутися на головну
               </NavLink>
             </div>
@@ -87,8 +90,8 @@ const toggleFullscreen = () => {
             </div>
             <div class="relative ms-3">
               <button
-                @click="toggleTheme"
                 class="px-4 py-2 hover:bg-stone-200 dark:bg-gray-700 rounded"
+                @click="toggleTheme"
               >
                 {{ theme === 'dark' ? '🌙' : '☀️' }}
               </button>
@@ -101,10 +104,15 @@ const toggleFullscreen = () => {
 
           <div class="-me-2 flex items-center sm:hidden">
             <button
-              @click="showingNavigationDropdown = !showingNavigationDropdown"
               class="inline-flex items-center justify-center rounded-md p-2 text-gray-400 transition duration-150 ease-in-out hover:bg-gray-100 hover:text-gray-500 focus:bg-gray-100 focus:text-gray-500 focus:outline-none"
+              @click="showingNavigationDropdown = !showingNavigationDropdown"
             >
-              <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+              <svg
+                class="h-6 w-6"
+                stroke="currentColor"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
                 <path
                   :class="{
                     hidden: showingNavigationDropdown,
@@ -131,10 +139,13 @@ const toggleFullscreen = () => {
         </div>
       </div>
 
-      <AdminResponsiveNavigationMenu :showingNavigationDropdown="showingNavigationDropdown" />
+      <AdminResponsiveNavigationMenu :showing-navigation-dropdown="showingNavigationDropdown" />
     </nav>
 
-    <header class="bg-white dark:bg-gray-800 shadow" v-if="$slots.header">
+    <header
+      v-if="$slots.header"
+      class="bg-white dark:bg-gray-800 shadow"
+    >
       <div class="mx-auto max-w-7xl px-3 py-3 sm:px-6 lg:px-8">
         <slot name="header" />
       </div>
@@ -145,6 +156,9 @@ const toggleFullscreen = () => {
       <slot />
     </main>
 
-    <footer class="bg-gray-100" aria-labelledby="footer-heading"></footer>
+    <footer
+      class="bg-gray-100"
+      aria-labelledby="footer-heading"
+    />
   </div>
 </template>

@@ -8,9 +8,18 @@ import Create from '@/Pages/Admin/Advert/Attribute/Create.vue';
 import Edit from '@/Pages/Admin/Advert/Attribute/Edit.vue';
 
 const props = defineProps({
-  category: Object,
-  attributes: Array,
-  parentAttributes: Array,
+  category: {
+    type: Object,
+    default: () => ({}),
+  },
+  attributes: {
+    type: Array,
+    default: () => [],
+  },
+  parentAttributes: {
+    type: Array,
+    default: () => [],
+  },
 });
 
 const flash = usePage().props.flash;
@@ -70,13 +79,17 @@ const deleteCategory = (attributeId) => {
         <FlashMessage :flash="flash" />
 
         <div class="min-w-full bg-white rounded-lg shadow p-6 min-h-[700px]">
-          <h1 class="text-2xl font-bold">Категорія: {{ props.category.name }}</h1>
-          <p class="text-gray-600">Slug: {{ props.category.slug }}</p>
+          <h1 class="text-2xl font-bold">
+            Категорія: {{ props.category.name }}
+          </h1>
+          <p class="text-gray-600">
+            Slug: {{ props.category.slug }}
+          </p>
 
           <div class="mb-2 flex justify-end">
             <button
-              @click="openCreateModal"
               class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-500"
+              @click="openCreateModal"
             >
               + Додати Атрибут
             </button>
@@ -85,20 +98,43 @@ const deleteCategory = (attributeId) => {
           <table class="w-full mt-4 border-collapse border border-gray-200">
             <thead>
               <tr class="bg-gray-100">
-                <th class="border p-2">ID</th>
-                <th class="border p-2">Назва</th>
-                <th class="border p-2">Тип</th>
-                <th class="border p-2">Обов’язковий</th>
-                <th class="border p-2">Сортування</th>
+                <th class="border p-2">
+                  ID
+                </th>
+                <th class="border p-2">
+                  Назва
+                </th>
+                <th class="border p-2">
+                  Тип
+                </th>
+                <th class="border p-2">
+                  Обов’язковий
+                </th>
+                <th class="border p-2">
+                  Сортування
+                </th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="attr in parentAttributes" :key="attr.id">
-                <td class="border p-2">{{ attr.id }}</td>
-                <td class="border p-2">{{ attr.name }}</td>
-                <td class="border p-2">{{ attr.type }}</td>
-                <td class="border p-2">{{ attr.required ? 'Так' : 'Ні' }}</td>
-                <td class="border p-2">{{ attr.sort }}</td>
+              <tr
+                v-for="attr in parentAttributes"
+                :key="attr.id"
+              >
+                <td class="border p-2">
+                  {{ attr.id }}
+                </td>
+                <td class="border p-2">
+                  {{ attr.name }}
+                </td>
+                <td class="border p-2">
+                  {{ attr.type }}
+                </td>
+                <td class="border p-2">
+                  {{ attr.required ? 'Так' : 'Ні' }}
+                </td>
+                <td class="border p-2">
+                  {{ attr.sort }}
+                </td>
               </tr>
             </tbody>
           </table>
@@ -107,31 +143,56 @@ const deleteCategory = (attributeId) => {
           <table class="w-full mt-4 border-collapse border border-gray-200">
             <thead>
               <tr class="bg-gray-100">
-                <th class="border p-2">ID</th>
-                <th class="border p-2">Назва</th>
-                <th class="border p-2">Тип</th>
-                <th class="border p-2">Обов’язковий</th>
-                <th class="border p-2">Сортування</th>
-                <th class="border p-2">Дії</th>
+                <th class="border p-2">
+                  ID
+                </th>
+                <th class="border p-2">
+                  Назва
+                </th>
+                <th class="border p-2">
+                  Тип
+                </th>
+                <th class="border p-2">
+                  Обов’язковий
+                </th>
+                <th class="border p-2">
+                  Сортування
+                </th>
+                <th class="border p-2">
+                  Дії
+                </th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="attr in attributes" :key="attr.id">
-                <td class="border p-2">{{ attr.id }}</td>
-                <td class="border p-2">{{ attr.name }}</td>
-                <td class="border p-2">{{ attr.type }}</td>
-                <td class="border p-2">{{ attr.required ? 'Так' : 'Ні' }}</td>
-                <td class="border p-2">{{ attr.sort }}</td>
+              <tr
+                v-for="attr in attributes"
+                :key="attr.id"
+              >
+                <td class="border p-2">
+                  {{ attr.id }}
+                </td>
+                <td class="border p-2">
+                  {{ attr.name }}
+                </td>
+                <td class="border p-2">
+                  {{ attr.type }}
+                </td>
+                <td class="border p-2">
+                  {{ attr.required ? 'Так' : 'Ні' }}
+                </td>
+                <td class="border p-2">
+                  {{ attr.sort }}
+                </td>
                 <td class="border p-2">
                   <button
-                    @click.stop="openEditModal(attr.id)"
                     class="text-blue-500 pr-2 hover:underline"
+                    @click.stop="openEditModal(attr.id)"
                   >
                     Редагувати
                   </button>
                   <button
-                    @click.stop="deleteCategory(attr.id)"
                     class="text-red-500 hover:underline"
+                    @click.stop="deleteCategory(attr.id)"
                   >
                     Видалити
                   </button>
@@ -143,12 +204,26 @@ const deleteCategory = (attributeId) => {
       </div>
     </div>
 
-    <Modal :show="isCreateModalOpen" maxWidth="2xl" @close="isCreateModalOpen = false">
-      <Create :data="selectedCategory" @attributeCreated="refreshAttributes" />
+    <Modal
+      :show="isCreateModalOpen"
+      max-width="2xl"
+      @close="isCreateModalOpen = false"
+    >
+      <Create
+        :data="selectedCategory"
+        @attribute-created="refreshAttributes"
+      />
     </Modal>
 
-    <Modal :show="isEditModalOpen" maxWidth="2xl" @close="isEditModalOpen = false">
-      <Edit :data="selectedCategory" @attributeUpdated="refreshAttributes" />
+    <Modal
+      :show="isEditModalOpen"
+      max-width="2xl"
+      @close="isEditModalOpen = false"
+    >
+      <Edit
+        :data="selectedCategory"
+        @attribute-updated="refreshAttributes"
+      />
     </Modal>
   </AdminLayout>
 </template>

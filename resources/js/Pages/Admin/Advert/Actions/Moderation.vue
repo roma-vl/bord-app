@@ -93,20 +93,17 @@ const deleteAdvert = (id) => {
                     class="text-blue-600 hover:underline"
                     title="Переглянути"
                   >
-                    <EyeIcon
-                  /></a>
+                    <EyeIcon /></a>
                   <a
-                    @click.prevent="activateAdvert(row.id)"
                     class="text-green-600 font-bold hover:text-green-900 cursor-pointer"
                     title="Опублікувати"
-                    ><CheckIcon
-                  /></a>
+                    @click.prevent="activateAdvert(row.id)"
+                  ><CheckIcon /></a>
                   <a
-                    @click.prevent="rejectAdvert(row.id)"
                     class="text-red-600 hover:text-red-900 cursor-pointer"
                     title="Відмінити"
-                    ><ArrowUturnIcon
-                  /></a>
+                    @click.prevent="rejectAdvert(row.id)"
+                  ><ArrowUturnIcon /></a>
                   <a
                     v-if="!row.deleted_at"
                     :href="route('account.adverts.edit', row.id)"
@@ -117,16 +114,16 @@ const deleteAdvert = (id) => {
                   </a>
                   <a
                     v-if="!row.deleted_at"
-                    @click.prevent="deleteAdvert(row.id)"
                     class="text-red-600 hover:text-red-900 cursor-pointer"
                     title="Видалити"
+                    @click.prevent="deleteAdvert(row.id)"
                   >
                     <TrashIcon />
                   </a>
                   <a
                     v-else
-                    @click.prevent="restoreUser(row.id)"
                     class="text-green-600 hover:text-green-900 cursor-pointer"
+                    @click.prevent="restoreUser(row.id)"
                   >
                     <RefreshIcon />
                   </a>
@@ -137,8 +134,15 @@ const deleteAdvert = (id) => {
         </div>
       </div>
     </div>
-    <Modal :show="isRejectModalOpen" maxWidth="2xl" @close="isRejectModalOpen = false">
-      <Reject :advertId="advertId" @rejectCreated="isRejectModalOpen = false" />
+    <Modal
+      :show="isRejectModalOpen"
+      max-width="2xl"
+      @close="isRejectModalOpen = false"
+    >
+      <Reject
+        :advert-id="advertId"
+        @reject-created="isRejectModalOpen = false"
+      />
     </Modal>
   </AdminLayout>
 </template>

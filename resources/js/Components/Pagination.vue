@@ -6,10 +6,22 @@ import ArrowRightIcon from '@/Components/Icon/ArrowRightIcon.vue';
 import { fullPath } from '@/helpers.js';
 
 const props = defineProps({
-  pagination: Object,
-  searchQuery: String,
-  sortField: String,
-  sortOrder: String,
+  pagination: {
+    type: Object,
+    default: () => ({}),
+  },
+  searchQuery: {
+    type: String,
+    default: '',
+  },
+  sortField: {
+    type: String,
+    default: '',
+  },
+  sortOrder: {
+    type: String,
+    default: '',
+  },
 });
 
 const searchQuery = props.searchQuery ? '&search=' + props.searchQuery : '';
@@ -33,23 +45,27 @@ const changePage = (url) => {
 
 <template>
   <div class="pr-2 flex flex-row mb-2">
-    <p class="p-2 text-gray-600 font-medium">Всього: {{ pagination.total }}</p>
+    <p class="p-2 text-gray-600 font-medium">
+      Всього: {{ pagination.total }}
+    </p>
   </div>
   <div class="flex flex-col items-center mb-2">
-    <div v-if="pagination.total > pagination.per_page" class="flex items-center gap-1">
+    <div
+      v-if="pagination.total > pagination.per_page"
+      class="flex items-center gap-1"
+    >
       <button
-        @click="changePage(pagination.links[0].url)"
         :disabled="!pagination.links[0].url"
         class="inline-flex items-center justify-center border align-middle select-none font-sans font-medium text-center transition-all duration-300 ease-in disabled:opacity-50 disabled:shadow-none disabled:cursor-not-allowed focus:shadow-none text-sm rounded-md py-2 px-4 bg-transparent border-transparent text-stone-800 hover:bg-stone-800/5 hover:border-stone-800/5 shadow-none hover:shadow-none"
+        @click="changePage(pagination.links[0].url)"
       >
         <ArrowLeftIcon />
         {{ pagination.links[0].label }}
       </button>
-
+      <!-- eslint-disable vue/no-v-html -->
       <button
         v-for="(link, index) in pagination.links.slice(1, -1)"
         :key="index"
-        @click="changePage(link.url)"
         :disabled="!link.url"
         class="inline-grid place-items-center border align-middle select-none font-sans font-medium text-center transition-all duration-300 ease-in disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-sm min-w-[38px] min-h-[38px] rounded-md"
         :class="{
@@ -58,13 +74,14 @@ const changePage = (url) => {
           'bg-transparent border-transparent text-stone-800 hover:bg-stone-800/5 hover:border-stone-800/5 shadow-none hover:shadow-none':
             !link.active,
         }"
+        @click="changePage(link.url)"
         v-html="link.label"
-      ></button>
-
+      />
+      <!-- eslint-enable vue/no-v-html -->
       <button
-        @click="changePage(pagination.links[pagination.links.length - 1].url)"
         :disabled="!pagination.links[pagination.links.length - 1].url"
         class="inline-flex items-center justify-center border align-middle select-none font-sans font-medium text-center transition-all duration-300 ease-in disabled:opacity-50 disabled:shadow-none disabled:cursor-not-allowed focus:shadow-none text-sm rounded-md py-2 px-4 bg-transparent border-transparent text-stone-800 hover:bg-stone-800/5 hover:border-stone-800/5 shadow-none hover:shadow-none"
+        @click="changePage(pagination.links[pagination.links.length - 1].url)"
       >
         {{ pagination.links[pagination.links.length - 1].label }}
         <ArrowRightIcon />

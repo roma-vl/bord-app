@@ -10,17 +10,45 @@ import Get from '@/Pages/Banner/Get.vue';
 const adverts = usePage().props.adverts;
 const queryFilter = ref(usePage().props.query || {});
 const props = defineProps({
-  categories: Object,
-  locations: Object,
-  childCategories: Object,
-  regionsCounts: Object,
-  categoriesCounts: Object,
-  attributes: Object,
-  categoryFilters: Object,
-  activeCategory: Object,
-  activeRegion: Object,
+  categories: {
+    type: Object,
+    default: () => ({}),
+  },
+  locations: {
+    type: Object,
+    default: () => ({}),
+  },
+  childCategories: {
+    type: Object,
+    default: () => ({}),
+  },
+  regionsCounts: {
+    type: Object,
+    default: () => ({}),
+  },
+  categoriesCounts: {
+    type: Object,
+    default: () => ({}),
+  },
+  attributes: {
+    type: Object,
+    default: () => ({}),
+  },
+  categoryFilters: {
+    type: Object,
+    default: () => ({}),
+  },
+  activeCategory: {
+    type: Object,
+    default: () => ({}),
+  },
+  activeRegion: {
+    type: Object,
+    default: () => ({}),
+  },
 });
 
+console.log(props.activeRegion, 'activeRegion');
 import { useSearch } from '@/composables/useSearch.js';
 import SearchInput from '@/Components/Search/SearchInput.vue';
 import LocationSelector from '@/Components/Search/LocationSelector.vue';
@@ -31,12 +59,13 @@ const toggle = ref('');
 const handleCitySelect = (slug) => {
   cityIdSearchQuery.value = slug;
 };
+
 const handleSearch = (text) => {
   searchQuery.value = text;
 };
 
 const handleModel = (newToggle) => {
-    toggle.value = newToggle
+  toggle.value = newToggle;
 };
 
 const selectedCategoryId = computed(() => queryFilter.value.category_id);
@@ -64,15 +93,14 @@ function findCategoryById(categories, id) {
   return null;
 }
 const handleCategoryChange = (category) => {
+  const filteredQuery = { ...queryFilter.value };
 
-    const filteredQuery = { ...queryFilter.value };
-
-    Object.keys(filteredQuery).forEach((key) => {
-        const val = filteredQuery[key];
-        if (val === null || val === '' || typeof val === 'undefined') {
-            delete filteredQuery[key];
-        }
-    });
+  Object.keys(filteredQuery).forEach((key) => {
+    const val = filteredQuery[key];
+    if (val === null || val === '' || typeof val === 'undefined') {
+      delete filteredQuery[key];
+    }
+  });
 
   const fullPath = getCategorySlugsPathById(props.categoryFilters, category.id);
   const categories = getCategorySlugs(props.categoryFilters);
@@ -96,7 +124,7 @@ watch(
   (newVal) => {
     if (!newVal) return;
     const selected = findCategoryById(props.categoryFilters, Number(newVal));
-    if (selected && toggle &&  toggle?.value === 'open') {
+    if (selected && toggle && toggle?.value === 'open') {
       handleCategoryChange(selected);
     }
   }
@@ -172,19 +200,27 @@ onMounted(async () => {
             <div
               class="flex items-center gap-4 bg-gray-100 p-4 rounded-lg shadow-md search-container"
             >
-              <SearchInput v-model="searchQuery" @select-suggestion="handleSearch" />
+              <SearchInput
+                v-model="searchQuery"
+                @select-suggestion="handleSearch"
+              />
               <div class="flex items-center gap-4">
-                <LocationSelector v-model="cityIdSearchQuery" @select-city="handleCitySelect" />
+                <LocationSelector
+                  v-model="cityIdSearchQuery"
+                  @select-city="handleCitySelect"
+                />
                 <button
-                  @click="search(getCategorySlugs(props.categoryFilters))"
                   class="px-8 py-2 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-xl hover:shadow-2xl transition"
+                  @click="search(getCategorySlugs(props.categoryFilters))"
                 >
                   Пошук
                 </button>
               </div>
             </div>
 
-            <h2 class="text-lg font-semibold text-gray-800 mb-4">Фільтри</h2>
+            <h2 class="text-lg font-semibold text-gray-800 mb-4">
+              Фільтри
+            </h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-4">
               <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 shadow-sm">
                 <label class="block text-sm font-medium text-gray-700 mb-2">
@@ -192,8 +228,8 @@ onMounted(async () => {
                 </label>
                 <CategoryDropdown
                   v-model="queryFilter.category_id"
+                  :category-filters="props.categoryFilters"
                   @toggle="handleModel"
-                  :categoryFilters="props.categoryFilters"
                 />
               </div>
 
@@ -212,43 +248,59 @@ onMounted(async () => {
                   v-model="queryFilter[attribute.id]"
                   class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
-                  <option value="">Обрати</option>
-                  <option v-for="(variant, i) in attribute.variants" :key="i" :value="variant">
+                  <option value="">
+                    Обрати
+                  </option>
+                  <option
+                    v-for="(variant, i) in attribute.variants"
+                    :key="i"
+                    :value="variant"
+                  >
                     {{ variant }}
                   </option>
                 </select>
 
-                <div v-else-if="attribute.type === 'integer'" class="flex gap-2">
+                <div
+                  v-else-if="attribute.type === 'integer'"
+                  class="flex gap-2"
+                >
                   <input
+                    v-model="queryFilter[`${attribute.id}_from`]"
                     type="number"
                     :placeholder="`Від`"
-                    v-model="queryFilter[`${attribute.id}_from`]"
                     class="w-1/2 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
+                  >
                   <input
+                    v-model="queryFilter[`${attribute.id}_to`]"
                     type="number"
                     :placeholder="`До`"
-                    v-model="queryFilter[`${attribute.id}_to`]"
                     class="w-1/2 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
+                  >
                 </div>
 
                 <input
                   v-else-if="attribute.type === 'string'"
-                  type="text"
                   v-model="queryFilter[attribute.id]"
+                  type="text"
                   class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
+                >
               </div>
             </div>
-            <Breadcrumbs class="mb-6" :categories="props.categories" :locations="props.locations" />
+            <Breadcrumbs
+              class="mb-6"
+              :categories="props.categories"
+              :locations="props.locations"
+            />
 
             <ChildCategories
-              :childCategories="props.childCategories"
-              :categoriesCounts="props.categoriesCounts"
+              :child-categories="props.childCategories"
+              :categories-counts="props.categoriesCounts"
               :categories="props.categories"
             />
-            <h2 v-if="queryFilter.query" class="text-lg font-semibold text-gray-800 mb-4 mt-4">
+            <h2
+              v-if="queryFilter.query"
+              class="text-lg font-semibold text-gray-800 mb-4 mt-4"
+            >
               Пошук за запитом : {{ queryFilter.query }}
             </h2>
 
@@ -256,8 +308,13 @@ onMounted(async () => {
               <CategoryAdvert :adverts="adverts" />
               <Get :banner="banner" />
             </div>
-            <div v-else class="m-32 text-lg">
-              <h2 class="text-xl mb-4 text-center">Нічого не знайдено.</h2>
+            <div
+              v-else
+              class="m-32 text-lg"
+            >
+              <h2 class="text-xl mb-4 text-center">
+                Нічого не знайдено.
+              </h2>
             </div>
           </div>
         </div>

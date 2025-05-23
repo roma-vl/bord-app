@@ -69,22 +69,28 @@ const updateSorting = (field) => {
 <template>
   <div class="grid-container shadow p-2 bg-white rounded-lg">
     <DataTableHeader
+      v-model:search-query="searchQuery"
+      v-model:per-page="perPage"
+      v-model:visible-columns="visibleColumns"
       :headings="headings"
-      v-model:searchQuery="searchQuery"
-      v-model:perPage="perPage"
-      v-model:visibleColumns="visibleColumns"
-      :perPageValues="[5, 10, 20, 50]"
+      :per-page-values="[5, 10, 20, 50]"
     />
     <DataTable
       v-if="items"
       :items="items"
       :headings="headings.filter((h) => visibleColumns.includes(h.key))"
-      uniqueKey="id"
-      :searchQuery="searchQuery"
+      unique-key="id"
+      :search-query="searchQuery"
       @sort="updateSorting"
     >
-      <template v-for="(_, slotName) in $slots" v-slot:[slotName]="scope">
-        <slot :name="slotName" v-bind="scope"></slot>
+      <template
+        v-for="(_, slotName) in $slots"
+        #[slotName]="scope"
+      >
+        <slot
+          :name="slotName"
+          v-bind="scope"
+        />
       </template>
     </DataTable>
     <div
@@ -96,9 +102,9 @@ const updateSorting = (field) => {
 
     <Pagination
       :pagination="pagination"
-      :searchQuery="searchQuery"
-      :sortField="sortField"
-      :sortOrder="sortOrder"
+      :search-query="searchQuery"
+      :sort-field="sortField"
+      :sort-order="sortOrder"
     />
   </div>
 </template>

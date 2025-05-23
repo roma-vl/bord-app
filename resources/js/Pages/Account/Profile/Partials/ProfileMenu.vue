@@ -1,6 +1,9 @@
 <script setup>
 const props = defineProps({
-  activeTab: String,
+  activeTab: {
+    type: String,
+    default: '',
+  },
 });
 
 const menuItems = [
@@ -16,7 +19,10 @@ const menuItems = [
 
 <template>
   <nav class="flex border-b mb-4">
-    <template v-for="item in menuItems" :key="item.route">
+    <template
+      v-for="item in menuItems"
+      :key="item.route"
+    >
       <a
         :href="route(item.route)"
         class="px-4 py-2 text-gray-600 hover:text-gray-900 border-b-2"

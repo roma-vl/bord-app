@@ -4,7 +4,10 @@ import NotificationIcon from '@/Components/Icon/NotificationIcon.vue';
 </script>
 
 <template>
-  <Dropdown align="right" width="72">
+  <Dropdown
+    align="right"
+    width="72"
+  >
     <template #trigger>
       <div class="flex flex-col items-center">
         <div class="relative flex justify-center">
@@ -36,7 +39,7 @@ import NotificationIcon from '@/Components/Icon/NotificationIcon.vue';
             alt="tania andrew"
             src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1480&amp;q=80"
             class="relative inline-block h-12 w-12 !rounded-full object-cover object-center"
-          />
+          >
           <div class="flex flex-col gap-1">
             <p
               class="block font-sans text-sm font-normal leading-normal text-gray-700 antialiased dark:text-white"
@@ -59,7 +62,7 @@ import NotificationIcon from '@/Components/Icon/NotificationIcon.vue';
                   stroke-linecap="round"
                   stroke-linejoin="round"
                   d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                ></path>
+                />
               </svg>
               13 minutes ago
             </p>
@@ -72,7 +75,7 @@ import NotificationIcon from '@/Components/Icon/NotificationIcon.vue';
             alt="natali craig"
             src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1061&amp;q=80"
             class="relative inline-block h-12 w-12 !rounded-full object-cover object-center"
-          />
+          >
           <div class="flex flex-col gap-1">
             <p
               class="block font-sans text-sm font-normal leading-normal text-gray-700 antialiased dark:text-white"
@@ -95,7 +98,7 @@ import NotificationIcon from '@/Components/Icon/NotificationIcon.vue';
                   stroke-linecap="round"
                   stroke-linejoin="round"
                   d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                ></path>
+                />
               </svg>
               a hour ago
             </p>

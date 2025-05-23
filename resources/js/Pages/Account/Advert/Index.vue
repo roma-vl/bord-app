@@ -23,10 +23,12 @@ const routes = {
       <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg p-3">
           <FlashMessage :flash="flash" />
-          <ProfileMenu :activeTab="'account.adverts.index'" />
+          <ProfileMenu :active-tab="'account.adverts.index'" />
           <div class="px-4">
             <div class="grid grid-cols-2 gap-4 items-start mb-3">
-              <h2 class="text-xl font-bold mb-4">Мої оголошення</h2>
+              <h2 class="text-xl font-bold mb-4">
+                Мої оголошення
+              </h2>
 
               <a
                 :href="route('account.adverts.create')"
@@ -35,13 +37,16 @@ const routes = {
                 + Додати Оголошення
                 <span
                   class="absolute left-0 top-0 h-full w-[3px] bg-violet-600 scale-y-0 transition-transform duration-300 ease-in-out group-hover:scale-y-100 origin-top"
-                ></span>
+                />
                 <span
                   class="absolute right-0 top-0 h-full w-[3px] bg-violet-600 scale-y-0 transition-transform duration-300 ease-in-out group-hover:scale-y-100 origin-bottom"
-                ></span>
+                />
               </a>
             </div>
-            <AdvertList :adverts="adverts" :routes="routes"></AdvertList>
+            <AdvertList
+              :adverts="adverts"
+              :routes="routes"
+            />
           </div>
         </div>
       </div>

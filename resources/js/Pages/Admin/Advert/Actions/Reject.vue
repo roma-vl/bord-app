@@ -4,7 +4,10 @@ import { defineEmits } from 'vue';
 import InputError from '@/Components/InputError.vue';
 
 const props = defineProps({
-  advertId: Number,
+  advertId: {
+    type: Number,
+    default: 0,
+  },
 });
 
 const form = useForm({
@@ -36,9 +39,12 @@ const submit = () => {
                 v-model="form.reject_reason"
                 type="text"
                 class="w-full border-gray-300 p-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-              />
+              >
             </div>
-            <InputError class="mt-2" :message="form.errors.reject_reason" />
+            <InputError
+              class="mt-2"
+              :message="form.errors.reject_reason"
+            />
 
             <button
               type="submit"

@@ -53,37 +53,41 @@ const selectSuggestion = (text) => {
   <div class="relative w-full">
     <input
       v-model="inputValue"
-      @focus="showSuggestions = true"
       type="text"
       placeholder="Що шукаєте?"
       class="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-green-600"
-    />
+      @focus="showSuggestions = true"
+    >
     <ul
       v-if="showSuggestions && searchHistory.length"
       class="absolute left-0 w-full bg-white border mt-1 rounded-lg shadow-lg z-10 search-container"
     >
-      <div class="text-sm text-gray-400 uppercase p-1 pl-4">Ви нещодавно шукали</div>
+      <div class="text-sm text-gray-400 uppercase p-1 pl-4">
+        Ви нещодавно шукали
+      </div>
       <li
         v-for="(suggestion, index) in searchHistory"
         :key="index"
-        @click="selectSuggestion(suggestion)"
         class="flex justify-between items-center px-4 py-2 cursor-pointer hover:bg-gray-200 transition duration-200"
+        @click="selectSuggestion(suggestion)"
       >
         {{ suggestion }}
         <button
-          @click.stop="removeSuggestion(index)"
           class="text-red-500 text-lg hover:text-red-700 transition duration-200"
+          @click.stop="removeSuggestion(index)"
         >
           ×
         </button>
       </li>
 
-      <div class="text-sm text-gray-400 uppercase p-1 pl-4">Рекомендації</div>
+      <div class="text-sm text-gray-400 uppercase p-1 pl-4">
+        Рекомендації
+      </div>
       <li
         v-for="(suggestion, index) in searchRecommendations"
         :key="index"
-        @click="selectSuggestion(suggestion)"
         class="flex justify-between items-center px-4 py-2 cursor-pointer hover:bg-gray-200 transition duration-200"
+        @click="selectSuggestion(suggestion)"
       >
         {{ suggestion }}
       </li>

@@ -8,7 +8,10 @@ const isEditModalOpen = ref(false);
 const selectedCategory = ref(null);
 
 const props = defineProps({
-  category: Object,
+  category: {
+    type: Object,
+    default: () => ({}),
+  },
   prefix: {
     type: String,
     default: '',
@@ -90,23 +93,55 @@ const moveToBottom = (id) => {
     >
       <span class="font-semibold">{{ props.prefix }}{{ props.category.name }}</span>
       <div class="flex items-right">
-        <button @click.stop="moveToTop(category.id)" class="text-purple-500 pr-2">⏫</button>
-        <button @click.stop="moveUp(category.id)" class="text-green-500 pr-2">🔼</button>
-        <button @click.stop="moveDown(category.id)" class="text-orange-500 pr-2">🔽</button>
-        <button @click.stop="moveToBottom(category.id)" class="text-purple-500 pr-2">⏬</button>
-        <Link :href="route('admin.adverts.category.show', category.id)" class="text-blue-500 pr-2">
+        <button
+          class="text-purple-500 pr-2"
+          @click.stop="moveToTop(category.id)"
+        >
+          ⏫
+        </button>
+        <button
+          class="text-green-500 pr-2"
+          @click.stop="moveUp(category.id)"
+        >
+          🔼
+        </button>
+        <button
+          class="text-orange-500 pr-2"
+          @click.stop="moveDown(category.id)"
+        >
+          🔽
+        </button>
+        <button
+          class="text-purple-500 pr-2"
+          @click.stop="moveToBottom(category.id)"
+        >
+          ⏬
+        </button>
+        <Link
+          :href="route('admin.adverts.category.show', category.id)"
+          class="text-blue-500 pr-2"
+        >
           Show
         </Link>
-        <button @click.stop="openEditModal(category.id)" class="text-blue-500 pr-2">
+        <button
+          class="text-blue-500 pr-2"
+          @click.stop="openEditModal(category.id)"
+        >
           Редагувати
         </button>
-        <button @click.stop="deleteCategory(category.id)" class="text-red-500 hover:underline">
+        <button
+          class="text-red-500 hover:underline"
+          @click.stop="deleteCategory(category.id)"
+        >
           Видалити
         </button>
       </div>
     </div>
 
-    <div v-if="category.children_recursive?.length" class="ml-6">
+    <div
+      v-if="category.children_recursive?.length"
+      class="ml-6"
+    >
       <CategoryItem
         v-for="child in category.children_recursive"
         :key="child.id"
@@ -115,7 +150,14 @@ const moveToBottom = (id) => {
     </div>
   </li>
 
-  <Modal :show="isEditModalOpen" maxWidth="2xl" @close="isEditModalOpen = false">
-    <Edit :category="selectedCategory" @categoryUpdated="refreshCategories" />
+  <Modal
+    :show="isEditModalOpen"
+    max-width="2xl"
+    @close="isEditModalOpen = false"
+  >
+    <Edit
+      :category="selectedCategory"
+      @category-updated="refreshCategories"
+    />
   </Modal>
 </template>

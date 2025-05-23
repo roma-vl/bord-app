@@ -15,7 +15,10 @@ const imageUrl = '/storage/images/errors/403.svg';
       {{ data.status }} - {{ data.statusText }}
     </h2>
 
-    <img :src="imageUrl" alt="Logo" />
+    <img
+      :src="imageUrl"
+      alt="Logo"
+    >
   </div>
 </template>
 
