@@ -3381,16 +3381,14 @@
             { title: E, expanded: a <= n, collapsedContent: '[...]' },
             '[',
             m.size
-              ? m
-                  .entrySeq()
-                  .map(([e, t]) =>
-                    O().createElement(f, {
-                      key: `${e}-${t}`,
-                      propKey: e,
-                      propVal: t,
-                      propClass: 'property',
-                    })
-                  )
+              ? m.entrySeq().map(([e, t]) =>
+                  O().createElement(f, {
+                    key: `${e}-${t}`,
+                    propKey: e,
+                    propVal: t,
+                    propClass: 'property',
+                  })
+                )
               : null,
             c
               ? O().createElement(h, { source: c })
@@ -3478,16 +3476,14 @@
               O().createElement('span', { className: 'prop-type' }, c),
               i && O().createElement('span', { className: 'prop-format' }, '($', i, ')'),
               g.size
-                ? g
-                    .entrySeq()
-                    .map(([e, t]) =>
-                      O().createElement(_, {
-                        key: `${e}-${t}`,
-                        propKey: e,
-                        propVal: t,
-                        propClass: ft,
-                      })
-                    )
+                ? g.entrySeq().map(([e, t]) =>
+                    O().createElement(_, {
+                      key: `${e}-${t}`,
+                      propKey: e,
+                      propVal: t,
+                      propClass: ft,
+                    })
+                  )
                 : null,
               l && h.size > 0
                 ? O().createElement(b, { extensions: h, propClass: `${ft} extension` })
@@ -5783,20 +5779,18 @@
                 O().createElement(
                   'div',
                   { className: 'modal-ux-content' },
-                  o
-                    .valueSeq()
-                    .map((o, c) =>
-                      O().createElement(l, {
-                        key: c,
-                        AST: s,
-                        definitions: o,
-                        getComponent: r,
-                        errSelectors: a,
-                        authSelectors: e,
-                        authActions: t,
-                        specSelectors: n,
-                      })
-                    )
+                  o.valueSeq().map((o, c) =>
+                    O().createElement(l, {
+                      key: c,
+                      AST: s,
+                      definitions: o,
+                      getComponent: r,
+                      errSelectors: a,
+                      authSelectors: e,
+                      authActions: t,
+                      specSelectors: n,
+                    })
+                  )
                 )
               )
             )

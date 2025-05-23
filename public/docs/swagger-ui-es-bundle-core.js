@@ -8843,16 +8843,14 @@ class ObjectModel extends He.Component {
         He.default.createElement('span', { className: 'brace-close' }, '}')
       ),
       x.size
-        ? x
-            .entrySeq()
-            .map(([e, t]) =>
-              He.default.createElement(T, {
-                key: `${e}-${t}`,
-                propKey: e,
-                propVal: t,
-                propClass: 'property',
-              })
-            )
+        ? x.entrySeq().map(([e, t]) =>
+            He.default.createElement(T, {
+              key: `${e}-${t}`,
+              propKey: e,
+              propVal: t,
+              propClass: 'property',
+            })
+          )
         : null
     );
   }
@@ -8897,16 +8895,14 @@ class ArrayModel extends He.Component {
         { title: _, expanded: n <= a, collapsedContent: '[...]' },
         '[',
         d.size
-          ? d
-              .entrySeq()
-              .map(([e, t]) =>
-                He.default.createElement(y, {
-                  key: `${e}-${t}`,
-                  propKey: e,
-                  propVal: t,
-                  propClass: 'property',
-                })
-              )
+          ? d.entrySeq().map(([e, t]) =>
+              He.default.createElement(y, {
+                key: `${e}-${t}`,
+                propKey: e,
+                propVal: t,
+                propClass: 'property',
+              })
+            )
           : null,
         i
           ? He.default.createElement(f, { source: i })
@@ -8994,16 +8990,14 @@ class Primitive extends He.Component {
           He.default.createElement('span', { className: 'prop-type' }, i),
           c && He.default.createElement('span', { className: 'prop-format' }, '($', c, ')'),
           h.size
-            ? h
-                .entrySeq()
-                .map(([e, t]) =>
-                  He.default.createElement(v, {
-                    key: `${e}-${t}`,
-                    propKey: e,
-                    propVal: t,
-                    propClass: vr,
-                  })
-                )
+            ? h.entrySeq().map(([e, t]) =>
+                He.default.createElement(v, {
+                  key: `${e}-${t}`,
+                  propKey: e,
+                  propVal: t,
+                  propClass: vr,
+                })
+              )
             : null,
           l && f.size > 0
             ? He.default.createElement(C, { extensions: f, propClass: `${vr} extension` })
@@ -11492,20 +11486,18 @@ class AuthorizationPopup extends He.default.Component {
             He.default.createElement(
               'div',
               { className: 'modal-ux-content' },
-              s
-                .valueSeq()
-                .map((s, i) =>
-                  He.default.createElement(l, {
-                    key: i,
-                    AST: o,
-                    definitions: s,
-                    getComponent: r,
-                    errSelectors: n,
-                    authSelectors: e,
-                    authActions: t,
-                    specSelectors: a,
-                  })
-                )
+              s.valueSeq().map((s, i) =>
+                He.default.createElement(l, {
+                  key: i,
+                  AST: o,
+                  definitions: s,
+                  getComponent: r,
+                  errSelectors: n,
+                  authSelectors: e,
+                  authActions: t,
+                  specSelectors: a,
+                })
+              )
             )
           )
         )
