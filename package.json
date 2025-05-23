@@ -5,7 +5,7 @@
     "build": "vite build",
     "dev": "vite",
     "prepare": "husky",
-    "format": "prettier --write . && npx eslint . --fix"
+    "format": "prettier --write . && npx eslint . --config=eslint.config.js --fix"
   },
   "hooks": {
     "pre-commit": "php artisan test"
